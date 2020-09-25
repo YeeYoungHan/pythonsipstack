@@ -4,6 +4,8 @@ Python 언어로 SIP stack 을 개발하는 프로젝트입니다.
 ### 개요
 본 프로젝트의 목표는 다음과 같습니다.
 
+* C++ SIP stack 프로젝트를 Python 언어로 포팅한다.
+  * https://github.com/YeeYoungHan/cppsipstack
 * Python 언어로 SIP stack 개발
 * Python SIP stack 기반 IP-PBX 개발
 
