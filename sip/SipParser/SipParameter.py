@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 class SipParameter():
 
-  def __init__(self):
+  def __init__( self ):
     self.strName = ''
     self.strValue = ''
 
@@ -63,7 +63,7 @@ class SipParameter():
     self.strName = ''
     self.strValue = ''
 
-  def __str__(self):
+  def __str__( self ):
     if( len(self.strName) == 0 ):
       return ""
 
