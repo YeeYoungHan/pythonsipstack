@@ -16,37 +16,85 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+from .SipUtility import SipIpv6Print
+from .SipParameter import ParseSipParameter
+from .SipParameter import MakeSipParameterString
+
 class SipUri():
-  strProtocol = ''
-  strUser = ''
-  strHost = ''
-  iPort = 0
+
+  def __init__(self):
+    self.strProtocol = ''
+    self.strUser = ''
+    self.strHost = ''
+    self.iPort = 0
+    self.clsUriParamList = []
+    self.clsHeaderList = []
 
   def Parse( self, strText, iStartPos ):
     iPos = self.ParseProtocol( strText, iStartPos )
     if( iPos == -1 ):
       return -1
+    iCurPos = iPos
 
-    iPos = self.ParseUser( strText, iPos )
+    iPos = self.ParseUser( strText, iCurPos )
+    if( iPos != -1 ):
+      iCurPos = iPos
+
+    iPos = self.ParseHost( strText, iCurPos )
     if( iPos == -1 ):
       return -1
+    iCurPos = iPos
 
-    iPos = self.ParseHost( strText, iPos )
-    if( iPos == -1 ):
-      return -1
+    iTextLen = len(strText)
+    while( iCurPos < iTextLen ):
+      if( strText[iCurPos] == '?' ):
+        iCurPos += 1
+        break
 
-    return iPos
+      if( strText[iCurPos] == ';' or strText[iCurPos] == ' ' or strText[iCurPos] == '\t' ):
+        iCurPos += 1
+        continue
+
+      iPos = ParseSipParameter( self.clsUriParamList, strText, iCurPos )
+      if( iPos == -1 ):
+        return -1
+      iCurPos = iPos
+
+    while( iCurPos < iTextLen ):
+      if( strText[iCurPos] == ' ' or strText[iCurPos] == '\t' or strText[iCurPos] == '&' ):
+        iCurPos += 1
+        continue
+
+      iPos = ParseSipParameter( self.clsHeaderList, strText, iCurPos )
+      if( iPos == -1 ):
+        return -1
+      iCurPos = iPos
+
+    return iCurPos
 
   def __str__(self):
-    strUri = self.strProtocol + ":" + self.strUser + "@"
+    strUri = self.strProtocol + ":"
     
-    if( len(self.strHost) > 2 and self.strHost[0] != '[' and self.strHost.find(':') > 0 ):
-      strUri += "[" + self.strHost + "]"
-    else:
-      strUri += self.strHost
-
+    if( len( self.strUser ) > 0 ):
+      strUri += self.strUser + "@"
+    
+    strUri += SipIpv6Print( self.strHost )
+    
     if( self.iPort ):
       strUri += ":" + str(self.iPort)
+
+    strUri += MakeSipParameterString( self.clsUriParamList )
+
+    iCount = len( self.clsHeaderList )
+
+    for i in range( 0, iCount ):
+      if( i == 0 ):
+        strUri += '?'
+      else:
+        strUri += '&'
+
+      strUri += str( self.clsHeaderList[i] )
+    
     return strUri
 
   def ParseProtocol( self, strText, iStartPos ):
@@ -104,7 +152,7 @@ class SipUri():
 
       if( iPortPos == -1 ):
         if( iPos > iStartPos ):
-          self.strHost = strText[iStartPos:]
+          self.strHost = strText[iStartPos:iPos]
           return iPos
       else:
         if( iPortPos < iPos ):
