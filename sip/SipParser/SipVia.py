@@ -68,7 +68,6 @@ class SipVia( SipParameterList ):
     self.strTransport = ''
     self.strHost = ''
     self.iPort = -1
-
     super().ClearParam()
 
   def ParseSentProtocol( self, strText, iStartPos ):
