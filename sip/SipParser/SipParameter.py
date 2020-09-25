@@ -17,8 +17,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 class SipParameter():
-  strName = ''
-  strValue = ''
+
+  def __init__(self):
+    self.strName = ''
+    self.strValue = ''
 
   def Parse( self, strText, iStartPos ):
     self.Clear()
