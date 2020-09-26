@@ -16,6 +16,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import threading
+import random
+
+gclsMutex = threading.Lock()
+giTag = 0
+
+def SipMakeTag( ):
+  global gclsMutex, giTag
+
+  gclsMutex.acquire()
+  if( giTag <= 0 or giTag > 2000000000 ):
+    giTag = random.randint( 1, 1000000000 )
+  else:
+    giTag += 1
+  iTag = giTag
+  gclsMutex.release()
+
+  return str( iTag )
+
 def SipIpv6Print( strHost ):
   iLen = len(strHost)
 
