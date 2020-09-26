@@ -53,3 +53,9 @@ class SipCallId():
   def Clear( self ):
     self.strName = ''
     self.strHost = ''
+  
+  def Empty( self ):
+    if( len(self.strName) == 0 ):
+      return True
+    
+    return False

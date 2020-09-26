@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from .SipParameterList import SipParameterList
 from .SipUri import SipUri
+from .SipUtility import SipMakeTag
 
 class SipFrom(SipParameterList):
 
@@ -69,7 +70,11 @@ class SipFrom(SipParameterList):
 
     self.clsUri.Parse( strUri, 0 )
 
-    super().HeaderListParamParse( strText, iPos )
+    iRet = super().HeaderListParamParse( strText, iPos )
+    if( iRet == -1 ):
+      return -1
+
+    return iPos + iRet
 
   def __str__( self ):
     if( len(self.strDisplayName) > 0 ):
@@ -87,6 +92,9 @@ class SipFrom(SipParameterList):
     self.strDisplayName = ''
     self.clsUri.Clear()
     super().ClearParam()
+  
+  def InsertTag( self ):
+    super.InsertParam( "tag", SipMakeTag() )
   
 
 def ParseSipFrom( clsList, strText ):

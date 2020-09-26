@@ -69,6 +69,16 @@ class SipParameterList():
     
     return ''
 
+  def UpdateParam( self, strName, strValue ):
+    iCount = len( self.clsParamList )
+
+    for i in range(0, iCount):
+      if( self.clsParamList[i].strName == strName ):
+        self.clsParamList[i].strValue = strValue
+        return True
+    
+    return False
+
   def ClearParam( self ):
     self.clsParamList.clear()
 

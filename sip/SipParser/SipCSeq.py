@@ -37,6 +37,7 @@ class SipCSeq():
         continue
       else:
         self.strMethod = strText[iPos:]
+        break
 
       iPos += 1
 
@@ -46,6 +47,12 @@ class SipCSeq():
   def Clear( self ):
     self.iDigit = -1
     self.strMethod = ''
+  
+  def Empty( self ):
+    if( self.iDigit == -1 ):
+      return True
+    
+    return False
 
   def Set( self, iDigit, strMethod ):
     self.iDigit = iDigit

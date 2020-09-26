@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from .SipParameterList import SipParameterList
 from .SipUtility import SipIpv6Print
+from .SipTransport import SipTransport
 
 class SipVia( SipParameterList ):
 
@@ -69,6 +70,16 @@ class SipVia( SipParameterList ):
     self.strHost = ''
     self.iPort = -1
     super().ClearParam()
+
+  def AddIpPort( self, strIp, iPort, eTransport ):
+    strPort = str(iPort)
+    if( super().UpdateParam( "rport", strPort ) == False and self.iPort != iPort ):
+      super().InsertParam( "rport", strPort )
+    if( super().UpdateParam( "received", strIp ) == False and self.strHost != strIp ):
+      super().InsertParam( "received", strIp )
+    if( eTransport == SipTransport.E_SIP_TCP and self.strTransport.lower() != "tcp" ):
+      super().InsertParam( "transport", "tcp" )
+
 
   def ParseSentProtocol( self, strText, iStartPos ):
     iPos = iStartPos

@@ -57,7 +57,7 @@ class SipContentType(SipParameterList):
 
 
   def __str__( self ):
-    return self.strType + "/" + self.strSubType + super.__str__()
+    return self.strType + "/" + self.strSubType + super().__str__()
 
   def __eq__( self, clsContentType ):
     if( self.strType == clsContentType.strType and self.strSubType == clsContentType.strSubType ):
@@ -69,3 +69,9 @@ class SipContentType(SipParameterList):
     self.strType = ''
     self.strSubType = ''
     super().ClearParam()
+
+  def Empty( self ):
+    if( len(self.strType) == 0 or len(self.strSubType) == 0 ):
+      return True
+
+    return False

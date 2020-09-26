@@ -16,29 +16,35 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+from copy import copy
 from .SipUri import SipUri
 from .SipFrom import SipFrom
+from .SipFrom import ParseSipFrom
 from .SipCSeq import SipCSeq
 from .SipCallId import SipCallId
 from .SipContentType import SipContentType
 from .SipTransport import SipTransport
+from .SipTransport import SipGetTransport
+from .SipTransport import SipGetProtocol
 from .SipHeader import SipHeader
 from .SipVia import ParseSipVia
-from .SipFrom import ParseSipFrom
+from .SipVia import SipVia
 from .SipCredential import ParseSipCredential
 from .SipChallenge import ParseSipChallenge
 from .SipStatusCode import GetReasonPhrase
+from .SipStatusCode import SipStatusCode
+from .SipUtility import SipMakeBranch
 
 class SipMessage():
 
   def __init__( self ):
     self.strSipMethod = ''
-    self.clsReqUri = SipUri.SipUri()
+    self.clsReqUri = SipUri()
     self.strSipVersion = ''
     self.iStatusCode = -1
     self.strReasonPhrase = ''
-    self.clsFrom = SipFrom.SipFrom()
-    self.clsTo = SipFrom.SipFrom()
+    self.clsFrom = SipFrom()
+    self.clsTo = SipFrom()
     self.clsViaList = []
     self.clsContactList = []
     self.clsRecordRouteList = []
@@ -48,9 +54,9 @@ class SipMessage():
     self.clsProxyAuthorizationList = []
     self.clsProxyAuthenticateList = []
     self.clsHeaderList = []
-    self.clsCSeq = SipCSeq.SipCSeq()
-    self.clsCallId = SipCallId.SipCallId()
-    self.clsContentType = SipContentType.SipContentType()
+    self.clsCSeq = SipCSeq()
+    self.clsCallId = SipCallId()
+    self.clsContentType = SipContentType()
     self.iContentLength = 0
     self.iExpires = -1
     self.iMaxForwards = -1
@@ -70,20 +76,23 @@ class SipMessage():
       return -1
     
     if( strText[0:4] == "SIP/" ):
-      iCurPos = ParseStatusLine( strText )
+      iCurPos = self.ParseStatusLine( strText )
     else:
-      iCurPos = ParseRequestLine( strText )
+      iCurPos = self.ParseRequestLine( strText )
     
     if( iCurPos == -1 ):
       return -1
     
-    clsHeader = SipHeader.SipHeader()
+    clsHeader = SipHeader()
 
     while( iCurPos < iTextLen ):
       iPos = clsHeader.Parse( strText, iCurPos )
       if( iPos == -1 ):
         return -1
       iCurPos = iPos
+
+      if( len(clsHeader.strName) == 0 ):
+        break
 
       if( clsHeader.strName == "Via" or clsHeader.strName == "v" ):
         ParseSipVia( self.clsViaList, clsHeader.strValue )
@@ -120,7 +129,7 @@ class SipMessage():
       elif( clsHeader.strName == "User-Agent" ):
         self.strUserAgent = clsHeader.strValue
       else:
-        self.clsHeaderList.append( clsHeader )
+        self.clsHeaderList.append( copy(clsHeader) )
     
     if( self.iContentLength > 0 ):
       if( self.iContentLength > ( iTextLen - iCurPos ) ):
@@ -142,27 +151,33 @@ class SipMessage():
       
       strText = self.strSipVersion + " " + str(self.iStatusCode) + " " + self.strReasonPhrase + "\r\n"
     else:
-      strText = self.strSipMethod + " " + self.clsReqUri + " " + self.strSipVersion + "\r\n"
+      strText = self.strSipMethod + " " + str(self.clsReqUri) + " " + self.strSipVersion + "\r\n"
 
-    strText += ListToString( self.clsViaList, "Via" )
-    strText += ListToString( self.clsRecordRouteList, "Record-Route" )
-    strText += ListToString( self.clsRouteList, "Route" )
+    strText += self.ListToString( self.clsViaList, "Via" )
+    strText += self.ListToString( self.clsRecordRouteList, "Record-Route" )
+    strText += self.ListToString( self.clsRouteList, "Route" )
         
     if( self.iMaxForwards >= 0 ):
       strText += "Max-Forwards: " + str(self.iMaxForwards) + "\r\n"
     
-    strText += "From: " + self.clsFrom + "\r\n"
-    strText += "To: " + self.clsTo + "\r\n"
-    strText += "Call-ID: " + self.clsCallId + "\r\n"
-    strText += "CSeq: " + self.clsCSeq + "\r\n"
+    strText += "From: " + str(self.clsFrom) + "\r\n"
+    strText += "To: " + str(self.clsTo) + "\r\n"
 
-    strText += ListToString( self.clsContactList, "Contact" )
-    strText += ListToString( self.clsAuthorizationList, "Authorization" )
-    strText += ListToString( self.clsWwwAuthenticateList, "WWW-Authenticate" )
-    strText += ListToString( self.clsProxyAuthorizationList, "Proxy-Authorization" )
-    strText += ListToString( self.clsProxyAuthenticateList, "Proxy-Authenticate" )
+    if( self.clsCallId.Empty() == False ):
+      strText += "Call-ID: " + str(self.clsCallId) + "\r\n"
+    
+    if( self.clsCSeq.Empty() == False ):
+      strText += "CSeq: " + str(self.clsCSeq) + "\r\n"
 
-    strText += "Content-Type: " + self.clsContentType + "\r\n"
+    strText += self.ListToString( self.clsContactList, "Contact" )
+    strText += self.ListToString( self.clsAuthorizationList, "Authorization" )
+    strText += self.ListToString( self.clsWwwAuthenticateList, "WWW-Authenticate" )
+    strText += self.ListToString( self.clsProxyAuthorizationList, "Proxy-Authorization" )
+    strText += self.ListToString( self.clsProxyAuthenticateList, "Proxy-Authenticate" )
+
+    if( self.clsContentType.Empty() == False ):
+      strText += "Content-Type: " + str(self.clsContentType) + "\r\n"
+      
     strText += "Content-Length: " + str(self.iContentLength) + "\r\n"
 
     if( self.iExpires >= 0 ):
@@ -201,6 +216,128 @@ class SipMessage():
   def IsEqualCallId( self, clsMessage ):
     return self.clsCallId == clsMessage.clsCallId
 
+  def IsEqualCallIdSeq( self, clsMessage ):
+    if( self.clsCallId == clsMessage.clsCallId and self.clsCSeq.iDigit == clsMessage.clsCSeq.iDigit ):
+      return True
+    
+    return False
+
+  def GetCallId( self ):
+    return str(self.clsCallId)
+
+  def AddIpPortToTopVia( self, strIp, iPort, eTransport ):
+    if( len(self.clsViaList) == 0 ):
+      return
+
+    self.clsViaList[0].AddIpPort( strIp, iPort, eTransport )
+
+  def AddVia( self, strIp, iPort, strBranch, eTransport ):
+    clsVia = SipVia.SipVia()
+
+    clsVia.strProtocolName = "SIP"
+    clsVia.strProtocolVersion = "2.0"
+    clsVia.strTransport = SipGetTransport( eTransport )
+    clsVia.strHost = strIp
+    clsVia.iPort = iPort
+    clsVia.InsertParam( "rport", "" )
+
+    if( len(strBranch) == 0 ):
+      strBranch = SipMakeBranch()
+    
+    clsVia.InsertParam( "branch", strBranch )
+
+    self.clsViaList.append( clsVia )
+  
+  def AddRoute( self, strIp, iPort, eTransport ):
+    clsFrom = SipFrom.SipFrom()
+
+    clsFrom.clsUri.m_strProtocol = SipGetProtocol( eTransport )
+    clsFrom.clsUri.m_strHost = strIp
+    clsFrom.clsUri.m_iPort = iPort
+
+    clsFrom.clsUri.InsertParam( "lr", "" )
+    clsFrom.clsUri.InsertTransport( eTransport )
+
+    self.clsRouteList.insert( 0, clsFrom )
+
+  def AddRecordRoute( self, strIp, iPort, eTransport ):
+    clsFrom = SipFrom.SipFrom()
+
+    clsFrom.clsUri.m_strProtocol = SipGetProtocol( eTransport )
+    clsFrom.clsUri.m_strHost = strIp
+    clsFrom.clsUri.m_iPort = iPort
+
+    clsFrom.clsUri.InsertParam( "lr", "" )
+    clsFrom.clsUri.InsertTransport( eTransport )
+
+    self.clsRecordRouteList.insert( 0, clsFrom )
+
+  def AddHeader( self, strName, strValue ):
+    clsHeader = SipHeader.SipHeader()
+
+    clsHeader.strName = strName
+    clsHeader.strValue = strValue
+
+    self.clsHeaderList.append( clsHeader )
+
+  def CreateResponse( self, iStatusCode, strToTag ):
+    clsResponse = SipMessage()
+
+    clsResponse.iStatusCode = iStatusCode
+    clsResponse.clsTo = self.clsTo
+    clsResponse.clsFrom = self.clsFrom
+    clsResponse.clsViaList = self.clsViaList
+    clsResponse.clsCallId = self.clsCallId
+    clsResponse.clsCSeq = self.clsCSeq
+    clsResponse.eTransport = self.eTransport
+
+    if( iStatusCode != SipStatusCode.SIP_TRYING ):
+      clsResponse.clsRecordRouteList = self.clsRecordRouteList
+
+    if( len(strToTag) > 0 ):
+      clsResponse.clsTo.InsertParam( "tag", strToTag )
+    
+    return clsResponse
+  
+  def CreateResponseWithToTag( self, iStatusCode ):
+    clsResponse = SipMessage()
+
+    clsResponse.iStatusCode = iStatusCode
+    clsResponse.clsTo = self.clsTo
+    clsResponse.clsFrom = self.clsFrom
+    clsResponse.clsViaList = self.clsViaList
+    clsResponse.clsCallId = self.clsCallId
+    clsResponse.clsCSeq = self.clsCSeq
+    clsResponse.eTransport = self.eTransport
+
+    if( iStatusCode != SipStatusCode.SIP_TRYING ):
+      clsResponse.clsRecordRouteList = self.clsRecordRouteList
+
+    if( len(clsResponse.clsTo.SelectParam( "tag" )) == 0 ):
+      clsResponse.clsTo.InsertTag( )
+    
+    return clsResponse
+
+  def GetTopViaIp( self ):
+    if( len(self.clsViaList) == 0 ):
+      return ''
+
+    strIp = self.clsViaList[0].SelectParam( "received" )
+    if( len(strIp) > 0 ):
+      return strIp
+    
+    return self.clsViaList[0].strHost
+  
+  def GetTopViaPort( self ):
+    if( len(self.clsViaList) == 0 ):
+      return ''
+
+    strPort = self.clsViaList[0].SelectParam( "rport" )
+    if( len(strPort) > 0 ):
+      return int(strPort)
+    
+    return self.clsViaList[0].iPort
+
   def ParseStatusLine( self, strText ):
     iTextLen = len(strText)
     iPos = 0
@@ -224,6 +361,8 @@ class SipMessage():
           
           self.strReasonPhrase = strText[iStartPos:iPos]
           return iPos + 2
+      
+      iPos += 1
     
     return -1
 
@@ -253,14 +392,15 @@ class SipMessage():
           
           self.strSipVersion = strText[iStartPos:iPos]
           return iPos + 2
+      
+      iPos += 1
     
     return -1
   
   def ListToString( self, clsList, strName ):
-    iCount = len(self.clsList)
+    iCount = len(clsList)
     strText = ''
     for i in range( 0, iCount ):
-      strText += strName + ": " + self.clsList[i] + "\r\n"
+      strText += strName + ": " + str(clsList[i]) + "\r\n"
     
     return strText
-

@@ -39,6 +39,7 @@ class SipHeader():
             return -1
           return iPos + 2
       elif( strText[iPos] == ':' or strText[iPos] == ' ' or strText[iPos] == '\t' ):
+        iPos += 1
         continue
       else:
         break
@@ -57,6 +58,10 @@ class SipHeader():
         if( iValuePos != -1 ):
           self.strValue += strText[iValuePos:iPos]
           iValuePos = -1
+
+        iPos += 1
+        if( iPos == iTextLen or strText[iPos] != '\n' ):
+          return -1
         
         iPos += 1
         if( iPos == iTextLen ):
