@@ -18,9 +18,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import threading
 import random
+import time
 
 gclsMutex = threading.Lock()
 giTag = 0
+giBranch = 0
+giCallId = 0
+gstrSystemId = ''
+
+def SipSetSystemId( strId ):
+  global gstrSystemId
+
+  gstrSystemId = strId
 
 def SipMakeTag( ):
   global gclsMutex, giTag
@@ -34,6 +43,47 @@ def SipMakeTag( ):
   gclsMutex.release()
 
   return str( iTag )
+
+def SipMakeBranch( ):
+  global gclsMutex, giBranch, gstrSystemId
+
+  gclsMutex.acquire()
+  if( giBranch <= 0 or giBranch > 2000000000 ):
+    giBranch = random.randint( 1, 1000000000 )
+  else:
+    giBranch += 1
+  iBranch = giBranch
+  gclsMutex.release()
+
+  strBranch = "z9hG4bKWPSS"
+  
+  if( len(gstrSystemId) > 0 ):
+    strBranch += gstrSystemId
+
+  strBranch += str(iBranch) + str(time.time()).replace(".", "")
+
+  return strBranch
+
+def SipMakeCallIdName( ):
+  global gclsMutex, giCallId, gstrSystemId
+
+  gclsMutex.acquire()
+  if( giCallId <= 0 or giCallId > 2000000000 ):
+    giCallId = random.randint( 1, 1000000000 )
+  else:
+    giCallId += 1
+  iCallId = giCallId
+  gclsMutex.release()
+
+  strCallId = "WPSS"
+  
+  if( len(gstrSystemId) > 0 ):
+    strCallId += gstrSystemId
+
+  strCallId += str(iCallId) + str(time.time()).replace(".", "")
+
+  return strCallId
+
 
 def SipIpv6Print( strHost ):
   iLen = len(strHost)
