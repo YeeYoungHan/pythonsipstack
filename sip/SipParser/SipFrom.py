@@ -54,19 +54,20 @@ class SipFrom(SipParameterList):
           i = iPos - 1
           while( i > iStartPos ):
             if( strText[i] != ' ' and strText[i] != '\t' ):
-              self.strDisplayName = strText[iStartPos:i]
+              self.strDisplayName = strText[iStartPos:i+1]
               break
+            i -= 1
       elif( strText[iPos] == ';' or strText[iPos] == ',' ):
         break
 
       iPos += 1
     
     if( iUriStartPos != -1 and iUriEndPos != -1 ):
-      strUri = strText[iStartPos:iUriEndPos]
+      strUri = strText[iUriStartPos:iUriEndPos]
     else:
-      strUri = strText[iStartPos:]
+      strUri = strText[iStartPos:iPos]
 
-    self.clsUri.Parse( strUri )
+    self.clsUri.Parse( strUri, 0 )
 
     super().HeaderListParamParse( strText, iPos )
 
