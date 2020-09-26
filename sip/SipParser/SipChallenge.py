@@ -52,7 +52,7 @@ class SipChallenge():
     clsParamList = []
 
     while( iCurPos < iTextLen ):
-      if( strText[iPos] == ' ' or strText[iPos] == '\t' or strText[iPos] == ',' ):
+      if( strText[iCurPos] == ' ' or strText[iCurPos] == '\t' or strText[iCurPos] == ',' ):
         iCurPos += 1
         continue
 
@@ -61,7 +61,7 @@ class SipChallenge():
         return -1
       iCurPos = iPos
 
-    iCount = len(self.clsParamList)
+    iCount = len(clsParamList)
 
     for i in range( 0, iCount ):
       if( clsParamList[i].strName == "realm" ):
