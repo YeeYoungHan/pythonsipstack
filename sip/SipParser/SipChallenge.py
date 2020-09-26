@@ -120,3 +120,11 @@ def SetQuoteString( strName, strValue ):
   
   return ", " + strName + "=\"" + strValue + "\""
   
+def ParseSipChallenge( clsList, strText ):
+  clsChallenge = SipChallenge()
+
+  iPos = clsChallenge.Parse( strText, 0 )
+  if( iPos == -1 ):
+    return -1
+  
+  clsList.append( clsChallenge )

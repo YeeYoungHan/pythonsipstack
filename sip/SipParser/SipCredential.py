@@ -124,3 +124,13 @@ class SipCredential():
     self.strQop = ''
     self.strNonceCount = ''
     self.clsParamList.clear()
+
+  
+def ParseSipCredential( clsList, strText ):
+  clsCredential = SipCredential()
+
+  iPos = clsCredential.Parse( strText, 0 )
+  if( iPos == -1 ):
+    return -1
+  
+  clsList.append( clsCredential )

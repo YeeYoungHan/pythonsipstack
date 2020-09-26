@@ -88,3 +88,20 @@ class SipFrom(SipParameterList):
     self.clsUri.Clear()
     super().ClearParam()
   
+
+def ParseSipFrom( clsList, strText ):
+  iCurPos = 0
+  iTextLen = len(strText)
+  clsFrom = SipFrom()
+
+  while( iCurPos < iTextLen ):
+    if( strText[iCurPos] == ' ' or strText[iCurPos] == '\t' or strText[iCurPos] == ',' ):
+      iCurPos += 1
+      continue
+
+    iPos = clsFrom.Parse( strText, iCurPos )
+    if( iPos == -1 ):
+      return -1
+    iCurPos = iPos
+
+    clsList.append( clsFrom )
