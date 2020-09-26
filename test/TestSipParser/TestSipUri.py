@@ -32,11 +32,10 @@ def Test( strInput ):
     print( "sip uri(" + strInput + ") != result(" + strOutput + ")" )
     exit()
 
-'''
+
 Test( "sip:alice@atlanta.com:5060" )
 Test( "sip:alice@atlanta.com" )
 Test( "sip:alice:secretword@atlanta.com;transport=tcp" )
-'''
 Test( "sips:alice@atlanta.com?subject=project%20x&priority=urgent" )
 Test( "sip:+1-212-555-1212:1234@gateway.com;user=phone" )
 Test( "sip:+1-212-555-1212:1234@gateway.com:5080;user=phone" )

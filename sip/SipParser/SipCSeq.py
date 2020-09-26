@@ -16,11 +16,37 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-def SipIpv6Print( strHost ):
-  iLen = len(strHost)
+class SipCSeq():
 
-  if( iLen > 2 and strHost[0] != '[' and strHost.find(':') != -1 ):
-    return "[" + strHost + "]"
+  def __init__( self ):
+    self.iDigit = -1
+    self.strMethod = ''
   
-  return strHost
+  def Parse( self, strText, iStartPos ):
+    self.Clear()
 
+    iPos = iStartPos
+    iTextLen = len(strText)
+
+    while( iPos < iTextLen ):
+      if( self.iDigit == -1 ):
+        if( strText[iPos] == ' ' ):
+          strDigit = strText[iStartPos:iPos]
+          self.iDigit = int( strDigit )
+      elif( strText[iPos] == ' ' or strText[iPos] == '\t' ):
+        continue
+      else:
+        self.strMethod = strText[iPos:]
+
+      iPos += 1
+
+  def __str__( self ):
+    return str(self.iDigit) + " " + self.strMethod
+  
+  def Clear( self ):
+    self.iDigit = -1
+    self.strMethod = ''
+
+  def Set( self, iDigit, strMethod ):
+    self.iDigit = iDigit
+    self.strMethod = strMethod

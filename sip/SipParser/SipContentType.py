@@ -18,45 +18,54 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from .SipParameterList import SipParameterList
 
-class SipAcceptData( SipParameterList ):
+class SipContentType(SipParameterList):
 
   def __init__( self ):
     super().__init__()
-    self.strName = ''
+    self.strType = ''
+    self.strSubType = ''
   
   def Parse( self, strText, iStartPos ):
     self.Clear()
 
     iPos = iStartPos
-    iTextLen = len( strText )
-    bParam = False
+    iTextLen = len(strText)
+    iSubTypePos = -1
+    iParamPos = -1
 
     while( iPos < iTextLen ):
-      if( strText[iPos] == ';' ):
-        self.strName = strText[iStartPos:iPos]
-        bParam = True
-        break
+      if( strText[iPos] == '/' ):
+        self.strType = strText[iStartPos:iPos]
+        iSubTypePos = iPos + 1
+      elif( iSubTypePos != -1 ):
+        if( strText[iPos] == ';' or strText[iPos] == ',' ):
+          self.strSubType = strText[iSubTypePos:iPos]
+          iParamPos = iPos + 1
+          break
       elif( strText[iPos] == ',' ):
-        self.strName = strText[iStartPos:iPos]
         break
+      
       iPos += 1
     
-    iCurPos = iPos
+    if( len(self.strType) == 0 ):
+      self.strType = strText[iStartPos:]
+    elif( iSubTypePos != -1 and len(self.strSubType) == 0 ):
+      self.strSubType = strText[iSubTypePos:]
+    
+    if( iParamPos != -1 ):
+      super().HeaderListParamParse( strText, iParamPos )
 
-    if( len(self.strName) == 0 ):
-      self.strName = strText[iStartPos:iPos]
-    
-    if( bParam ):
-      iPos = super().HeaderListParamParse( strText, iCurPos )
-      if( iPos == -1 ):
-        return -1
-      iCurPos = iPos
-    
-    return iCurPos
-  
+
   def __str__( self ):
-    return self.strName + super().__str__()
+    return self.strType + "/" + self.strSubType + super.__str__()
+
+  def __eq__( self, clsContentType ):
+    if( self.strType == clsContentType.strType and self.strSubType == clsContentType.strSubType ):
+      return True
+    
+    return False
 
   def Clear( self ):
-    self.strName = ''
+    self.strType = ''
+    self.strSubType = ''
     super().ClearParam()

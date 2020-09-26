@@ -97,6 +97,14 @@ class SipUri():
     
     return strUri
 
+  def Clear( self ):
+    self.strProtocol = ''
+    self.strUser = ''
+    self.strHost = ''
+    self.iPort = 0
+    self.clsUriParamList.clear()
+    self.clsHeaderList.clear()
+
   def ParseProtocol( self, strText, iStartPos ):
     for i in range( iStartPos, len(strText) ):
       if( strText[i] == ':' ):

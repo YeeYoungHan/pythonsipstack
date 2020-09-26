@@ -16,11 +16,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-def SipIpv6Print( strHost ):
-  iLen = len(strHost)
+def DeQuoteString( strInput ):
+  iLen = len(strInput)
 
-  if( iLen > 2 and strHost[0] != '[' and strHost.find(':') != -1 ):
-    return "[" + strHost + "]"
+  if( iLen > 0 ):
+    if( strInput[0] != '"' or strInput[iLen-1] != '"' ):
+      return strInput
+    else:
+      return strInput[1:iLen-1]
   
-  return strHost
-
+  return ''

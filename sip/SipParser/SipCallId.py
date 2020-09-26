@@ -16,47 +16,40 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from .SipParameterList import SipParameterList
-
-class SipAcceptData( SipParameterList ):
+class SipCallId():
 
   def __init__( self ):
-    super().__init__()
     self.strName = ''
-  
+    self.strHost = ''
+
   def Parse( self, strText, iStartPos ):
     self.Clear()
 
     iPos = iStartPos
-    iTextLen = len( strText )
-    bParam = False
+    iTextLen = len(strText)
 
     while( iPos < iTextLen ):
-      if( strText[iPos] == ';' ):
+      if( strText[iPos] == '@' ):
         self.strName = strText[iStartPos:iPos]
-        bParam = True
-        break
-      elif( strText[iPos] == ',' ):
-        self.strName = strText[iStartPos:iPos]
+        self.strHost = strText[iPos+1:]
         break
       iPos += 1
-    
-    iCurPos = iPos
 
     if( len(self.strName) == 0 ):
-      self.strName = strText[iStartPos:iPos]
-    
-    if( bParam ):
-      iPos = super().HeaderListParamParse( strText, iCurPos )
-      if( iPos == -1 ):
-        return -1
-      iCurPos = iPos
-    
-    return iCurPos
-  
+      self.strName = strText[iStartPos:]
+
   def __str__( self ):
-    return self.strName + super().__str__()
+    if( len(self.strHost) == 0 ):
+      return self.strName
+    
+    return self.strName + "@" + self.strHost
+
+  def __eq__( self, clsCallId ):
+    if( self.strName == clsCallId.strName and self.strHost == clsCallId.strHost ):
+      return True
+    
+    return False
 
   def Clear( self ):
     self.strName = ''
-    super().ClearParam()
+    self.strHost = ''
