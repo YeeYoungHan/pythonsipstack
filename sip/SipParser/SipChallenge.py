@@ -77,25 +77,25 @@ class SipChallenge():
       elif( clsParamList[i].strName == "algorithm" ):
         self.strAlgorithm = clsParamList[i].strValue
       elif( clsParamList[i].strName == "qop" ):
-        self.strOop = DeQuoteString( clsParamList[i].strValue )
+        self.strQop = DeQuoteString( clsParamList[i].strValue )
       else:
         self.clsParamList.append( clsParamList[i] )
 
   def __str__( self ):
-    strText = self.strType
-    strText += SetQuoteString( "realm", self.strRealm )
-    strText += SetQuoteString( "domain", self.strDomain )
-    strText += SetQuoteString( "nonce", self.strNonce )
-    strText += SetQuoteString( "opaque", self.strOpaque )
-    strText += SetString( "stale", self.strStale )
-    strText += SetString( "algorithm", self.strAlgorithm )
-    strText += SetString( "qop", self.strQop )
+    strText = ""
+    strText = SetQuoteString( strText, "realm", self.strRealm )
+    strText = SetQuoteString( strText, "domain", self.strDomain )
+    strText = SetQuoteString( strText, "nonce", self.strNonce )
+    strText = SetQuoteString( strText, "opaque", self.strOpaque )
+    strText = SetString( strText, "stale", self.strStale )
+    strText = SetString( strText, "algorithm", self.strAlgorithm )
+    strText = SetString( strText, "qop", self.strQop )
 
     iCount = len(self.clsParamList)
     for i in range( 0, iCount ):
-      strText += SetString( clsParamList[i].strName, clsParamList[i].strValue )
+      strText = SetString( strText, clsParamList[i].strName, clsParamList[i].strValue )
     
-    return strText
+    return self.strType + " " + strText
 
   def Clear( self ):
     self.strType = ''
@@ -108,17 +108,23 @@ class SipChallenge():
     self.strQop = ''
     self.clsParamList.clear()
     
-def SetString( strName, strValue ):
+def SetString( strText, strName, strValue ):
   if( len(strValue) == 0 ):
-    return ''
+    return strText
   
-  return ", " + strName + "=" + strValue
+  if( len(strText) > 0 ):
+    strText += ", "
 
-def SetQuoteString( strName, strValue ):
+  return strText + strName + "=" + strValue
+
+def SetQuoteString( strText, strName, strValue ):
   if( len(strValue) == 0 ):
-    return ''
+    return strText
   
-  return ", " + strName + "=\"" + strValue + "\""
+  if( len(strText) > 0 ):
+    strText += ", "
+  
+  return strText + strName + "=\"" + strValue + "\""
   
 def ParseSipChallenge( clsList, strText ):
   clsChallenge = SipChallenge()

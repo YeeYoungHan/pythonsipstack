@@ -93,23 +93,23 @@ class SipCredential():
         self.clsParamList.append( clsParamList[i] )
 
   def __str__( self ):
-    strText = self.strType
-    strText += SetQuoteString( "username", self.strUserName )
-    strText += SetQuoteString( "realm", self.strRealm )
-    strText += SetQuoteString( "nonce", self.strNonce )
-    strText += SetQuoteString( "uri", self.strUri )
-    strText += SetQuoteString( "response", self.strResponse )
-    strText += SetString( "algorithm", self.strAlgorithm )
-    strText += SetQuoteString( "cnonce", self.strCnonce )
-    strText += SetQuoteString( "opaque", self.strOpaque )
-    strText += SetString( "qop", self.strQop )
-    strText += SetString( "nc", self.strNonceCount )
+    strText = ""
+    strText = SetQuoteString( strText, "username", self.strUserName )
+    strText = SetQuoteString( strText, "realm", self.strRealm )
+    strText = SetQuoteString( strText, "nonce", self.strNonce )
+    strText = SetQuoteString( strText, "uri", self.strUri )
+    strText = SetQuoteString( strText, "response", self.strResponse )
+    strText = SetString( strText, "algorithm", self.strAlgorithm )
+    strText = SetQuoteString( strText, "cnonce", self.strCnonce )
+    strText = SetQuoteString( strText, "opaque", self.strOpaque )
+    strText = SetString( strText, "qop", self.strQop )
+    strText = SetString( strText, "nc", self.strNonceCount )
 
     iCount = len(self.clsParamList)
     for i in range( 0, iCount ):
-      strText += SetString( clsParamList[i].strName, clsParamList[i].strValue )
+      strText = SetString( strText, clsParamList[i].strName, clsParamList[i].strValue )
     
-    return strText
+    return self.strType + " " + strText
 
   def Clear( self ):
     self.strType = ''

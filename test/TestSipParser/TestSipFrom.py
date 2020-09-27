@@ -16,10 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from sip.SipParser import SipFrom
+from sip.SipParser.SipFrom import SipFrom
 
 def Test( strInput, strOutput ):
-  clsFrom = SipFrom.SipFrom()
+  clsFrom = SipFrom()
 
   if( clsFrom.Parse( strInput, 0 ) == -1 ):
     print( "sip from(" + strInput + ") parse error" )
