@@ -68,7 +68,7 @@ class SipHeader():
           break
 
         if( strText[iPos] == ' ' or strText[iPos] == '\t' ):
-          cType = 10
+          iType = 10
           self.strValue += " "
         else:
           break

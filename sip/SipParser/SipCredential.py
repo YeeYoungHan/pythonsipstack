@@ -86,7 +86,7 @@ class SipCredential():
       elif( clsParamList[i].strName == "opaque" ):
         self.strOpaque = DeQuoteString( clsParamList[i].strValue )
       elif( clsParamList[i].strName == "qop" ):
-        self.strOop = clsParamList[i].strValue
+        self.strQop = clsParamList[i].strValue
       elif( clsParamList[i].strName == "nc" ):
         self.strNonceCount = clsParamList[i].strValue
       else:

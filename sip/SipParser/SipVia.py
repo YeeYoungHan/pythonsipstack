@@ -161,13 +161,13 @@ class SipVia( SipParameterList ):
 def ParseSipVia( clsList, strText ):
   iCurPos = 0
   iTextLen = len(strText)
-  clsVia = SipVia()
 
   while( iCurPos < iTextLen ):
     if( strText[iCurPos] == ' ' or strText[iCurPos] == '\t' or strText[iCurPos] == ',' ):
       iCurPos += 1
       continue
 
+    clsVia = SipVia()
     iPos = clsVia.Parse( strText, iCurPos )
     if( iPos == -1 ):
       return -1

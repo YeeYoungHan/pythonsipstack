@@ -16,6 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+from copy import copy
 from .SipParameterList import SipParameterList
 from .SipUri import SipUri
 from .SipUtility import SipMakeTag
@@ -70,11 +71,11 @@ class SipFrom(SipParameterList):
 
     self.clsUri.Parse( strUri, 0 )
 
-    iRet = super().HeaderListParamParse( strText, iPos )
-    if( iRet == -1 ):
+    iPos = super().HeaderListParamParse( strText, iPos )
+    if( iPos == -1 ):
       return -1
 
-    return iPos + iRet
+    return iPos
 
   def __str__( self ):
     if( len(self.strDisplayName) > 0 ):
@@ -100,13 +101,13 @@ class SipFrom(SipParameterList):
 def ParseSipFrom( clsList, strText ):
   iCurPos = 0
   iTextLen = len(strText)
-  clsFrom = SipFrom()
 
   while( iCurPos < iTextLen ):
     if( strText[iCurPos] == ' ' or strText[iCurPos] == '\t' or strText[iCurPos] == ',' ):
       iCurPos += 1
       continue
 
+    clsFrom = SipFrom()
     iPos = clsFrom.Parse( strText, iCurPos )
     if( iPos == -1 ):
       return -1

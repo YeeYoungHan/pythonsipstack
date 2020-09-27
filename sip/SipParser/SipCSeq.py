@@ -34,6 +34,7 @@ class SipCSeq():
           strDigit = strText[iStartPos:iPos]
           self.iDigit = int( strDigit )
       elif( strText[iPos] == ' ' or strText[iPos] == '\t' ):
+        iPos += 1
         continue
       else:
         self.strMethod = strText[iPos:]
