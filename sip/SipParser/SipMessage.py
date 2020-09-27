@@ -18,21 +18,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from copy import copy
 from .SipUri import SipUri
-from .SipFrom import SipFrom
-from .SipFrom import ParseSipFrom
+from .SipFrom import SipFrom, ParseSipFrom
 from .SipCSeq import SipCSeq
 from .SipCallId import SipCallId
 from .SipContentType import SipContentType
-from .SipTransport import SipTransport
-from .SipTransport import SipGetTransport
-from .SipTransport import SipGetProtocol
+from .SipTransport import SipTransport, SipGetTransport, SipGetProtocol
 from .SipHeader import SipHeader
-from .SipVia import ParseSipVia
-from .SipVia import SipVia
+from .SipVia import SipVia, ParseSipVia
 from .SipCredential import ParseSipCredential
 from .SipChallenge import ParseSipChallenge
-from .SipStatusCode import GetReasonPhrase
-from .SipStatusCode import SipStatusCode
+from .SipStatusCode import SipStatusCode, GetReasonPhrase
 from .SipUtility import SipMakeBranch
 
 class SipMessage():

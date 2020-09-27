@@ -17,8 +17,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 from .SipUtility import SipIpv6Print
-from .SipParameter import ParseSipParameter
-from .SipParameter import MakeSipParameterString
+from .SipParameter import ParseSipParameter, MakeSipParameterString
 
 class SipUri():
 
