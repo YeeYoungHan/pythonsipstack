@@ -83,7 +83,6 @@ class Log():
     if( cls.strDate != strDate ):
       cls.iIndex = 1
       bOpen = True
-      
     elif( cls.iLogSize > cls.iMaxLogSize ):
       cls.iIndex += 1
       bOpen = True
@@ -96,11 +95,13 @@ class Log():
 
       strFileName = cls.strDirName + "/" + strDate + "_" + str(cls.iIndex) + ".txt"
 
-      cls.fd = open( strFileName, "a" )
+      cls.fd = open( strFileName, "ab" )
       cls.bOpen = True
     
-    cls.iLogSize = len( strLog )
-    cls.fd.write( strLog )
+    arrBuf = strLog.encode()
+
+    cls.iLogSize = len( arrBuf )
+    cls.fd.write( arrBuf )
     cls.fd.flush()
 
     cls.clsMutex.release()
