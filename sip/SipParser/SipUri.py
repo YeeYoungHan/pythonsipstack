@@ -115,6 +115,20 @@ class SipUri():
 
     if( self.strProtocol == "sips" ):
       return SipTransport.TLS
+  
+  def Set( self, strProtocol, strUser, strHost, iPort ):
+    if( len(strProtocol) > 0 ):
+      self.strProtocol = strProtocol
+    else:
+      self.strProtocol = "sip"
+    
+    self.strUser = strUser
+    self.strHost = strHost
+
+    if( iPort == 5060 ):
+      self.iPort = 0
+    else:
+      self.iPort = iPort
 
   def ParseProtocol( self, strText, iStartPos ):
     for i in range( iStartPos, len(strText) ):

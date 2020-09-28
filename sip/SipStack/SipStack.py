@@ -229,6 +229,15 @@ class SipStack():
         Log.Print( LogLevel.NETWORK, "UdpSend(" + strIp + ":" + str(iPort) + ") [" + clsMessage.strPacket + "]" )
     
     return True
+  
+  def Send( self, strPacket, strIp, iPort, eTransport ):
+
+    szPacket = strPacket.encode()
+
+    if( eTransport == SipTransport.UDP ):
+      self.clsUdpSendMutex.acquire()
+      self.hUdpSocket.sendto( szPacket, (strIp, iPort) )
+      self.clsUdpSendMutex.release()
 
   def CheckSipMessage( self, clsMessage ):
 
