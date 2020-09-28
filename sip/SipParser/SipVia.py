@@ -77,7 +77,7 @@ class SipVia( SipParameterList ):
       super().InsertParam( "rport", strPort )
     if( super().UpdateParam( "received", strIp ) == False and self.strHost != strIp ):
       super().InsertParam( "received", strIp )
-    if( eTransport == SipTransport.E_SIP_TCP and self.strTransport.lower() != "tcp" ):
+    if( eTransport == SipTransport.TCP and self.strTransport.lower() != "tcp" ):
       super().InsertParam( "transport", "tcp" )
 
 

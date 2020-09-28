@@ -58,7 +58,7 @@ class SipMessage():
     self.strUserAgent = ''
     self.strBody = ''
     self.strPacket = ''
-    self.eTransport = SipTransport.E_SIP_UDP
+    self.eTransport = SipTransport.UDP
     self.strClientIp = ''
     self.iClientPort = 0
 
@@ -181,9 +181,8 @@ class SipMessage():
     if( len(self.strUserAgent) > 0 ):
       strText += "User-Agent: " + self.strUserAgent + "\r\n"
     
-    iCount = len(self.clsHeaderList)
-    for i in range( 0, iCount ):
-      strText += self.clsHeaderList[i].strName + ": " + self.clsHeaderList[i].strValue + "\r\n"
+    for clsHeader in self.clsHeaderList:
+      strText += clsHeader.strName + ": " + clsHeader.strValue + "\r\n"
     
     strText += "\r\n"
 
@@ -191,6 +190,10 @@ class SipMessage():
       strText += self.strBody
     
     return strText
+  
+  def MakePacket( self ):
+    if( len(self.strPacket) == 0 ):
+      self.strPacket = str(self)
   
   def IsRequest( self ):
     if( len(self.strSipMethod) == 0 ):
@@ -393,9 +396,8 @@ class SipMessage():
     return -1
   
   def ListToString( self, clsList, strName ):
-    iCount = len(clsList)
     strText = ''
-    for i in range( 0, iCount ):
-      strText += strName + ": " + str(clsList[i]) + "\r\n"
+    for clsRow in clsList:
+      strText += strName + ": " + str(clsRow) + "\r\n"
     
     return strText

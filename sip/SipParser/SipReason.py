@@ -52,11 +52,9 @@ class SipReason( SipParameterList ):
         return -1
       iCurPos = iPos
 
-      iCount = len(super().clsParamList)
-
-      for i in range( 0, iCount ):
-        if( len(super().clsParamList[i].strValue) > 0 and super().clsParamList[i].strValue[0] == '"' ):
-          super().clsParamList[i].strValue.replace( '"', '' )
+      for clsParam in super().clsParamList:
+        if( len(clsParam.strValue) > 0 and clsParam.strValue[0] == '"' ):
+          clsParam.strValue.replace( '"', '' )
 
   def __str__( self ):
     return self.strProtocol + super().__str__()

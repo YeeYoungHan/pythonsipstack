@@ -84,11 +84,17 @@ def ParseSipParameter( clsList, strText, iStartPos ):
 
   return iPos
 
+def SearchSipParameter( clsList, strName ):
+  for clsParam in clsList:
+    if( clsParam.strName == strName ):
+      return clsParam.strValue
+  
+  return ''
+
 def MakeSipParameterString( clsList ):
-  iCount = len( clsList )
   strText = ''
 
-  for i in range(0, iCount):
-    strText += ';' + str( clsList[i] )
+  for clsParam in clsList:
+    strText += ';' + str( clsParam )
 
   return strText

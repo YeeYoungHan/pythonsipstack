@@ -19,22 +19,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from enum import Enum
 
 class SipTransport(Enum):
-  E_SIP_UDP = 0
-  E_SIP_TCP = 1
-  E_SIP_TLS = 2
+  UDP = 0
+  TCP = 1
+  TLS = 2
 
 def SipGetTransport( clsTransport ):
-  if( clsTransport == SipTransport.E_SIP_UDP ):
+  if( clsTransport == SipTransport.UDP ):
     return "UDP"
-  elif( clsTransport == SipTransport.E_SIP_TCP ):
+  elif( clsTransport == SipTransport.TCP ):
     return "TCP"
-  elif( clsTransport == SipTransport.E_SIP_TLS ):
+  elif( clsTransport == SipTransport.TLS ):
     return "TLS"
 
   return "UDP"
 
 def SipGetProtocol( clsTransport ):
-  if( clsTransport == SipTransport.E_SIP_TLS ):
+  if( clsTransport == SipTransport.TLS ):
     return "sips"
   
   return "sip"

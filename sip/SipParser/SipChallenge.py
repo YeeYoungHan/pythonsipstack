@@ -61,25 +61,23 @@ class SipChallenge():
         return -1
       iCurPos = iPos
 
-    iCount = len(clsParamList)
-
-    for i in range( 0, iCount ):
-      if( clsParamList[i].strName == "realm" ):
-        self.strRealm = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "domain" ):
-        self.strDomain = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "nonce" ):
-        self.strNonce = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "opaque" ):
-        self.strOpaque = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "stale" ):
-        self.strStale = clsParamList[i].strValue
-      elif( clsParamList[i].strName == "algorithm" ):
-        self.strAlgorithm = clsParamList[i].strValue
-      elif( clsParamList[i].strName == "qop" ):
-        self.strQop = DeQuoteString( clsParamList[i].strValue )
+    for clsParam in clsParamList:
+      if( clsParam.strName == "realm" ):
+        self.strRealm = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "domain" ):
+        self.strDomain = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "nonce" ):
+        self.strNonce = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "opaque" ):
+        self.strOpaque = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "stale" ):
+        self.strStale = clsParam.strValue
+      elif( clsParam.strName == "algorithm" ):
+        self.strAlgorithm = clsParam.strValue
+      elif( clsParam.strName == "qop" ):
+        self.strQop = DeQuoteString( clsParam.strValue )
       else:
-        self.clsParamList.append( clsParamList[i] )
+        self.clsParamList.append( clsParam )
 
   def __str__( self ):
     strText = ""
@@ -91,9 +89,8 @@ class SipChallenge():
     strText = SetString( strText, "algorithm", self.strAlgorithm )
     strText = SetString( strText, "qop", self.strQop )
 
-    iCount = len(self.clsParamList)
-    for i in range( 0, iCount ):
-      strText = SetString( strText, clsParamList[i].strName, clsParamList[i].strValue )
+    for clsParam in self.clsParamList:
+      strText = SetString( strText, clsParam.strName, clsParam.strValue )
     
     return self.strType + " " + strText
 

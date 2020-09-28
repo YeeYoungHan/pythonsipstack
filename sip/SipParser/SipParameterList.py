@@ -61,20 +61,18 @@ class SipParameterList():
     self.clsParamList.append( clsParam )
 
   def SelectParam( self, strName ):
-    iCount = len( self.clsParamList )
 
-    for i in range(0, iCount):
-      if( self.clsParamList[i].strName == strName ):
-        return self.clsParamList[i].strValue
+    for clsParam in self.clsParamList:
+      if( self.clsParam.strName == strName ):
+        return self.clsParam.strValue
     
     return ''
 
   def UpdateParam( self, strName, strValue ):
-    iCount = len( self.clsParamList )
 
-    for i in range(0, iCount):
-      if( self.clsParamList[i].strName == strName ):
-        self.clsParamList[i].strValue = strValue
+    for clsParam in self.clsParamList:
+      if( self.clsParam.strName == strName ):
+        self.clsParam.strValue = strValue
         return True
     
     return False
@@ -83,10 +81,9 @@ class SipParameterList():
     self.clsParamList.clear()
 
   def __str__( self ):
-    iCount = len( self.clsParamList )
     strText = ''
 
-    for i in range(0, iCount):
-      strText += ';' + str( self.clsParamList[i] )
+    for clsParam in self.clsParamList:
+      strText += ';' + str( clsParam )
 
     return strText

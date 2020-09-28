@@ -65,31 +65,29 @@ class SipCredential():
         return -1
       iCurPos = iPos
 
-    iCount = len(clsParamList)
-
-    for i in range( 0, iCount ):
-      if( clsParamList[i].strName == "username" ):
-        self.strUserName = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "realm" ):
-        self.strRealm = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "nonce" ):
-        self.strNonce = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "uri" ):
-        self.strUri = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "response" ):
-        self.strResponse = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "algorithm" ):
-        self.strAlgorithm = clsParamList[i].strValue
-      elif( clsParamList[i].strName == "cnonce" ):
-        self.strCnonce = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "opaque" ):
-        self.strOpaque = DeQuoteString( clsParamList[i].strValue )
-      elif( clsParamList[i].strName == "qop" ):
-        self.strQop = clsParamList[i].strValue
-      elif( clsParamList[i].strName == "nc" ):
-        self.strNonceCount = clsParamList[i].strValue
+    for clsParam in clsParamList:
+      if( clsParam.strName == "username" ):
+        self.strUserName = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "realm" ):
+        self.strRealm = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "nonce" ):
+        self.strNonce = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "uri" ):
+        self.strUri = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "response" ):
+        self.strResponse = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "algorithm" ):
+        self.strAlgorithm = clsParam.strValue
+      elif( clsParam.strName == "cnonce" ):
+        self.strCnonce = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "opaque" ):
+        self.strOpaque = DeQuoteString( clsParam.strValue )
+      elif( clsParam.strName == "qop" ):
+        self.strQop = clsParam.strValue
+      elif( clsParam.strName == "nc" ):
+        self.strNonceCount = clsParam.strValue
       else:
-        self.clsParamList.append( clsParamList[i] )
+        self.clsParamList.append( clsParam )
 
   def __str__( self ):
     strText = ""
@@ -104,9 +102,8 @@ class SipCredential():
     strText = SetString( strText, "qop", self.strQop )
     strText = SetString( strText, "nc", self.strNonceCount )
 
-    iCount = len(self.clsParamList)
-    for i in range( 0, iCount ):
-      strText = SetString( strText, clsParamList[i].strName, clsParamList[i].strValue )
+    for clsParam in self.clsParamList:
+      strText = SetString( strText, clsParam.strName, clsParam.strValue )
     
     return self.strType + " " + strText
 
