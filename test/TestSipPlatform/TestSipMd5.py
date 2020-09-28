@@ -21,4 +21,4 @@ from sip.SipPlatform.SipMd5 import SipMd5String
 strMd5 = SipMd5String( "1234" )
 
 if( strMd5 != "81dc9bdb52d04dc20036dbd8313ed055" ):
-  printf( "error" )
+  print( "error" )
