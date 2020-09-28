@@ -17,7 +17,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 from .SipUtility import SipIpv6Print
-from .SipParameter import ParseSipParameter, MakeSipParameterString
+from .SipParameter import ParseSipParameter, MakeSipParameterString, InsertSipParameter
 from .SipTransport import SipTransport
 
 class SipUri():
@@ -85,6 +85,7 @@ class SipUri():
 
     strUri += MakeSipParameterString( self.clsUriParamList )
 
+    i = 0
     for clsParam in self.clsHeaderList:
       if( i == 0 ):
         strUri += '?'
@@ -92,6 +93,7 @@ class SipUri():
         strUri += '&'
 
       strUri += str( clsParam )
+      i += 1
     
     return strUri
 
@@ -103,6 +105,12 @@ class SipUri():
     self.clsUriParamList.clear()
     self.clsHeaderList.clear()
   
+  def InsertTransport( self, eTransport ):
+    if( eTransport == SipTransport.TCP ):
+      InsertSipParameter( self.clsUriParamList, "transport", "tcp" )
+    elif( eTransport == SipTransport.TLS ):
+      InsertSipParameter( self.clsUriParamList, "transport", "tls" )
+
   def SelectTransport( self ):
 
     if( self.strProtocol == "sips" ):

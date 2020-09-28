@@ -24,9 +24,9 @@ class SipInviteTransaction():
     self.clsRequest
     self.clsResponse
     self.clsAck
-    self.iStartTime
-    self.iStopTime
-    self.iRingTime
-    self.iReSendCount
-    self.iStatusCode
+    self.iStartTime = 0
+    self.iStopTime = 0
+    self.iRingTime = 0
+    self.iReSendCount = 0
+    self.iStatusCode = 0
     

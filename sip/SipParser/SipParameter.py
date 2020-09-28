@@ -91,6 +91,14 @@ def SearchSipParameter( clsList, strName ):
   
   return ''
 
+def InsertSipParameter( clsList, strName, strValue ):
+  clsParam = SipParameter()
+
+  clsParam.strName = strName
+  clsParam.strValue = strValue
+
+  clsList.append( clsParam )
+
 def MakeSipParameterString( clsList ):
   strText = ''
 

@@ -20,21 +20,20 @@ class SipTransactionList():
 
   def __init__( self ):
     self.MAX_ICT_RESEND_COUNT = 11
-    self.arrICTReSendTime = [ 500
-      , 1500
-      , 3500
-      , 7500
-      , 11500
-      , 15500
-      , 19500
-      , 23500
-      , 27500
-      , 31500
-      , 32000]
+    self.arrICTReSendTime = [ 0.5
+      , 1.5
+      , 3.5
+      , 7.5
+      , 11.5
+      , 15.5
+      , 19.5
+      , 23.5
+      , 27.5
+      , 31.5
+      , 32.0]
   
   def GetKey( self, clsMessage ):
-    iCount = len(clsMessage.clsViaList)
-    if( iCount == 0 ):
+    if( len(clsMessage.clsViaList) == 0 ):
       return ""
     
     strKey = ""
@@ -54,8 +53,7 @@ class SipTransactionList():
     return strKey
   
   def GetKey( self, clsMessage, strMethod ):
-    iCount = len(clsMessage.clsViaList)
-    if( iCount == 0 ):
+    if( len(clsMessage.clsViaList) == 0 ):
       return ""
     
     strKey = ""

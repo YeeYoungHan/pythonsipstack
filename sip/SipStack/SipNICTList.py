@@ -17,15 +17,96 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 import threading
-from ..SipParser import SipMessage
+import time
+from ..SipParser.SipMessage import SipMessage
+from ..SipParser.SipStatusCode import SipStatusCode
+from ..SipParser.SipTransport import SipTransport
+from .SipNonInviteTransaction import SipNonInviteTransaction
 
 class SipNICTList(SipTransactionList):
 
   def __init__( self ):
     self.clsMutex = threading.Lock()
+    self.clsMap = {}
 
   def Insert( self, clsMessage ):
+    bRes = False
     strKey = super().GetKey()
 
-    
+    if( clsMessage.IsRequest() ):
+      clsMessage.MakePacket()
 
+      self.clsMutex.acquire()
+      clsTransaction = self.clsMap.get( strKey )
+      if( clsTransaction == None ):
+        clsTransaction = SipNonInviteTransaction()
+        clsTransaction.clsRequest = clsMessage
+        clsTransaction.iStartTime = time.time()
+        self.clsMap[strKey] = clsTransaction
+        bRes = True
+      self.clsMutex.release()
+
+    else:
+
+      self.clsMutex.acquire()
+      clsTransaction = self.clsMap.get( strKey )
+      if( clsTransaction != None ):
+        if( clsTransaction.clsResponse != None ):
+          if( clsTransaction.iStatusCode != clsMessage.iStatusCode ):
+            clsTransaction.clsResponse = clsMessage
+            bRes = True
+        else:
+          clsTransaction.clsResponse = clsMessage
+          bRes = True
+        
+        if( bRes and clsMessage.iStatusCode >= 200 ):
+          clsTransaction.iStopTime = time.time()
+      self.clsMutex.release()
+    
+    return bRes
+  
+  def Execute( self, iTime ):
+
+    clsDeleteList = []
+    clsResponseList = []
+
+    self.clsMutex.acquire()
+    for strKey in self.clsMap:
+      clsTransaction = self.clsMap[strKey]
+      if( clsTransaction.iStopTime > 0 ):
+        if( iTime - clsTransaction.iStopTime >= 5.0 ):
+          clsDeleteList.append( strKey )
+      else:
+        if( (iTime - clsTransaction.iStartTime) >= super().arrICTReSendTime[clsTransaction.iReSendCount] ):
+          clsTransaction.iReSendCount += 1
+          if( clsTransaction.iReSendCount == super().MAX_ICT_RESEND_COUNT ):
+            if( clsTransaction.clsResponse == None ):
+              clsResponse = clsTransaction.clsRequest.CreateResponse( SipStatusCode.SIP_REQUEST_TIME_OUT )
+              clsResponseList.append( clsResponse )
+              clsDeleteList.append( strKey )
+          else:
+            if( clsTransaction.eTransport == SipTransport.UDP ):
+              self.clsSipStack.Send( clsTransaction.clsRequest, False )
+    
+    for strKey in clsDeleteList:
+      del self.clsMap[strKey]
+    self.clsMutex.release()
+
+    for clsResponse in clsResponseList:
+      self.clsSipStack.RecvResponse( 0, clsResponse )
+  
+  def DeleteCancel( self, clsMessage ):
+
+    strKey = super().GetKey( "CANCEL" )
+
+    self.clsMutex.acquire()
+    clsTransaction = self.clsMap.get( strKey )
+    if( clsTransaction != None ):
+      del clsMap[strKey]
+    self.clsMutex.release()
+  
+  def DeleteAll( self ):
+
+    self.clsMutex.acquire()
+    self.clsMap.clear()
+    self.clsMutex.release()

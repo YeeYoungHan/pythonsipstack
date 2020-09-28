@@ -16,13 +16,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from ..SipParser import SipMessage
+class SipStackVersion():
+  SIP_STACK_VERSION = "0.01"
+  SIP_USER_AGENT = "PythonSipStack_" + SIP_STACK_VERSION
 
-class SipNonInviteTransaction():
+'''
 
-  def __init__( self ):
-    self.clsRequest
-    self.clsResponse
-    self.iStartTime = 0
-    self.iStopTime = 0
-    self.iReSendCount = 0
+= 버전 0.01 ( 2020년 9월 28일 ) =
+ * 최초 버전
+
+'''
