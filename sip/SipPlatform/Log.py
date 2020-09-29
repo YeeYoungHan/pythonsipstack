@@ -22,7 +22,7 @@ import os
 import threading
 import platform
 
-class LogLevel(Enum):
+class LogLevel():
   ERROR = 0x0001
   INFO = 0x0010
   DEBUG = 0x0100
@@ -33,7 +33,7 @@ class Log():
 
   strDirName = ''
   strDate = ''
-  iLevel = LogLevel.ERROR.value | LogLevel.SYSTEM.value
+  iLevel = LogLevel.ERROR | LogLevel.SYSTEM
   bOpen = False
   iIndex = 1
   iLogSize = 0
@@ -51,7 +51,7 @@ class Log():
 
   @classmethod
   def Print( cls, eLevel, strText ):
-    if( ( cls.iLevel & eLevel.value ) == 0 ):
+    if( ( cls.iLevel & eLevel ) == 0 ):
       return
     
     if( eLevel == LogLevel.ERROR ):
@@ -71,12 +71,12 @@ class Log():
 
     strLog = "[" + strTime + "] " + strHeader + "[" + str(threading.get_ident()) + "] " + strText
 
-    if( cls.bWindow ):
-      strLog += "\r\n"
-    else:
-      strLog += "\n"
-
     if( len(cls.strDirName) > 0 ):
+      if( cls.bWindow ):
+        strLog += "\r\n"
+      else:
+        strLog += "\n"
+
       bOpen = False
 
       cls.clsMutex.acquire()
@@ -111,5 +111,5 @@ class Log():
 
   @classmethod
   def SetLevel( cls, iLevel ):
-    cls.iLevel = LogLevel.ERROR.value | LogLevel.SYSTEM.value
+    cls.iLevel = LogLevel.ERROR | LogLevel.SYSTEM
     cls.iLevel |= iLevel

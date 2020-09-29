@@ -98,10 +98,10 @@ class SipServerInfo():
     self.bAuth = False
 
     if( clsResponse != None ):
-      self.bAuth = AddAuth( clsRequest, clsResponse )
+      self.bAuth = self.AddAuthResponse( clsRequest, clsResponse )
     elif( len(self.clsChallenge.strAlgorithm) > 0 ):
       self.iNonceCount += 1
-      self.bAuth = AddAuth( clsRequest, self.clsChallenge, self.iChallengeStatusCode, self.iNonceCount )
+      self.bAuth = self.AddAuthChallenge( clsRequest, self.clsChallenge, self.iChallengeStatusCode, self.iNonceCount )
     
     clsRequest.eTransport = self.eTransport
 
@@ -126,7 +126,7 @@ class SipServerInfo():
     self.clsChallenge = clsChallenge
     self.iChallengeStatusCode = clsResponse.iStatusCode
   
-  def AddAuth( self, clsRequest, clsResponse ):
+  def AddAuthResponse( self, clsRequest, clsResponse ):
     if( clsResponse.iStatusCode == SipStatusCode.SIP_PROXY_AUTHENTICATION_REQUIRED ):
       if( len(clsResponse.clsProxyAuthenticateList) == 0 ):
         return False
@@ -136,9 +136,9 @@ class SipServerInfo():
         return False
       clsChallenge = clsResponse.clsWwwAuthenticateList[0]
     
-    self.AddAuth( clsRequest, clsChallenge, clsResponse.iStatusCode, 1 )
+    self.AddAuthChallenge( clsRequest, clsChallenge, clsResponse.iStatusCode, 1 )
   
-  def AddAuth( self, clsRequest, clsChallenge, iStatusCode, iNonceCount ):
+  def AddAuthChallenge( self, clsRequest, clsChallenge, iStatusCode, iNonceCount ):
     clsCredential = SipCredential()
 
     clsCredential.strType = clsChallenge.strType
@@ -151,7 +151,7 @@ class SipServerInfo():
     clsCredential.strRealm = clsChallenge.strRealm
     clsCredential.strNonce = clsChallenge.strNonce
     clsCredential.strAlgorithm = clsChallenge.strAlgorithm
-    clsCredential.strOpaque = clsChallenge.m_strOpaque
+    clsCredential.strOpaque = clsChallenge.strOpaque
 
     clsCredential.strUri = "sip:" + self.strDomain
 
@@ -162,6 +162,8 @@ class SipServerInfo():
       else:
         strQop = clsChallenge.strQop
       
+      clsCredential.strQop = strQop
+
       clsCredential.strNonceCount = '%08d' % self.iNonceCount
       clsCredential.strCnonce = "1"
 
@@ -169,9 +171,9 @@ class SipServerInfo():
       strA1 = SipMd5String( strA1 )
 
       if( strQop == "auth-int" ):
-        strA2 = clsRequest.strMethod + ":" + clsCredential.strUri + ":" + SipMd5String( clsRequest.strBody )
+        strA2 = clsRequest.strSipMethod + ":" + clsCredential.strUri + ":" + SipMd5String( clsRequest.strBody )
       else:
-        strA2 = clsRequest.strMethod + ":" + clsCredential.strUri
+        strA2 = clsRequest.strSipMethod + ":" + clsCredential.strUri
       
       strA2 = SipMd5String( strA2 )
 

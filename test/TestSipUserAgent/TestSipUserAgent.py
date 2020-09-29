@@ -28,7 +28,7 @@ class CallBack():
   def EventRegister( self, clsServerInfo, iStatus ):
     Log.Print( LogLevel.DEBUG, "EventRegister(" + clsServerInfo.strUserId + "@" + clsServerInfo.strIp + ":" + str(clsServerInfo.iPort) + ") status(" + str(iStatus) + ")" )
 
-Log.SetLevel( LogLevel.DEBUG.value | LogLevel.NETWORK.value | LogLevel.INFO.value )
+Log.SetLevel( LogLevel.DEBUG | LogLevel.NETWORK | LogLevel.INFO )
 
 clsSetup = SipStackSetup()
 clsSetup.strLocalIp = socket.gethostbyname(socket.gethostname())

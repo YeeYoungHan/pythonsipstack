@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from enum import Enum
 
-class SipStatusCode(Enum):
+class SipStatusCode():
   SIP_TRYING = 100
   SIP_RINGING = 180
   SIP_SESSION_PROGRESS = 183
