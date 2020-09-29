@@ -94,7 +94,7 @@ class SipFrom(SipParameterList):
     super().ClearParam()
   
   def InsertTag( self ):
-    super.InsertParam( "tag", SipMakeTag() )
+    super().InsertParam( "tag", SipMakeTag() )
   
 
 def ParseSipFrom( clsList, strText ):

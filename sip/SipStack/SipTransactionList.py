@@ -52,7 +52,7 @@ class SipTransactionList():
     
     return strKey
   
-  def GetKey( self, clsMessage, strMethod ):
+  def GetKeyMethod( self, clsMessage, strMethod ):
     if( len(clsMessage.clsViaList) == 0 ):
       return ""
     

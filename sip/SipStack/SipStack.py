@@ -36,7 +36,7 @@ class SipStack():
     self.clsMutex = threading.Lock()
     self.clsUdpSendMutex = threading.Lock()
     self.clsUdpRecvMutex = threading.Lock()
-    self.hUdpSocket
+    self.hUdpSocket = None
     self.bStopEvent = False
     self.bStarted = False
     self.clsThreadCount = SafeCount()
@@ -50,7 +50,7 @@ class SipStack():
       self.hUdpSocket = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
       self.hUdpSocket.bind( ('0.0.0.0', 8000) )
 
-      p = threading.Thread( target=SipUdpThread, args=(self))
+      p = threading.Thread( target=SipUdpThread, args=(self,))
       p.daemon = True
       p.start()
     
@@ -143,7 +143,7 @@ class SipStack():
     return False
       
 
-  def RecvSipMessage( self, strPacket, strIp, iPort, eTransport ):
+  def RecvSipPacket( self, strPacket, strIp, iPort, eTransport ):
     clsMessage = SipMessage()
 
     if( clsMessage.Parse( strPacket ) == -1 ):
@@ -210,27 +210,27 @@ class SipStack():
         elif( strTransport == "tls" ):
           eTransport = SipTransport.TLS
       
-      if( iPort <= 0 ):
-        iPort = 5060
-      
-      if( len(strIp) == 0 ):
-        return False
-      
-      if( len(clsMessage.strPacket) == 0 ):
-        clsMessage.strPacket = str(clsMessage)
-      
-      szPacket = clsMessage.strPacket.encode()
+    if( iPort <= 0 ):
+      iPort = 5060
+    
+    if( len(strIp) == 0 ):
+      return False
+    
+    if( len(clsMessage.strPacket) == 0 ):
+      clsMessage.strPacket = str(clsMessage)
+    
+    szPacket = clsMessage.strPacket.encode()
 
-      if( eTransport == SipTransport.UDP ):
-        self.clsUdpSendMutex.acquire()
-        self.hUdpSocket.sendto( szPacket, (strIp, iPort) )
-        self.clsUdpSendMutex.release()
+    if( eTransport == SipTransport.UDP ):
+      self.clsUdpSendMutex.acquire()
+      self.hUdpSocket.sendto( szPacket, (strIp, iPort) )
+      self.clsUdpSendMutex.release()
 
-        Log.Print( LogLevel.NETWORK, "UdpSend(" + strIp + ":" + str(iPort) + ") [" + clsMessage.strPacket + "]" )
+      Log.Print( LogLevel.NETWORK, "UdpSend(" + strIp + ":" + str(iPort) + ") [" + clsMessage.strPacket + "]" )
     
     return True
   
-  def Send( self, strPacket, strIp, iPort, eTransport ):
+  def SendIpPort( self, strPacket, strIp, iPort, eTransport ):
 
     szPacket = strPacket.encode()
 

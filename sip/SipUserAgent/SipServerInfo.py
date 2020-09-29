@@ -54,6 +54,16 @@ class SipServerInfo():
     
     return False
   
+  def ClearLogin( self ):
+    self.bLogin = False
+    self.iLoginTime = 0.0
+    self.iSendTime = 0.0
+    self.iResponseTime = 0.0
+    self.clsCallId.Clear()
+    self.clsChallenge.Clear()
+    self.iChallengeStatusCode = 0
+    self.iNonceCount = 1
+  
   def CreateRegister( self, clsSipStack, clsResponse ):
     clsRequest = SipMessage()
 

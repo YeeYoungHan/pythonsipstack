@@ -22,6 +22,7 @@ from ..SipParser.SipMessage import SipMessage
 from ..SipParser.SipStatusCode import SipStatusCode
 from ..SipParser.SipTransport import SipTransport
 from .SipNonInviteTransaction import SipNonInviteTransaction
+from .SipTransactionList import SipTransactionList
 
 class SipNICTList(SipTransactionList):
 
@@ -31,7 +32,7 @@ class SipNICTList(SipTransactionList):
 
   def Insert( self, clsMessage ):
     bRes = False
-    strKey = super().GetKey()
+    strKey = super().GetKey( clsMessage )
 
     if( clsMessage.IsRequest() ):
       clsMessage.MakePacket()

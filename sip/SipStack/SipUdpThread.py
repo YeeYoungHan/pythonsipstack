@@ -41,6 +41,6 @@ def SipUdpThread( clsSipStack ):
       strIp = clsClientIpPort[0]
       iPort = clsClientIpPort[1]
       Log.Print( LogLevel.NETWORK, "UdpRecv(" + strIp + ":" + str(iPort) + ") [" + strPacket + "]" )
-      clsSipStack.RecvSipMessage( strPacket, strIp, iPort, SipTransport.UDP )
+      clsSipStack.RecvSipPacket( strPacket, strIp, iPort, SipTransport.UDP )
   
   clsSipStack.clsThreadCount.Decrease()

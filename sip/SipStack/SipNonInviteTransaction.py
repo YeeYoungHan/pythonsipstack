@@ -21,8 +21,8 @@ from ..SipParser import SipMessage
 class SipNonInviteTransaction():
 
   def __init__( self ):
-    self.clsRequest
-    self.clsResponse
-    self.iStartTime = 0
-    self.iStopTime = 0
+    self.clsRequest = None
+    self.clsResponse = None
+    self.iStartTime = 0.0
+    self.iStopTime = 0.0
     self.iReSendCount = 0

@@ -63,16 +63,16 @@ class SipParameterList():
   def SelectParam( self, strName ):
 
     for clsParam in self.clsParamList:
-      if( self.clsParam.strName == strName ):
-        return self.clsParam.strValue
+      if( clsParam.strName.lower() == strName ):
+        return clsParam.strValue
     
     return ''
 
   def UpdateParam( self, strName, strValue ):
 
     for clsParam in self.clsParamList:
-      if( self.clsParam.strName == strName ):
-        self.clsParam.strValue = strValue
+      if( clsParam.strName.lower() == strName ):
+        clsParam.strValue = strValue
         return True
     
     return False

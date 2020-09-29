@@ -21,12 +21,12 @@ from ..SipParser import SipMessage
 class SipInviteTransaction():
 
   def __init__( self ):
-    self.clsRequest
-    self.clsResponse
-    self.clsAck
-    self.iStartTime = 0
-    self.iStopTime = 0
-    self.iRingTime = 0
+    self.clsRequest = None
+    self.clsResponse = None
+    self.clsAck = None
+    self.iStartTime = 0.0
+    self.iStopTime = 0.0
+    self.iRingTime = 0.0
     self.iReSendCount = 0
     self.iStatusCode = 0
     

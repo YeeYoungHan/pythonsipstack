@@ -42,7 +42,7 @@ def SipRegisterThread( clsUserAgent ):
             clsServerInfo.iResponseTime = 0.0
         elif( clsServerInfo.iNatTimeout > 0 ):
           if( ( iTime - clsServerInfo.iSendTime ) >= clsServerInfo.iNatTimeout ):
-            clsUserAgent.clsSipStack.Send( "\r\n", clsServerInfo.strIp, clsServerInfo.iPort, clsServerInfo.eTransport )
+            clsUserAgent.clsSipStack.SendIpPort( "\r\n", clsServerInfo.strIp, clsServerInfo.iPort, clsServerInfo.eTransport )
             clsServerInfo.iSendTime = iTime
 
     clsUserAgent.clsRegisterMutex.release()

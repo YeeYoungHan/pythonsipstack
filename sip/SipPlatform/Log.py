@@ -76,37 +76,40 @@ class Log():
     else:
       strLog += "\n"
 
-    bOpen = False
+    if( len(cls.strDirName) > 0 ):
+      bOpen = False
 
-    cls.clsMutex.acquire()
+      cls.clsMutex.acquire()
 
-    if( cls.strDate != strDate ):
-      cls.iIndex = 1
-      bOpen = True
-    elif( cls.iLogSize > cls.iMaxLogSize ):
-      cls.iIndex += 1
-      bOpen = True
-    
-    if( bOpen ):
-      if( cls.bOpen ):
-        cls.fd.close()
-        cls.bOpen = False
-        cls.iLogSize = 0
+      if( cls.strDate != strDate ):
+        cls.iIndex = 1
+        bOpen = True
+      elif( cls.iLogSize > cls.iMaxLogSize ):
+        cls.iIndex += 1
+        bOpen = True
+      
+      if( bOpen ):
+        if( cls.bOpen ):
+          cls.fd.close()
+          cls.bOpen = False
+          cls.iLogSize = 0
 
-      strFileName = cls.strDirName + "/" + strDate + "_" + str(cls.iIndex) + ".txt"
+        strFileName = cls.strDirName + "/" + strDate + "_" + str(cls.iIndex) + ".txt"
 
-      cls.fd = open( strFileName, "ab" )
-      cls.bOpen = True
-    
-    arrBuf = strLog.encode()
+        cls.fd = open( strFileName, "ab" )
+        cls.bOpen = True
+      
+      arrBuf = strLog.encode()
 
-    cls.iLogSize = len( arrBuf )
-    cls.fd.write( arrBuf )
-    cls.fd.flush()
+      cls.iLogSize = len( arrBuf )
+      cls.fd.write( arrBuf )
+      cls.fd.flush()
 
-    cls.clsMutex.release()
+      cls.clsMutex.release()
+    else:
+      print( strLog )
 
   @classmethod
-  def SetLevel( cls, eLevel ):
+  def SetLevel( cls, iLevel ):
     cls.iLevel = LogLevel.ERROR.value | LogLevel.SYSTEM.value
-    cls.iLevel |= eLevel.value
+    cls.iLevel |= iLevel

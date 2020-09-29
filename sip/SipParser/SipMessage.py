@@ -64,9 +64,7 @@ class SipMessage():
 
 
   def Parse( self, strText ):
-
     iTextLen = len(strText)
-
     if( iTextLen <= 4 ):
       return -1
     
@@ -136,14 +134,12 @@ class SipMessage():
     return iCurPos
 
   def __str__( self ):
-
     if( len(self.strSipVersion) == 0 ):
       self.strSipVersion = "SIP/2.0"
     
     if( self.iStatusCode > 0 ):
       if( len(self.strReasonPhrase) == 0 ):
         self.strReasonPhrase = GetReasonPhrase( self.iStatusCode )
-      
       strText = self.strSipVersion + " " + str(self.iStatusCode) + " " + self.strReasonPhrase + "\r\n"
     else:
       strText = self.strSipMethod + " " + str(self.clsReqUri) + " " + self.strSipVersion + "\r\n"
@@ -223,6 +219,48 @@ class SipMessage():
   def GetCallId( self ):
     return str(self.clsCallId)
 
+  def GetExpires( self ):
+    if( self.iExpires != -1 ):
+      return self.iExpires
+    
+    if( len(self.clsContactList) == 0 ):
+      return 0
+    
+    strExpires = self.clsContactList[0].SelectParam( "expires" )
+    if( len(strExpires) > 0 ):
+      return int(strExpires)
+    
+    return 0
+
+  def GetHeader( self, strName ):
+    strName = strName.lower()
+
+    for clsHeader in self.clsHeaderList:
+      if( clsHeader.strName.lower() == strName ):
+        return clsHeader
+    
+    return None
+
+  def GetTopViaIp( self ):
+    if( len(self.clsViaList) == 0 ):
+      return ''
+
+    strIp = self.clsViaList[0].SelectParam( "received" )
+    if( len(strIp) > 0 ):
+      return strIp
+    
+    return self.clsViaList[0].strHost
+  
+  def GetTopViaPort( self ):
+    if( len(self.clsViaList) == 0 ):
+      return ''
+
+    strPort = self.clsViaList[0].SelectParam( "rport" )
+    if( len(strPort) > 0 ):
+      return int(strPort)
+    
+    return self.clsViaList[0].iPort
+
   def AddIpPortToTopVia( self, strIp, iPort, eTransport ):
     if( len(self.clsViaList) == 0 ):
       return
@@ -230,7 +268,7 @@ class SipMessage():
     self.clsViaList[0].AddIpPort( strIp, iPort, eTransport )
 
   def AddVia( self, strIp, iPort, strBranch, eTransport ):
-    clsVia = SipVia.SipVia()
+    clsVia = SipVia()
 
     clsVia.strProtocolName = "SIP"
     clsVia.strProtocolVersion = "2.0"
@@ -247,11 +285,11 @@ class SipMessage():
     self.clsViaList.append( clsVia )
   
   def AddRoute( self, strIp, iPort, eTransport ):
-    clsFrom = SipFrom.SipFrom()
+    clsFrom = SipFrom()
 
-    clsFrom.clsUri.m_strProtocol = SipGetProtocol( eTransport )
-    clsFrom.clsUri.m_strHost = strIp
-    clsFrom.clsUri.m_iPort = iPort
+    clsFrom.clsUri.strProtocol = SipGetProtocol( eTransport )
+    clsFrom.clsUri.strHost = strIp
+    clsFrom.clsUri.iPort = iPort
 
     clsFrom.clsUri.InsertParam( "lr", "" )
     clsFrom.clsUri.InsertTransport( eTransport )
@@ -259,11 +297,11 @@ class SipMessage():
     self.clsRouteList.insert( 0, clsFrom )
 
   def AddRecordRoute( self, strIp, iPort, eTransport ):
-    clsFrom = SipFrom.SipFrom()
+    clsFrom = SipFrom()
 
-    clsFrom.clsUri.m_strProtocol = SipGetProtocol( eTransport )
-    clsFrom.clsUri.m_strHost = strIp
-    clsFrom.clsUri.m_iPort = iPort
+    clsFrom.clsUri.strProtocol = SipGetProtocol( eTransport )
+    clsFrom.clsUri.strHost = strIp
+    clsFrom.clsUri.iPort = iPort
 
     clsFrom.clsUri.InsertParam( "lr", "" )
     clsFrom.clsUri.InsertTransport( eTransport )
@@ -271,7 +309,7 @@ class SipMessage():
     self.clsRecordRouteList.insert( 0, clsFrom )
 
   def AddHeader( self, strName, strValue ):
-    clsHeader = SipHeader.SipHeader()
+    clsHeader = SipHeader()
 
     clsHeader.strName = strName
     clsHeader.strValue = strValue
@@ -315,26 +353,6 @@ class SipMessage():
       clsResponse.clsTo.InsertTag( )
     
     return clsResponse
-
-  def GetTopViaIp( self ):
-    if( len(self.clsViaList) == 0 ):
-      return ''
-
-    strIp = self.clsViaList[0].SelectParam( "received" )
-    if( len(strIp) > 0 ):
-      return strIp
-    
-    return self.clsViaList[0].strHost
-  
-  def GetTopViaPort( self ):
-    if( len(self.clsViaList) == 0 ):
-      return ''
-
-    strPort = self.clsViaList[0].SelectParam( "rport" )
-    if( len(strPort) > 0 ):
-      return int(strPort)
-    
-    return self.clsViaList[0].iPort
 
   def ParseStatusLine( self, strText ):
     iTextLen = len(strText)
