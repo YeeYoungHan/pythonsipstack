@@ -18,22 +18,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from ..SipParser.SipTransport import SipTransport
 
-class SipStackSetup():
+class SipCallRoute():
 
   def __init__( self ):
-    self.strLocalIp = ''
-    self.iLocalUdpPort = 5060
-    self.iUdpThreadCount = 1
-    self.strUserAgent = ""
-    self.iStackExecutePeriod = 0.02
-    self.iTimerD = 32.0
-    self.iTimerJ = 32.0
-    self.bIpv6 = False
-    self.bUseRegisterSession = False
-  
-  def GetLocalPort( self, eTransport ):
-
-    if( eTransport == SipTransport.UDP ):
-      return self.iLocalUdpPort
+    self.strDestIp = ''
+    self.iDestPort = 0
+    self.eTransport = SipTransport.UDP
+    self.b100rel = False
     
-    return self.iLocalUdpPort

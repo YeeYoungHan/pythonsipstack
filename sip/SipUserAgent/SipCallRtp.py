@@ -16,24 +16,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from ..SipParser.SipTransport import SipTransport
+class RtpDirection():
+  SEND_RECV = 0
+  SEND = 1
+  RECV = 2
+  INACTIVE = 4
 
-class SipStackSetup():
+class SipCallRtp():
 
   def __init__( self ):
-    self.strLocalIp = ''
-    self.iLocalUdpPort = 5060
-    self.iUdpThreadCount = 1
-    self.strUserAgent = ""
-    self.iStackExecutePeriod = 0.02
-    self.iTimerD = 32.0
-    self.iTimerJ = 32.0
-    self.bIpv6 = False
-    self.bUseRegisterSession = False
-  
-  def GetLocalPort( self, eTransport ):
-
-    if( eTransport == SipTransport.UDP ):
-      return self.iLocalUdpPort
-    
-    return self.iLocalUdpPort
+    self.strIp = ''
+    self.iPort = -1
+    self.iCodec = -1
+    self.eDirection = RtpDirection.SEND_RECV
+    self.clsCodecList = []

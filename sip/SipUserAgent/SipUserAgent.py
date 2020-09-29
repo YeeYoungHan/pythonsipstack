@@ -65,6 +65,14 @@ class SipUserAgent():
 
     return True
 
+  def StartCall( self, strFrom, strTo, clsRtp, clsRoute ):
+    if( len(strFrom) == 0 or len(strTo) == 0 ):
+      return ''
+    
+    if( len(clsRoute.strDestIp) == 0 or clsRoute.iDestPort <= 0 or clsRoute.iDestPort > 65535 ):
+      return ''
+    
+    
 
   def InsertRegisterInfo( self, clsServerInfo ):
     if( len(clsServerInfo.strIp) == 0 ):
