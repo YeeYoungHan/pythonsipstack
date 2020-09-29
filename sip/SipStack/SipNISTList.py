@@ -24,20 +24,19 @@ from ..SipParser.SipTransport import SipTransport
 from .SipNonInviteTransaction import SipNonInviteTransaction
 from .SipTransactionList import SipTransactionList
 
-class SipNICTList(SipTransactionList):
+class SipNISTList(SipTransactionList):
 
   def __init__( self, clsSipStack ):
     self.clsMutex = threading.Lock()
     self.clsMap = {}
     self.clsSipStack = clsSipStack
+    self.iTimerJ = 32.0
 
   def Insert( self, clsMessage ):
     bRes = False
     strKey = super().GetKey( clsMessage )
 
     if( clsMessage.IsRequest() ):
-      clsMessage.MakePacket()
-
       self.clsMutex.acquire()
       clsTransaction = self.clsMap.get( strKey )
       if( clsTransaction == None ):
@@ -46,62 +45,42 @@ class SipNICTList(SipTransactionList):
         clsTransaction.iStartTime = time.time()
         self.clsMap[strKey] = clsTransaction
         bRes = True
+      else:
+        if( clsTransaction.clsResponse != None ):
+          self.clsSipStack.Send( clsTransaction.clsResponse, False )
       self.clsMutex.release()
 
     else:
+      clsMessage.MakePacket()
 
       self.clsMutex.acquire()
       clsTransaction = self.clsMap.get( strKey )
       if( clsTransaction != None ):
-        if( clsTransaction.clsResponse != None ):
-          if( clsTransaction.clsResponse.iStatusCode != clsMessage.iStatusCode ):
-            clsTransaction.clsResponse = clsMessage
-            bRes = True
-        else:
+        if( clsTransaction.clsResponse == None or clsTransaction.clsResponse.iStatusCode != clsMessage.iStatusCode ):
           clsTransaction.clsResponse = clsMessage
           bRes = True
-        
-        if( bRes and clsMessage.iStatusCode >= 200 ):
-          clsTransaction.iStopTime = time.time()
+          if( clsMessage.iStatusCode >= 200 ):
+            clsTransaction.iStopTime = time.time()
       self.clsMutex.release()
     
     return bRes
   
   def Execute( self, iTime ):
-
     clsDeleteList = []
-    clsResponseList = []
 
     self.clsMutex.acquire()
     for strKey in self.clsMap:
       clsTransaction = self.clsMap[strKey]
       if( clsTransaction.iStopTime > 0 ):
-        if( iTime - clsTransaction.iStopTime >= 5.0 ):
+        if( iTime - clsTransaction.iStopTime >= self.iTimerJ ):
           clsDeleteList.append( strKey )
-      else:
-        if( (iTime - clsTransaction.iStartTime) >= super().arrICTReSendTime[clsTransaction.iReSendCount] ):
-          clsTransaction.iReSendCount += 1
-          if( clsTransaction.iReSendCount == super().MAX_ICT_RESEND_COUNT ):
-            if( clsTransaction.clsResponse == None ):
-              clsResponse = clsTransaction.clsRequest.CreateResponse( SipStatusCode.SIP_REQUEST_TIME_OUT, '' )
-              if( len(clsTransaction.clsRequest.clsRouteList) > 0 ):
-                clsResponse.strClientIp = clsTransaction.clsRequest.clsRouteList[0].clsUri.strHost
-              clsResponseList.append( clsResponse )
-              clsDeleteList.append( strKey )
-          else:
-            if( clsTransaction.clsRequest.eTransport == SipTransport.UDP ):
-              self.clsSipStack.Send( clsTransaction.clsRequest, False )
     
     for strKey in clsDeleteList:
       del self.clsMap[strKey]
     self.clsMutex.release()
 
-    for clsResponse in clsResponseList:
-      self.clsSipStack.RecvResponse( clsResponse )
   
- 
   def DeleteAll( self ):
-
     self.clsMutex.acquire()
     self.clsMap.clear()
     self.clsMutex.release()

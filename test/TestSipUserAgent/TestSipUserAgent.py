@@ -34,7 +34,8 @@ clsSetup = SipStackSetup()
 clsSetup.strLocalIp = socket.gethostbyname(socket.gethostname())
 
 clsServerInfo = SipServerInfo()
-clsServerInfo.strIp = "192.168.150.131"
+#clsServerInfo.strIp = "192.168.150.131"
+clsServerInfo.strIp = "192.168.150.10"
 clsServerInfo.strUserId = "1000"
 clsServerInfo.strPassWord = "1234"
 

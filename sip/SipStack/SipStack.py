@@ -26,8 +26,12 @@ from ..SipParser.SipParameter import SearchSipParameter
 from ..SipParser.SipFrom import SipFrom
 from ..SipParser.SipMessage import SipMessage
 from ..SipParser.SipStatusCode import SipStatusCode
+from .SipStackThread import SipStackThread
 from .SipUdpThread import SipUdpThread
 from .SipNICTList import SipNICTList
+from .SipICTList import SipICTList
+from .SipNISTList import SipNISTList
+from .SipISTList import SipISTList
 from .SipStackVersion import SipStackVersion
 
 class SipStack():
@@ -40,11 +44,18 @@ class SipStack():
     self.bStopEvent = False
     self.bStarted = False
     self.clsThreadCount = SafeCount()
-    self.clsNICT = SipNICTList()
+    self.clsNICT = SipNICTList(self)
+    self.clsICT = SipICTList(self)
+    self.clsNIST = SipNISTList(self)
+    self.clsIST = SipISTList(self)
     self.clsCallBackList = []
   
   def Start( self, clsSetup ):
     self.clsSetup = clsSetup
+
+    p = threading.Thread( target=SipStackThread, args=(self,))
+    p.daemon = True
+    p.start()
 
     if( clsSetup.iLocalUdpPort > 0 ):
       self.hUdpSocket = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
@@ -83,12 +94,14 @@ class SipStack():
     iTime = time.time()
 
     self.clsNICT.Execute( iTime )
+    self.clsICT.Execute( iTime )
+    self.clsNIST.Execute( iTime )
+    self.clsIST.Execute( iTime )
   
   def DeleteAllTransaction( self ):
     self.clsNICT.DeleteAll()
 
   def SendSipMessage( self, clsMessage ):
-
     self.CheckSipMessage( clsMessage )
 
     if( clsMessage.IsRequest() ):
@@ -113,9 +126,7 @@ class SipStack():
     return False
 
   def RecvSipMessage( self, clsMessage ):
-
     if( clsMessage.IsRequest() ):
-
       if( clsMessage.IsMethod("INVITE") or clsMessage.IsMethod("ACK") ):
         if( self.clsIST.Insert( clsMessage ) ):
           self.RecvRequest( clsMessage )
@@ -126,7 +137,6 @@ class SipStack():
           return True
     
     else:
-
       if( clsMessage.IsMethod("INVITE") ):
         if( clsMessage.iStatusCode >= 200 ):
           self.clsNICT.DeleteCancel( clsMessage )
@@ -159,7 +169,6 @@ class SipStack():
     self.RecvSipMessage( clsMessage )
   
   def Send( self, clsMessage, bCheckMessage ):
-
     strIp = ''
     iPort = -1
     eTransport = SipTransport.UDP
@@ -231,7 +240,6 @@ class SipStack():
     return True
   
   def SendIpPort( self, strPacket, strIp, iPort, eTransport ):
-
     szPacket = strPacket.encode()
 
     if( eTransport == SipTransport.UDP ):
@@ -240,7 +248,6 @@ class SipStack():
       self.clsUdpSendMutex.release()
 
   def CheckSipMessage( self, clsMessage ):
-
     if( clsMessage.IsRequest() ):
       if( len(clsMessage.clsViaList) == 0 ):
         iPort = self.clsSetup.GetLocalPort( clsMessage.eTransport )
@@ -292,7 +299,6 @@ class SipStack():
       clsMessage.iMaxForwards = 70
   
   def RecvRequest( self, clsMessage ):
-
     bSendResponse = False
 
     for clsCallBack in self.clsCallBackList:
@@ -304,7 +310,6 @@ class SipStack():
       self.SendSipMessage( clsResponse )
   
   def RecvResponse( self, clsMessage ):
-
     for clsCallBack in self.clsCallBackList:
       clsCallBack.RecvResponse( clsMessage )
 

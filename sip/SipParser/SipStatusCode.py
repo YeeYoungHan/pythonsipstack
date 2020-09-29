@@ -32,6 +32,7 @@ class SipStatusCode():
   SIP_BUSY_HERE = 486
   SIP_INTERNAL_SERVER_ERROR = 500
   SIP_DECLINE = 603
+  SIP_CONNECT_ERROR = 660
 
 def GetReasonPhrase( iSipCode ):
   if( iSipCode == 100 ):

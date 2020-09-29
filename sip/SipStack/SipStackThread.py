@@ -16,24 +16,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from ..SipParser.SipTransport import SipTransport
+import time
 
-class SipStackSetup():
+def SipStackThread( clsSipStack ):
 
-  def __init__( self ):
-    self.strLocalIp = ''
-    self.iLocalUdpPort = 5060
-    self.iUdpThreadCount = 1
-    self.strUserAgent = "PythonSipStack"
-    self.iStackExecutePeriod = 0.02
-    self.iTimerD = 32.0
-    self.iTimerJ = 32.0
-    self.bIpv6 = False
-    self.bUseRegisterSession = False
+  clsSipStack.clsThreadCount.Increase()
+
+  while( clsSipStack.bStopEvent == False ):
+    clsSipStack.Execute( )
+    time.sleep( clsSipStack.clsSetup.iStackExecutePeriod )
   
-  def GetLocalPort( self, eTransport ):
-
-    if( eTransport == SipTransport.UDP ):
-      return self.iLocalUdpPort
-    
-    return self.iLocalUdpPort
+  clsSipStack.clsThreadCount.Decrease()
