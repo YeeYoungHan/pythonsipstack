@@ -27,16 +27,16 @@ class SafeCount():
   def Increase( self ):
     self.clsMutex.acquire()
     self.iCount += 1
-    self.clsMutex.release
+    self.clsMutex.release()
   
   def Decrease( self ):
     self.clsMutex.acquire()
     self.iCount -= 1
-    self.clsMutex.release
+    self.clsMutex.release()
   
   def GetCount( self ):
     self.clsMutex.acquire()
     iCount = self.iCount
-    self.clsMutex.release
+    self.clsMutex.release()
 
     return iCount
