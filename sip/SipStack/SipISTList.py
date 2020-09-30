@@ -116,7 +116,7 @@ class SipISTList(SipTransactionList):
     self.clsMutex.release()
 
     for clsResponse in clsResponseList:
-      self.clsSipStack.RecvResponse( clsResponse )
+      self.clsSipStack.SendTimeout( clsResponse )
   
   def DeleteAll( self ):
     self.clsMutex.acquire()

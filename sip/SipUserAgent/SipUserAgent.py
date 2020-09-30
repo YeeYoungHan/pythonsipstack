@@ -30,6 +30,9 @@ class SipUserAgent():
   from .SipUserAgentLogin import InsertRegisterInfo
   from .SipUserAgentSipStack import RecvRequest, RecvResponse
   from .SipUserAgentRegister import RecvRegisterResponse
+  from .SipUserAgentInvite import RecvInviteRequest
+  from .SipUserAgentCancel import RecvCancelRequest
+  from .SipUserAgentBye import RecvByeRequest
 
   def __init__( self ):
     self.clsRegisterList = []
@@ -70,3 +73,9 @@ class SipUserAgent():
 
     return True
   
+  def Delete( self, strCallId ):
+    self.clsDialogMutex.acquire()
+    clsDialog = self.clsDialogMap.get( strCallId )
+    if( clsDialog != None ):
+      del self.clsDialogMap[strCallId]
+    self.clsDialogMutex.release()
