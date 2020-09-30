@@ -79,3 +79,7 @@ class SipUserAgent():
     if( clsDialog != None ):
       del self.clsDialogMap[strCallId]
     self.clsDialogMutex.release()
+
+  def GetSipCallRtp( self, clsMessage ):
+    if( clsMessage.clsContentType.IsEqual( "application", "sdp" ) and len(clsMessage.strBody) > 0 ):
+      

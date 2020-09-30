@@ -64,6 +64,12 @@ class SipContentType(SipParameterList):
       return True
     
     return False
+  
+  def IsEqual( self, strType, strSubType ):
+    if( self.strType == strType and self.strSubType == strSubType ):
+      return True
+    
+    return False
 
   def Clear( self ):
     self.strType = ''
