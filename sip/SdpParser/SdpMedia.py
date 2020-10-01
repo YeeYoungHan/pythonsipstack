@@ -128,10 +128,40 @@ class SdpMedia():
   
   def DeleteAttribute( self, strName ):
     clsDeleteList = []
+    bRes = False
 
     for clsAttribute in self.clsAttributeList:
       if( clsAttribute.strName == strName ):
         clsDeleteList.append( clsAttribute )
+        bRes = True
     
     for clsAttribute in clsDeleteList:
       self.clsAttributeList.remove( clsAttribute )
+    
+    return bRes
+  
+  def DeleteFmtAttribute( self, iPayLoadType ):
+    strPayLoadType = str(iPayLoadType)
+    bRes = False
+
+    for strFmt in self.clsFmtList:
+      if( strPayLoadType == strFmt ):
+        self.clsFmtList.remove( strFmt )
+        bRes = True
+        break
+    
+    if( bRes ):
+      clsDeleteList = []
+
+      for clsAttribute in self.clsAttributeList:
+        if( clsAttribute.strName == "rtpmap" or clsAttribute.strName == "fmtp" ):
+          strCodec = clsAttribute.strValue.split(' ')[0]
+          if( strPayLoadType == strCodec ):
+            clsDeleteList.append( clsAttribute )
+      
+      for clsAttribute in clsDeleteList:
+        self.clsAttributeList.remove( clsAttribute )
+
+    return bRes
+
+
