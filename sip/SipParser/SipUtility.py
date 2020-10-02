@@ -84,6 +84,12 @@ def SipMakeCallIdName( ):
 
   return strCallId
 
+def SipIpv6Parse( strHost ):
+  iLen = len(strHost)
+  if( iLen > 0 and strHost[0] == '[' and strHost[iLen-1] == ']' ):
+    return strHost[1:iLen]
+  
+  return strHost
 
 def SipIpv6Print( strHost ):
   iLen = len(strHost)

@@ -19,7 +19,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import time
 from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipStatusCode import SipStatusCode
+from ..SipParser.SipUtility import SipIpv6Parse
+from ..SdpParser.SdpMessage import SdpMessage
 from ..SipStack.SipStack import SipStack
+from .SipCallRtp import SipCallRtp
+from .RtpDirection import RtpDirection
 from .SipRegisterThread import SipRegisterThread
 
 import threading
@@ -82,4 +86,47 @@ class SipUserAgent():
 
   def GetSipCallRtp( self, clsMessage ):
     if( clsMessage.clsContentType.IsEqual( "application", "sdp" ) and len(clsMessage.strBody) > 0 ):
+      clsSdp = SdpMessage()
+
+      if( clsSdp.Parse( clsMessage.strBody ) == -1 ):
+        Log.Print( LogLevel.ERROR, "GetSipCallRtp sdp parse error [" + clsMessage.strBody + "]" )
+        return None
       
+      clsRtp = SipCallRtp()
+      clsRtp.strIp = SipIpv6Parse( clsSdp.clsConnection.strAddr )
+
+      if( len(clsSdp.clsMediaList) == 0 ):
+        Log.Print( LogLevel.ERROR, "GetSipCallRtp media is not found" )
+        return None
+      
+      clsMedia = clsSdp.clsMediaList[0]
+
+      if( len(clsRtp.strIp) == 0 ):
+        clsRtp.strIp = SipIpv6Parse( clsMedia.clsConnection.strAddr )
+      
+      clsRtp.iPort = clsMedia.iPort
+
+      for strFmt in clsMedia.clsFmtList:
+        iCodec = int(strFmt)
+        if( clsRtp.iCodec == -1 or iCodec == 0 ):
+          # PCMU 가 존재하면 PCMU 를 무조건 선택한다.
+          clsRtp.iCodec = iCodec
+        
+        clsRtp.clsCodecList.append( iCodec )
+
+      clsRtp.eDirection = RtpDirection.SEND_RECV
+
+      for clsAttribute in clsMedia.clsAttributeList:
+        if( clsAttribute.strName == "sendrecv" ):
+          clsRtp.eDirection = RtpDirection.SEND_RECV
+        elif( clsAttribute.strName == "sendonly" ):
+          clsRtp.eDirection = RtpDirection.SEND
+        elif( clsAttribute.strName == "recvonly" ):
+          clsRtp.eDirection = RtpDirection.RECV
+        elif( clsAttribute.strName == "inactive" ):
+          clsRtp.eDirection = RtpDirection.INACTIVE
+      
+      return clsRtp
+    
+    return None
+        

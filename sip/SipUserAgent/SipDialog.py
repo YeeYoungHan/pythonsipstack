@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from ..SipParser.SipMessage import SipMessage
 from ..SipParser.SipTransport import SipTransport
+from ..SipParser.SipUtility import SipMakeBranch
 from .SipCallRtp import RtpDirection
 
 class SipDialog():
@@ -53,6 +54,23 @@ class SipDialog():
     self.clsRouteList = []
     self.bSendCall = True
     self.clsSipStack = clsSipStack
+  
+  def CreateInvite( self ):
+    clsMessage = CreateMessage( "INVITE" )
+    if( clsMessage == None ):
+      return None
+    
+    strBranch = SipMakeBranch( )
+    clsMessage.AddVia( self.clsSipStack.clsSetup.strLocalIp, self.clsSipStack.clsSetup.GetLocalPort(self.eTransport), strBranch, self.eTransport )
+
+    if( self.b100rel ):
+      clsMessage.AddHeader( "Allow", "PRACK, INVITE, ACK, BYE, CANCEL, REFER, NOTIFY, MESSAGE" )
+      clsMessage.AddHeader( "Supported", "100rel" )
+      clsMessage.AddHeader( "Require", "100rel" )
+    
+    clsMessage = self.AddSdp( clsMessage )
+
+    return clsMessage
 
   def CreateMessage( self, strSipMethod ):
     clsMessage = SipMessage()

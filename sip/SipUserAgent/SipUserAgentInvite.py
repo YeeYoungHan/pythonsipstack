@@ -26,21 +26,19 @@ def RecvInviteRequest( self, clsMessage ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST ) )
     return True
   
-  self.clsSipStack.SendSipMessage( clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_OK ) )
-
-  clsResponse = None
-
+  clsRtp = self.GetSipCallRtp( clsMessage )
+  if( clsRtp == None ):
+    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_NOT_ACCEPTABLE_HERE ) )
+    return True
+  
+  # ReINVITE 인지 검사한다.
+  bReINVITE = False
   self.clsDialogMutex.acquire()
   clsDialog = self.clsDialogMap.get(strCallId)
   if( clsDialog != None ):
-    if( clsDialog.iStartTime == 0.0 ):
-      clsResponse = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_REQUEST_TERMINATED )
-      clsDialog.iEndTime = time.time()
+    bReINVITE = True
+    clsDialog.SetRemoteRtp( clsRtp )
+    clsLocalRtp = clsDialog.SelectLocalRtp( )
   self.clsDialogMutex.release()
-
-  if( clsResponse != None ):
-    self.clsSipStack.SendSipMessage( clsResponse )
-    self.clsCallBack.EventCallEnd( strCallId, SipStatusCode.SIP_OK )
-    self.Delete( strCallId )
 
   return True
