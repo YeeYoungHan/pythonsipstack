@@ -25,10 +25,10 @@ def Test( strInput, strOutput ):
     print( "sip from(" + strInput + ") parse error" )
     exit()
   
-  strVia = str( clsFrom )
+  strFrom = str( clsFrom )
 
-  if( strVia != strOutput ):
-    print( "sip from(" + strInput + ") output(" + strOutput + ") != result(" + strVia + ")" )
+  if( strFrom != strOutput ):
+    print( "sip from(" + strInput + ") output(" + strOutput + ") != result(" + strFrom + ")" )
     exit()
 
 Test( "<sip:1000@203.255.208.41:5062>;expires=300", "<sip:1000@203.255.208.41:5062>;expires=300" )

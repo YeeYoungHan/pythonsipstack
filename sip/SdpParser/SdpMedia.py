@@ -91,7 +91,7 @@ class SdpMedia():
       strText += strTemp + "\r\n"
     
     for clsAttribute in self.clsAttributeList:
-      strText += "b="
+      strText += "a="
       strTemp = str(clsAttribute)
       if( len(strTemp) == 0 ):
         return ''
@@ -164,4 +164,22 @@ class SdpMedia():
 
     return bRes
 
-
+  def SetData( self, strText, iType ):
+    if( iType == 0 ):
+      self.strMedia = strText
+    elif( iType == 1 ):
+      i = 0
+      iLen = len(strText)
+      while( i < iLen ):
+        if( strText[i] == '/' ):
+          self.iPort = int(strText[:i])
+          self.iNumOfPort = int(strText[i+1:])
+          break
+        i += 1
+      
+      if( self.iPort == -1 ):
+        self.iPort = int(strText)
+    elif( iType == 2 ):
+      self.strProtocol = strText
+    else:
+      self.clsFmtList.append( strText )

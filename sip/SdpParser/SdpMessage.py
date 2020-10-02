@@ -16,9 +16,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from .SdpOrigin import SdpOrigin
-from .SdpConnection import SdpConnection
+from .SdpAttribute import SdpAttribute
+from .SdpAttributeCrypto import SdpAttributeCrypto
 from .SdpBandWidth import SdpBandWidth
+from .SdpConnection import SdpConnection
+from .SdpMedia import SdpMedia
+from .SdpOrigin import SdpOrigin
+from .SdpTime import SdpTime
 
 class SdpMessage():
 
@@ -79,10 +83,99 @@ class SdpMessage():
             clsMedia.clsBandWidthList.append( clsBandWidth )
           else:
             self.clsBandWidthList.append( clsBandWidth )
-    
+        elif( strText[iStartPos] == 't' ):
+          clsTime = SdpTime()
+          if( clsTime.Parse( strText[iStartPos+2:iPos] ) == -1 ):
+            return -1
+          self.clsTimeList.append( clsTime )
+        elif( strText[iStartPos] == 'r' ):
+          iCount = len(self.clsTimeList)
+          if( iCount > 0 ):
+            self.clsTimeList[iCount-1].clsRepeatTimeList.append( strText[iStartPos+2:iPos] )
+        elif( strText[iStartPos] == 'z' ):
+          self.strTimeZone = strText[iStartPos+2:iPos]
+        elif( strText[iStartPos] == 'a' ):
+          clsAttribute = SdpAttribute()
+          if( clsAttribute.Parse( strText[iStartPos+2:iPos] ) == -1 ):
+            return -1
+          
+          if( clsMedia != None ):
+            clsMedia.clsAttributeList.append( clsAttribute )
+          else:
+            self.clsAttributeList.append( clsAttribute )
+        elif( strText[iStartPos] == 'm' ):
+          clsMedia = SdpMedia()
+          if( clsMedia.Parse( strText[iStartPos+2:iPos] ) == -1 ):
+            return -1
+          self.clsMediaList.append( clsMedia )
+
         iPos += 1
         iStartPos = iPos + 1
       iPos += 1
+    
+    return iPos
+  
+  def __str__( self ):
+    strText = ''
+
+    if( len(self.strVersion) > 0 ):
+      strText += "v=" + self.strVersion + "\r\n"
+    
+    if( self.clsOrigin.Empty() == False ):
+      strOrigin = str(self.clsOrigin)
+      if( len(strOrigin) == 0 ):
+        return ''
+      strText += "o=" + strOrigin + "\r\n"
+    
+    if( len(self.strSessionName) > 0 ):
+      strText += "s=" + self.strSessionName + "\r\n"
+    
+    if( len(self.strSessionInformation) > 0 ):
+      strText += "i=" + self.strSessionInformation + "\r\n"
+    
+    if( len(self.strUri) > 0 ):
+      strText += "u=" + self.strUri + "\r\n"
+    
+    for strEmail in self.clsEmailList:
+      strText += "e=" + strEmail + "\r\n"
+    
+    for strPhone in self.clsPhoneList:
+      strText += "p=" + strPhone + "\r\n"
+    
+    if( self.clsConnection.Empty() == False ):
+      strConnection = str(self.clsConnection)
+      if( len(strConnection) == 0 ):
+        return ''
+      strText += "c=" + strConnection + "\r\n"
+    
+    for clsBandWidth in self.clsBandWidthList:
+      strBandWidth = str(clsBandWidth)
+      if( len(strBandWidth) == 0 ):
+        return ''
+      strText += "b=" + strBandWidth + "\r\n"
+    
+    for clsTime in self.clsTimeList:
+      strTime = str(clsTime)
+      if( len(strTime) == 0 ):
+        return ''
+      strText += "t=" + strTime
+    
+    if( len(self.strTimeZone) > 0 ):
+      strText += "z=" + self.strTimeZone + "\r\n"
+    
+    for clsAttribute in self.clsAttributeList:
+      strAttribute = str(clsAttribute)
+      if( len(strAttribute) == 0 ):
+        return ''
+      strText += "a=" + strAttribute + "\r\n"
+    
+    for clsMedia in self.clsMediaList:
+      strMedia = str(clsMedia)
+      if( len(strMedia) == 0 ):
+        return ''
+      strText += "m=" + strMedia
+    
+    return strText
 
   def Clear( self ):
     self.strVersion = ''
@@ -99,3 +192,9 @@ class SdpMessage():
     self.clsAttributeList.clear()
     self.clsMediaList.clear()
     
+  def SelectMedia( self, strName ):
+    for clsMedia in self.clsMediaList:
+      if( clsMedia.strName == strName ):
+        return clsMedia
+    
+    return None
