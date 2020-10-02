@@ -21,3 +21,16 @@ class RtpDirection():
   SEND = 1
   RECV = 2
   INACTIVE = 3
+
+def GetRtpDirectionString( eDirection ):
+  if( eDirection == RtpDirection.SEND_RECV ):
+    return "sendrecv"
+  elif( eDirection == RtpDirection.SEND ):
+    return "sendonly"
+  elif( eDirection == RtpDirection.RECV ):
+    return "recvonly"
+  elif( eDirection == RtpDirection.INACTIVE ):
+    return "inactive"
+  
+  return "sendrecv"
+  

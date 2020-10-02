@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import time
 from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipStatusCode import SipStatusCode
+from ..SipParser.SipUtility import SipMakeTag
   
 def RecvInviteRequest( self, clsMessage ):
   strCallId = clsMessage.GetCallId()
@@ -31,6 +32,8 @@ def RecvInviteRequest( self, clsMessage ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_NOT_ACCEPTABLE_HERE ) )
     return True
   
+  clsResponse = None
+  
   # ReINVITE 인지 검사한다.
   bReINVITE = False
   self.clsDialogMutex.acquire()
@@ -40,5 +43,24 @@ def RecvInviteRequest( self, clsMessage ):
     clsDialog.SetRemoteRtp( clsRtp )
     clsLocalRtp = clsDialog.SelectLocalRtp( )
   self.clsDialogMutex.release()
+
+  if( bReINVITE ):
+    self.clsCallBack.EventReInvite( strCallId, clsRtp, clsLocalRtp )
+  
+    self.clsDialogMutex.acquire()
+    clsDialog = self.clsDialogMap.get(strCallId)
+    if( clsDialog != None ):
+      clsDialog.SetLocalRtp( clsRtp )
+      clsResponse = clsMessage.CreateResponse( SipStatusCode.SIP_OK )
+      clsResponse = clsDialog.AddSdp( clsResponse )
+    self.clsDialogMutex.release()
+
+    if( clsResponse != None ):
+      self.clsSipStack.SendSipMessage( clsResponse )
+
+  # 새로운 INVITE 인 경우
+  strTag = SipMakeTag( )
+
+  # 180 Ring 을 전송한다.
 
   return True
