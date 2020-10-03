@@ -23,10 +23,10 @@ from ..SipParser.SipStatusCode import SipStatusCode
 def RecvByeRequest( self, clsMessage ):
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
-    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST ) )
+    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )
     return True
   
-  self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_OK ) )
+  self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' ) )
 
   bRes = False
 

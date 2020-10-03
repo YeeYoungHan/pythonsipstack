@@ -25,12 +25,12 @@ from .SipDialog import SipDialog
 def RecvInviteRequest( self, clsMessage ):
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
-    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST ) )
+    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )
     return True
   
   clsRtp = self.GetSipCallRtp( clsMessage )
   if( clsRtp == None ):
-    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_NOT_ACCEPTABLE_HERE ) )
+    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_NOT_ACCEPTABLE_HERE, '' ) )
     return True
   
   clsResponse = None
@@ -52,7 +52,7 @@ def RecvInviteRequest( self, clsMessage ):
     clsDialog = self.clsDialogMap.get(strCallId)
     if( clsDialog != None ):
       clsDialog.SetLocalRtp( clsRtp )
-      clsResponse = clsMessage.CreateResponse( SipStatusCode.SIP_OK )
+      clsResponse = clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' )
       clsResponse = clsDialog.AddSdp( clsResponse )
     self.clsDialogMutex.release()
 
@@ -67,7 +67,7 @@ def RecvInviteRequest( self, clsMessage ):
   self.clsSipStack.SendSipMessage( clsResponse )
 
   # Dialog 를 생성한다.
-  clsDialog = SipDialog()
+  clsDialog = SipDialog( self.clsSipStack )
 
   clsDialog.strFromId = clsMessage.clsTo.clsUri.strUser
   clsDialog.strFromTag = strTag

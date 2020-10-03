@@ -216,6 +216,17 @@ class SipMessage():
     
     return False
 
+  def Is100rel( self ):
+    clsHeader = self.GetHeader( "Supported" )
+    if( clsHeader != None and clsHeader.strValue.find( "100rel" ) != -1 ):
+        return True
+    
+    clsHeader = self.GetHeader( "Requires" )
+    if( clsHeader != None and clsHeader.strValue.find( "100rel" ) != -1 ):
+        return True
+      
+    return False
+
   def GetCallId( self ):
     return str(self.clsCallId)
 

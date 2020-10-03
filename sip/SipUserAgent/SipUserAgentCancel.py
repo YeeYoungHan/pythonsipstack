@@ -34,7 +34,7 @@ def RecvCancelRequest( self, clsMessage ):
   clsDialog = self.clsDialogMap.get(strCallId)
   if( clsDialog != None ):
     if( clsDialog.iStartTime == 0.0 ):
-      clsResponse = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_REQUEST_TERMINATED )
+      clsResponse = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_REQUEST_TERMINATED, '' )
       clsDialog.iEndTime = time.time()
   self.clsDialogMutex.release()
 
