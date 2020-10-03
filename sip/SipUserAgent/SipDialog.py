@@ -51,7 +51,8 @@ class SipDialog():
     self.iCancelTime = 0.0
     self.iStartTime = 0.0
     self.iEndTime = 0.0
-    self.clsInvite = None
+    self.clsInviteRecv = None
+    self.clsInviteSend = None
     self.clsRouteList = []
     self.bSendCall = True
     self.clsSipStack = clsSipStack

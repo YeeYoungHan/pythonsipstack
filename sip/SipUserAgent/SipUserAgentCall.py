@@ -75,11 +75,11 @@ def StopCall( self, strCallId, iSipCode ):
         clsMessage = clsDialog.CreateBye()
         del self.clsDialogMap[strCallId]
     else:
-      if( clsDialog.clsInvite != None ):
+      if( clsDialog.clsInviteRecv != None ):
         if( iSipCode > 0 ):
-          clsMessage = clsDialog.clsInvite.CreateResponse( iSipCode )
+          clsMessage = clsDialog.clsInviteRecv.CreateResponse( iSipCode )
         else:
-          clsMessage = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_DECLINE, '' )
+          clsMessage = clsDialog.clsInviteRecv.CreateResponse( SipStatusCode.SIP_DECLINE, '' )
         del self.clsDialogMap[strCallId]
       elif( clsDialog.iCancelTime == 0.0 and clsDialog.iEndTime == 0.0 ):
         clsMessage = clsDialog.CreateCancel()
@@ -95,8 +95,8 @@ def StopCallForward( self, strCallId, strForward ):
   self.clsDialogMutex.acquire()
   clsDialog = self.clsDialogMap.get( strCallId )
   if( clsDialog != None ):
-    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInvite != None ):
-      clsMessage = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_MOVED_TEMPORARILY, '' )
+    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInviteRecv != None ):
+      clsMessage = clsDialog.clsInviteRecv.CreateResponse( SipStatusCode.SIP_MOVED_TEMPORARILY, '' )
   self.clsDialogMutex.release()
 
   if( clsMessage != None ):
@@ -112,11 +112,11 @@ def RingCall( self, strCallId, clsRtp ):
   self.clsDialogMutex.acquire()
   clsDialog = self.clsDialogMap.get( strCallId )
   if( clsDialog != None ):
-    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInvite != None ):
+    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInviteRecv != None ):
       clsDialog.SetLocalRtp( clsRtp )
-      clsMessage = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_SESSION_PROGRESS, '' )
-      if( clsDialog.clsInvite.Is100rel() ):
-        iRSeq = clsDialog.clsInvite.clsCSeq.iDigit + random.randint( 1, 1000000000 )
+      clsMessage = clsDialog.clsInviteRecv.CreateResponse( SipStatusCode.SIP_SESSION_PROGRESS, '' )
+      if( clsDialog.clsInviteRecv.Is100rel() ):
+        iRSeq = clsDialog.clsInviteRecv.clsCSeq.iDigit + random.randint( 1, 1000000000 )
         clsMessage.AddHeader( "RSeq", str(iRSeq) )
       clsMessage = clsDialog.AddSdp( clsMessage )
   self.clsDialogMutex.release()
@@ -130,9 +130,9 @@ def RingCallStatus( self, strCallId, iSipStatus, clsRtp ):
   self.clsDialogMutex.acquire()
   clsDialog = self.clsDialogMap.get( strCallId )
   if( clsDialog != None ):
-    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInvite != None ):
+    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInviteRecv != None ):
       
-      clsMessage = clsDialog.clsInvite.CreateResponse( iSipStatus, '' )
+      clsMessage = clsDialog.clsInviteRecv.CreateResponse( iSipStatus, '' )
 
       if( clsRtp != None ):
         clsDialog.SetLocalRtp( clsRtp )
@@ -154,11 +154,11 @@ def AcceptCall( self, strCallId, clsRtp ):
   self.clsDialogMutex.acquire()
   clsDialog = self.clsDialogMap.get( strCallId )
   if( clsDialog != None ):
-    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInvite != None ):
+    if( clsDialog.iStartTime == 0.0 and clsDialog.clsInviteRecv != None ):
       clsDialog.SetLocalRtp( clsRtp )
-      clsMessage = clsDialog.clsInvite.CreateResponse( SipStatusCode.SIP_OK, '' )
+      clsMessage = clsDialog.clsInviteRecv.CreateResponse( SipStatusCode.SIP_OK, '' )
       clsDialog.iStartTime = time.time()
-      clsDialog.clsInvite = None
+      clsDialog.clsInviteRecv = None
       clsMessage = clsDialog.AddSdp( clsMessage )
   self.clsDialogMutex.release()
 
@@ -244,13 +244,58 @@ def CreateCall( self, strFrom, strTo, clsRtp, clsRoute ):
 
     self.clsDialogMutex.acquire()
     if( self.clsDialogMap.get( clsDialog.strCallId ) == None ):
-      clsMessage = clsDialog.CreateInvite()
+      clsDialog.clsInviteSend = clsDialog.CreateInvite()
       clsDialogMap[clsDialog.strCallId] = clsDialog
       bInsert = True
     self.clsDialogMutex.release()
   
-  if( self.clsSipStack.SendSipMessage( clsMessage ) == False ):
-    self.Delete( clsDialog.strCallId )
-    return ''
-  
   return clsDialog.strCallId
+
+def StartCreatedCall( self, strCallId ):
+  clsMessage = None
+
+  self.clsDialogMutex.acquire()
+  clsDialog = self.clsDialogMap.get( strCallId )
+  if( clsDialog != None and clsDialog.clsInviteSend != None ):
+    clsMessage = clsDialog.clsInviteSend
+    clsDialog.clsInviteSend = None
+  self.clsDialogMutex.release()
+
+  if( clsMessage ):
+    self.clsSipStack.SendSipMessage( clsMessage )
+
+def TransferCallBlind( self, strCallId, strTo ):
+  clsMessage = None
+
+  self.clsDialogMutex.acquire()
+  clsDialog = self.clsDialogMap.get( strCallId )
+  if( clsDialog != None ):
+    clsMessage = clsDialog.CreateRefer()
+    strReferTo = "<sip:" + strTo + "@" + clsDialog.strContactIp + ":" + clsDialog.iContactPort + ">"
+    strReferBy = "<sip:" + clsDialog.strFromId + "@" + self.clsSipStack.clsSetup.strLocalIp + ":" + self.clsSipStack.clsSetup.iLocalUdpPort
+  self.clsDialogMutex.release()
+
+  if( clsMessage ):
+    clsMessage.AddHeader( "Refer-To", strReferTo )
+    clsMessage.AddHeader( "Referred-By", strReferBy )
+    self.clsSipStack.SendSipMessage( clsMessage )
+
+def TransferCall( self, strCallId, strToCallId ):
+  clsMessage = None
+
+  self.clsDialogMutex.acquire()
+  clsDialog = self.clsDialogMap.get( strToCallId )
+  if( clsDialog != None ):
+    strReplaces = strToCallId.replace( "@", "%40" ) + "%3B" + "to-tag%3D" + clsDialog.strToTag + "%3B" + "from-tag%3D" + clsDialog.strFromTag
+    strReferTo = "<sip:" + clsDialog.strToId + "@" + clsDialog.strContactIp + ":" + clsDialog.iContactPort + "?Replaces=" + strReplaces + ">"
+    strReferBy = "<sip:" + clsDialog.strFromId + "@" + self.clsSipStack.clsSetup.strLocalIp + ":" + self.clsSipStack.clsSetup.iLocalUdpPort
+
+    clsDialog = self.clsDialogMap.get( strCallId )
+    if( clsDialog != None ):
+      clsMessage = clsDialog.CreateRefer()
+  self.clsDialogMutex.release()
+
+  if( clsMessage ):
+    clsMessage.AddHeader( "Refer-To", strReferTo )
+    clsMessage.AddHeader( "Referred-By", strReferBy )
+    self.clsSipStack.SendSipMessage( clsMessage )

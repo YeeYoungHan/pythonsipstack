@@ -16,31 +16,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-import time
-from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipStatusCode import SipStatusCode
-  
-def RecvCancelRequest( self, clsMessage ):
+
+def RecvOptionsRequest( self, clsMessage ):
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
-    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST ) )
+    self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )
     return True
   
-  self.clsSipStack.SendSipMessage( clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_OK ) )
-
-  clsResponse = None
-
-  self.clsDialogMutex.acquire()
-  clsDialog = self.clsDialogMap.get(strCallId)
-  if( clsDialog != None ):
-    if( clsDialog.iStartTime == 0.0 ):
-      clsResponse = clsDialog.clsInviteRecv.CreateResponse( SipStatusCode.SIP_REQUEST_TERMINATED, '' )
-      clsDialog.iEndTime = time.time()
-  self.clsDialogMutex.release()
-
-  if( clsResponse != None ):
-    self.clsSipStack.SendSipMessage( clsResponse )
-    self.clsCallBack.EventCallEnd( strCallId, SipStatusCode.SIP_OK )
-    self.Delete( strCallId )
-
+  self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' ) )
   return True

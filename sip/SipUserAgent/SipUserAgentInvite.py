@@ -86,11 +86,11 @@ def RecvInviteRequest( self, clsMessage ):
     clsDialog.strContactUri = str(clsMessage.clsContactList[0])
   
   clsDialog.iInviteTime = time.time()
-  clsDialog.clsInvite = clsMessage
-  clsDialog.clsInvite.clsTo.InsertParam( "tag", strTag )
+  clsDialog.clsInviteRecv = clsMessage
+  clsDialog.clsInviteRecv.clsTo.InsertParam( "tag", strTag )
 
-  if( len(clsDialog.clsInvite.clsRecordRouteList) > 0 ):
-    clsDialog.clsRouteList = clsDialog.clsInvite.clsRecordRouteList
+  if( len(clsDialog.clsInviteRecv.clsRecordRouteList) > 0 ):
+    clsDialog.clsRouteList = clsDialog.clsInviteRecv.clsRecordRouteList
   
   clsDialog.bSendCall = False
 
