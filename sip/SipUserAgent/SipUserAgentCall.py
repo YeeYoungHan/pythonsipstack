@@ -77,7 +77,7 @@ def StopCall( self, strCallId, iSipCode ):
     else:
       if( clsDialog.clsInviteRecv != None ):
         if( iSipCode > 0 ):
-          clsMessage = clsDialog.clsInviteRecv.CreateResponse( iSipCode )
+          clsMessage = clsDialog.clsInviteRecv.CreateResponse( iSipCode, '' )
         else:
           clsMessage = clsDialog.clsInviteRecv.CreateResponse( SipStatusCode.SIP_DECLINE, '' )
         del self.clsDialogMap[strCallId]
@@ -248,7 +248,7 @@ def CreateCall( self, strFrom, strTo, clsRtp, clsRoute ):
     self.clsDialogMutex.acquire()
     if( self.clsDialogMap.get( clsDialog.strCallId ) == None ):
       clsDialog.clsInviteSend = clsDialog.CreateInvite()
-      clsDialogMap[clsDialog.strCallId] = clsDialog
+      self.clsDialogMap[clsDialog.strCallId] = clsDialog
       bInsert = True
     self.clsDialogMutex.release()
   

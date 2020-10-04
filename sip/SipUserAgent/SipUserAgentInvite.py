@@ -98,9 +98,8 @@ def RecvInviteRequest( self, clsMessage ):
   bError = False
 
   self.clsDialogMutex.acquire()
-  clsDialog = self.clsDialogMap.get(strCallId)
-  if( clsDialog == None ):
-    clsDialogMap[strCallId] = clsDialog
+  if( self.clsDialogMap.get(strCallId) == None ):
+    self.clsDialogMap[strCallId] = clsDialog
   else:
     bError = True
   self.clsDialogMutex.release()

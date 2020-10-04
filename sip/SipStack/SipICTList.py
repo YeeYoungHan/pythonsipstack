@@ -129,16 +129,7 @@ class SipICTList(SipTransactionList):
 
     for clsResponse in clsResponseList:
       self.clsSipStack.RecvResponse( clsResponse )
-  
-  def DeleteCancel( self, clsMessage ):
-    strKey = super().GetKey( "CANCEL" )
-
-    self.clsMutex.acquire()
-    clsTransaction = self.clsMap.get( strKey )
-    if( clsTransaction != None ):
-      del clsMap[strKey]
-    self.clsMutex.release()
-  
+   
   def DeleteAll( self ):
     self.clsMutex.acquire()
     self.clsMap.clear()

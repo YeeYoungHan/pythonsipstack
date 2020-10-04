@@ -17,6 +17,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 from ..SipPlatform.Log import Log, LogLevel
+from ..SipParser.SipStatusCode import SipStatusCode
 from ..SipUserAgent.SipUserAgent import SipUserAgent
 from .CallMap import CallMap
 
@@ -31,26 +32,28 @@ class SipServer():
       Log.Print( LogLevel.ERROR, "clsUserAgent.Start error" )
       return False
     
+    self.clsUserAgent.clsSipStack.AddCallBack( self )
+
     return True
   
   def EventIncomingCall( self, strCallId, strFrom, strTo, clsRtp ):
     clsRoute = self.clsUserAgent.GetContact( strCallId )
     if( clsRoute == None ):
       Log.Print( LogLevel.ERROR, "EventIncomingCall clsUserAgent.GetContact(" + strCallId + ") error" )
-      self.clsUserAgent.StopCall( strCallId )
+      self.clsUserAgent.StopCall( strCallId, 0 )
       return
     
     strNewCallId = self.clsUserAgent.CreateCall( strFrom, strTo, clsRtp, clsRoute )
     if( len(strNewCallId) == 0 ):
       Log.Print( LogLevel.ERROR, "EventIncomingCall clsUserAgent.CreateCall() error" )
-      self.clsUserAgent.StopCall( strCallId )
+      self.clsUserAgent.StopCall( strCallId, 0 )
       return
     
     self.clsCallMap.Insert( strCallId, strNewCallId )
 
     if( self.clsUserAgent.StartCreatedCall( strNewCallId ) == False ):
       Log.Print( LogLevel.ERROR, "EventIncomingCall clsUserAgent.StartCreatedCall() error" )
-      self.clsUserAgent.StopCall( strCallId )
+      self.clsUserAgent.StopCall( strCallId, 0 )
       self.clsCallMap.Delete( strCallId )
       return
   
@@ -61,12 +64,12 @@ class SipServer():
     strCallId2 = self.clsCallMap.Select( strCallId )
     if( len(strCallId2) == 0 ):
       Log.Print( LogLevel.ERROR, "EventCallStart clsCallMap.Select(" + strCallId + ") error" )
-      self.clsUserAgent.StopCall( strCallId )
+      self.clsUserAgent.StopCall( strCallId, 0 )
       return
     
     if( self.clsUserAgent.AcceptCall( strCallId2, clsRtp ) == False ):
       Log.Print( LogLevel.ERROR, "EventCallStart clsUserAgent.AcceptCall(" + strCallId2 + ") error" )
-      self.clsUserAgent.StopCall( strCallId )
+      self.clsUserAgent.StopCall( strCallId, 0 )
       self.clsCallMap.Delete( strCallId )
       return
   
@@ -78,3 +81,16 @@ class SipServer():
     
     self.clsUserAgent.StopCall( strCallId2, iSipStatus )
     self.clsCallMap.Delete( strCallId )
+  
+  def RecvRequest( self, clsMessage ):
+    if( clsMessage.IsMethod("REGISTER") ):
+      self.clsUserAgent.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' ) )
+      return True
+
+    return False
+  
+  def RecvResponse( self, clsMessage ):
+    return False
+  
+  def SendTimeout( self, clsMessage ):
+    return False

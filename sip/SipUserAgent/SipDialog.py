@@ -58,7 +58,7 @@ class SipDialog():
     self.clsSipStack = clsSipStack
   
   def CreateInvite( self ):
-    clsMessage = CreateMessage( "INVITE" )
+    clsMessage = self.CreateMessage( "INVITE" )
     if( clsMessage == None ):
       return None
     
@@ -75,7 +75,7 @@ class SipDialog():
     return clsMessage
   
   def CreateAck( self, iStatusCode ):
-    clsMessage = CreateMessage( "ACK" )
+    clsMessage = self.CreateMessage( "ACK" )
     if( clsMessage == None ):
       return None
 
@@ -85,7 +85,7 @@ class SipDialog():
     return clsMessage
   
   def CreateCancel( self ):
-    clsMessage = CreateMessage( "CANCEL" )
+    clsMessage = self.CreateMessage( "CANCEL" )
     if( clsMessage == None ):
       return None
 
@@ -94,28 +94,28 @@ class SipDialog():
     return clsMessage
   
   def CreateBye( self ):
-    clsMessage = CreateMessage( "BYE" )
+    clsMessage = self.CreateMessage( "BYE" )
     if( clsMessage == None ):
       return None
     
     return clsMessage
   
   def CreateNotify( self ):
-    clsMessage = CreateMessage( "NOTIFY" )
+    clsMessage = self.CreateMessage( "NOTIFY" )
     if( clsMessage == None ):
       return None
     
     return clsMessage
   
   def CreateRefer( self ):
-    clsMessage = CreateMessage( "REFER" )
+    clsMessage = self.CreateMessage( "REFER" )
     if( clsMessage == None ):
       return None
     
     return clsMessage
   
   def CreatePrack( self ):
-    clsMessage = CreateMessage( "PRACK" )
+    clsMessage = self.CreateMessage( "PRACK" )
     if( clsMessage == None ):
       return None
     
@@ -125,7 +125,7 @@ class SipDialog():
     return clsMessage
   
   def CreateInfo( self ):
-    clsMessage = CreateMessage( "INFO" )
+    clsMessage = self.CreateMessage( "INFO" )
     if( clsMessage == None ):
       return None
     
@@ -237,7 +237,7 @@ class SipDialog():
   def CreateMessage( self, strSipMethod ):
     clsMessage = SipMessage()
 
-    if( clsMessage.clsCallId.Parse( self.strCallId ) == -1 ):
+    if( clsMessage.clsCallId.Parse( self.strCallId, 0 ) == -1 ):
       return None
     
     clsMessage.eTransport = self.eTransport
@@ -264,7 +264,7 @@ class SipDialog():
     
     clsMessage.clsCSeq.Set( iSeq, strSipMethod )
 
-    clsMessage.clsFrom.clsUri.Set( "sip", self.strFromId, clsSipStack.clsSetup.strLocalIp, clsSipStack.clsSetup.iLocalUdpPort )
+    clsMessage.clsFrom.clsUri.Set( "sip", self.strFromId, self.clsSipStack.clsSetup.strLocalIp, self.clsSipStack.clsSetup.iLocalUdpPort )
     clsMessage.clsFrom.InsertParam( "tag", self.strFromTag )
 
     clsMessage.clsTo.clsUri.Set( "sip", self.strToId, self.strContactIp, self.iContactPort )
@@ -272,12 +272,12 @@ class SipDialog():
       clsMessage.clsTo.InsertParam( "tag", self.strToTag )
     
     strProtocol = "sip"
-    iPort = clsSipStack.clsSetup.iLocalUdpPort
+    iPort = self.clsSipStack.clsSetup.iLocalUdpPort
 
-    if( clsSipStack.clsSetup.strLocalIp.find( ":" ) != -1 ):
-      strUri = "<" + strProtocol + ":" + self.strFromId + "@[" + clsSipStack.clsSetup.strLocalIp + "]:" + iPort + ">"
+    if( self.clsSipStack.clsSetup.strLocalIp.find( ":" ) != -1 ):
+      strUri = "<" + strProtocol + ":" + self.strFromId + "@[" + self.clsSipStack.clsSetup.strLocalIp + "]:" + str(iPort) + ">"
     else:
-      strUri = "<" + strProtocol + ":" + self.strFromId + "@" + clsSipStack.clsSetup.strLocalIp + ":" + iPort + ">"
+      strUri = "<" + strProtocol + ":" + self.strFromId + "@" + self.clsSipStack.clsSetup.strLocalIp + ":" + str(iPort) + ">"
     
     clsMessage.AddHeader( "P-Asserted-Identity", strUri )
     clsMessage.AddHeader( "Diversion", strUri )

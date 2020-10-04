@@ -99,7 +99,18 @@ class SipNICTList(SipTransactionList):
     for clsResponse in clsResponseList:
       self.clsSipStack.RecvResponse( clsResponse )
   
- 
+  def DeleteCancel( self, clsMessage ):
+    if( clsMessage.IsRequest() ):
+      return
+    
+    strKey = super().GetKeyMethod( clsMessage, "CANCEL" )
+
+    self.clsMutex.acquire()
+    clsTransaction = self.clsMap.get( strKey )
+    if( clsTransaction != None ):
+      del clsMap[strKey]
+    self.clsMutex.release()
+
   def DeleteAll( self ):
 
     self.clsMutex.acquire()
