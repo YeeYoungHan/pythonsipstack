@@ -31,7 +31,7 @@ import threading
 class SipUserAgent():
 
   from .SipUserAgentCall import StartCall, StopCall, StopCallForward, RingCall, RingCallStatus, AcceptCall, HoldCall, ResumeCall, GetCallCount, GetCallIdList
-  from .SipUserAgentCall import topCallAll, CreateCall, StartCreatedCall, TransferCallBlind, TransferCall
+  from .SipUserAgentCall import StopCallAll, CreateCall, StartCreatedCall, TransferCallBlind, TransferCall
   from .SipUserAgentLogin import InsertRegisterInfo
   from .SipUserAgentSipStack import RecvRequest, RecvResponse, SendTimeout
   from .SipUserAgentUtil import GetRemoteCallRtp, GetToId, GetFromId, GetContact, GetInviteHeaderValue, GetRSeq, SetRSeq

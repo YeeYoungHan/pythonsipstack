@@ -58,7 +58,7 @@ class SipStack():
 
     if( clsSetup.iLocalUdpPort > 0 ):
       self.hUdpSocket = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-      self.hUdpSocket.bind( ('0.0.0.0', 8000) )
+      self.hUdpSocket.bind( ('0.0.0.0', clsSetup.iLocalUdpPort) )
 
       p = threading.Thread( target=SipUdpThread, args=(self,))
       p.daemon = True

@@ -17,13 +17,35 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 import sys
+import time
+import socket
+from ..SipPlatform.Log import Log, LogLevel
+from ..SipStack.SipStackSetup import SipStackSetup
 from .EchoSipServerSetup import EchoSipServerSetup
+from .SipServer import SipServer
 
 if( len(sys.argv) == 1 ):
   print( "[Usage] python -m sip.EchoSipServer.EchoSipServer {setup file path")
   exit()
 
 strSetupFileName = sys.argv[1]
-clsSetup = EchoSipServerSetup()
+clsSetupFile = EchoSipServerSetup()
 
-clsSetup.Read( strSetupFileName )
+clsSetupFile.Read( strSetupFileName )
+
+clsSetup = SipStackSetup()
+
+if( len(clsSetupFile.strLocalIp) == 0 ):
+  clsSetup.strLocalIp = socket.gethostbyname(socket.gethostname())
+else:
+  clsSetup.strLocalIp = clsSetupFile.strLocalIp
+
+clsSetup.iLocalUdpPort = clsSetupFile.iUdpPort
+clsSetup.iUdpThreadCount = clsSetupFile.iUdpThreadCount
+
+clsSipServer = SipServer()
+if( clsSipServer.Start( clsSetup ) == False ):
+  exit()
+
+while True:
+  time.sleep(1.0)

@@ -83,7 +83,7 @@ def RecvSipPacket( self, strPacket, strIp, iPort, eTransport ):
     return False
   
   if( clsMessage.IsRequest() ):
-    clsMessage.AddIpPortToTopVia( strIp, iPort )
+    clsMessage.AddIpPortToTopVia( strIp, iPort, eTransport )
   
   clsMessage.strClientIp = strIp
   clsMessage.iClientPort = iPort
@@ -118,17 +118,17 @@ def Send( self, clsMessage, bCheckMessage ):
     
     clsVia = clsMessage.clsViaList[0]
 
-    strPort = SearchSipParameter( clsVia, "rport" )
+    strPort = clsVia.SelectParam( "rport" )
     if( len(strPort) > 0 ):
       iPort = int(strPort)
     else:
       iPort = clsVia.iPort
     
-    strIp = SearchSipParameter( clsVia, "received" )
+    strIp = clsVia.SelectParam( "received" )
     if( len(strIp) == 0 ):
       strIp = clsVia.strHost
 
-    strTransport = SearchSipParameter( clsVia, "transport" )
+    strTransport = clsVia.SelectParam( "transport" )
     if( len(strTransport) > 0 ):
       if( strTransport == "tcp" ):
         eTransport = SipTransport.TCP
@@ -191,7 +191,7 @@ def CheckSipMessage( self, clsMessage ):
         eTransport = clsMessage.clsRouteList[0].clsUri.SelectTransport()
     else:
       if( len(clsMessage.clsViaList) != 0 ):
-        strTransport = SearchSipParameter( clsMessage.clsViaList, "transport" )
+        strTransport = clsMessage.clsViaList[0].SelectParam( "transport" )
         if( strTransport == "tcp" ):
           eTransport = SipTransport.TCP
         elif( strTransport == "tls" ):

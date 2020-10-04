@@ -164,6 +164,9 @@ def AcceptCall( self, strCallId, clsRtp ):
 
   if( clsMessage != None ):
     self.clsSipStack.SendSipMessage( clsMessage )
+    return True
+  
+  return False
 
 def HoldCall( self, strCallId, eDirection ):
   clsMessage = None
@@ -262,7 +265,9 @@ def StartCreatedCall( self, strCallId ):
   self.clsDialogMutex.release()
 
   if( clsMessage ):
-    self.clsSipStack.SendSipMessage( clsMessage )
+    return self.clsSipStack.SendSipMessage( clsMessage )
+  
+  return False
 
 def TransferCallBlind( self, strCallId, strTo ):
   clsMessage = None
