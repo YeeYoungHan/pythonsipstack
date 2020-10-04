@@ -81,6 +81,30 @@ class SipServer():
     
     self.clsUserAgent.StopCall( strCallId2, iSipStatus )
     self.clsCallMap.Delete( strCallId )
+
+  def EventRegister( self, clsServerInfo, iStatus ):
+    return
+  
+  def EventReInvite( self, strCallId, clsRemoteRtp, clsLocalRtp ):
+    return
+  
+  def EventReInviteResponse( self, strCallId, iSipStatus, clsRemoteRtp ):
+    return
+  
+  def EventPrack( self, strCallId, clsRtp ):
+    return
+  
+  def EventTransfer( self, strCallId, strReferToCallId, bScreenedTransfer ):
+    return False
+  
+  def EventBlindTransfer( self, strCallId, strReferToId ):
+    return False
+  
+  def EventTransferResponse( self, strCallId, iSipStatus ):
+    return
+  
+  def EventMessage( self, strFrom, strTo, clsMessage ):
+    return False
   
   def RecvRequest( self, clsMessage ):
     if( clsMessage.IsMethod("REGISTER") ):

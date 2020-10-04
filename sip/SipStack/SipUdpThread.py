@@ -30,10 +30,13 @@ def SipUdpThread( clsSipStack ):
     iRecvLen = 0
 
     clsSipStack.clsUdpRecvMutex.acquire()
-    read_socket_list, write_socket_list, except_socket_list = select.select( read_list, [], [], 1.0 )
-    for read_socket in read_socket_list:
-      szPacket, clsClientIpPort = read_socket.recvfrom( 8192 )
-      iRecvLen = len(szPacket)
+    try:
+      read_socket_list, write_socket_list, except_socket_list = select.select( read_list, [], [], 1.0 )
+      for read_socket in read_socket_list:
+        szPacket, clsClientIpPort = read_socket.recvfrom( 8192 )
+        iRecvLen = len(szPacket)
+    except Exception as other:
+      Log.Print( LogLevel.LOG_ERROR, "SipUdpThread exception - " + other )
     clsSipStack.clsUdpRecvMutex.release()
 
     if( iRecvLen > 0 ):
