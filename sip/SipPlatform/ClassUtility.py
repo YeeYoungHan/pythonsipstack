@@ -16,15 +16,5 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from ..SipParser.SipStatusCode import SipStatusCode
-
-class SipStackCallBack():
-
-  def RecvRequest( self, clsMessage ):
-    return False
-  
-  def RecvResponse( self, clsMessage ):
-    return False
-  
-  def SendTimeout( self, clsMessage ):
-    return False
+def HasMethod( clsObject, strMethod ):
+	return callable( getattr( clsObject, strMethod, None ) )

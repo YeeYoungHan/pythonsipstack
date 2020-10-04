@@ -32,7 +32,6 @@ from .SipISTList import SipISTList
 
 class SipStack():
 
-  from .SipStackCallback import AddCallBack, RecvRequest, RecvResponse, SendTimeout
   from .SipStackComm import SendSipMessage, RecvSipMessage, RecvSipPacket, Send, SendIpPort, CheckSipMessage
 
   def __init__( self ):
@@ -99,3 +98,25 @@ class SipStack():
   
   def DeleteAllTransaction( self ):
     self.clsNICT.DeleteAll()
+  
+  def AddCallBack( self, clsCallBack ):
+    self.clsCallBackList.append( clsCallBack )
+
+  def RecvRequest( self, clsMessage ):
+    bSendResponse = False
+
+    for clsCallBack in self.clsCallBackList:
+      if( clsCallBack.RecvRequest( clsMessage ) == True ):
+        bSendResponse = True
+
+    if( bSendResponse == False ):
+      clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_NOT_IMPLEMENTED )
+      self.SendSipMessage( clsResponse )
+
+  def RecvResponse( self, clsMessage ):
+    for clsCallBack in self.clsCallBackList:
+      clsCallBack.RecvResponse( clsMessage )
+
+  def SendTimeout( self, clsMessage ):
+    for clsCallBack in self.clsCallBackList:
+      clsCallBack.SendTimeout( clsMessage )

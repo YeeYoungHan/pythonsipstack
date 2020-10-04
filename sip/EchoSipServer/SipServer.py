@@ -18,10 +18,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipStatusCode import SipStatusCode
+from ..SipStack.SipStackCallback import SipStackCallBack
 from ..SipUserAgent.SipUserAgent import SipUserAgent
+from ..SipUserAgent.SipUserAgentCallBack import SipUserAgentCallBack
 from .CallMap import CallMap
 
-class SipServer():
+class SipServer(SipUserAgentCallBack,SipStackCallBack):
 
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()
@@ -111,10 +113,4 @@ class SipServer():
       self.clsUserAgent.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' ) )
       return True
 
-    return False
-  
-  def RecvResponse( self, clsMessage ):
-    return False
-  
-  def SendTimeout( self, clsMessage ):
     return False
