@@ -51,6 +51,9 @@ class SipStack():
   def Start( self, clsSetup ):
     self.clsSetup = clsSetup
 
+    self.clsICT.iTimerD = clsSetup.iTimerD
+    self.clsNIST.iTimerJ = clsSetup.iTimerJ
+
     p = threading.Thread( target=SipStackThread, args=(self,))
     p.daemon = True
     p.start()
