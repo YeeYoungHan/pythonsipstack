@@ -163,6 +163,8 @@ class SipDialog():
           strText += "a=rtpmap:18 G729/8000\r\n"
 
     else:
+      strText += "m=audio " + str(self.iLocalRtpPort) + " RTP/AVP " + str(self.iCodec) + " 101\r\n"
+
       if( self.iCodec == 0 ):
         strText += "a=rtpmap:0 PCMU/8000\r\n"
       elif( self.iCodec == 3 ):
@@ -244,7 +246,7 @@ class SipDialog():
     clsMessage.strSipMethod = strSipMethod
 
     if( len(self.strContactUri) > 0 ):
-      clsMessage.clsReqUri.Parse( self.strContactUri )
+      clsMessage.clsReqUri.Parse( self.strContactUri, 0 )
     else:
       clsMessage.clsReqUri.Set( "sip", self.strToId, self.strContactIp, self.iContactPort )
       clsMessage.clsReqUri.InsertTransport( self.eTransport )

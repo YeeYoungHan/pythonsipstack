@@ -42,7 +42,7 @@ class SipISTList(SipTransactionList):
         if( clsMessage.IsMethod( "ACK" ) ):
           for strKey in self.clsMap:
             clsTransaction = self.clsMap[strKey]
-            if( clsTransaction.clsRequest.IsEqualCallIdSeq( clsMessage.clsCallId ) ):
+            if( clsTransaction.clsRequest.IsEqualCallIdSeq( clsMessage ) ):
               if( clsTransaction.clsAck == None ):
                 if( clsTransaction.clsResponse != None and clsTransaction.clsResponse.iStatusCode == SipStatusCode.SIP_UNAUTHORIZED ):
                   del self.clsMap[strKey]

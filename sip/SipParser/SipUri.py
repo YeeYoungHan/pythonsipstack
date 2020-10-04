@@ -192,7 +192,7 @@ class SipUri():
         if( strText[iPos] == ':' ):
           self.strHost = strText[iStartPos:iPos]
           iPortPos = iPos + 1
-        elif( strText[iPos] == ';' or strText[iPos] == '?' ):
+        elif( strText[iPos] == ';' or strText[iPos] == '?' or strText[iPos] == '>' ):
           break
         iPos += 1          
 
