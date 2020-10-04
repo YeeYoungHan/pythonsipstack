@@ -36,6 +36,7 @@ class SipUserAgent():
   from .SipUserAgentSipStack import RecvRequest, RecvResponse, SendTimeout
   from .SipUserAgentUtil import GetRemoteCallRtp, GetToId, GetFromId, GetContact, GetInviteHeaderValue, GetRSeq, SetRSeq
   from .SipUserAgentUtil import IsRingCall, Is100rel, IsHold, IsConnected, DeleteIncomingCall
+  from .SipUserAgentSend import SendReInvite, SendNotify, SendDtmf, SendPrack
   
   from .SipUserAgentInvite import RecvInviteRequest, RecvInviteResponse
   from .SipUserAgentCancel import RecvCancelRequest

@@ -81,3 +81,7 @@ class SipContentType(SipParameterList):
       return True
 
     return False
+  
+  def Set( self, strType, strSubType ):
+    self.strType = strType
+    self.strSubType = strSubType
