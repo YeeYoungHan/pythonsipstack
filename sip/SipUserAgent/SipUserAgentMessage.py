@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser.SipStatusCode import SipStatusCode
 
 def RecvMessageRequest( self, clsMessage ):
+  if( self.clsCallBack.EventIncomingRequestAuth( clsMessage ) == False ):
+    return True
+    
   if( self.clsCallBack.EventMessage( clsMessage.clsFrom.clsUri.strUser, clsMessage.clsTo.clsUri.strUser, clsMessage ) ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' ) )
     return True

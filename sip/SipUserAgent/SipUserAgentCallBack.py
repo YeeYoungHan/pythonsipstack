@@ -53,3 +53,6 @@ class SipUserAgentCallBack():
   
   def EventMessage( self, strFrom, strTo, clsMessage ):
     return False
+  
+  def EventIncomingRequestAuth( self, clsMessage ):
+    return True

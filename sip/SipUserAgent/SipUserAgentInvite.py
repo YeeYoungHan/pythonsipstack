@@ -62,6 +62,9 @@ def RecvInviteRequest( self, clsMessage ):
   # 새로운 INVITE 인 경우
   strTag = SipMakeTag( )
 
+  if( self.clsCallBack.EventIncomingRequestAuth( clsMessage ) == False ):
+    return True
+
   # 180 Ring 을 전송한다.
   clsResponse = clsMessage.CreateResponse( SipStatusCode.SIP_RINGING, strTag )
   self.clsSipStack.SendSipMessage( clsResponse )

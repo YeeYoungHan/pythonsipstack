@@ -26,6 +26,9 @@ def RecvCancelRequest( self, clsMessage ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST ) )
     return True
   
+  if( self.clsCallBack.EventIncomingRequestAuth( clsMessage ) == False ):
+    return True
+  
   self.clsSipStack.SendSipMessage( clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_OK ) )
 
   clsResponse = None
