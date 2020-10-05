@@ -19,3 +19,30 @@ Python 언어로 SIP stack 을 개발하는 프로젝트입니다.
 
 * 본 프로젝트의 라이선스는 GPLv3 입니다.
 * 본 프로젝트에 대한 상용 라이선스 발급을 원하시면 websearch@naver.com 로 연락해 주세요.
+
+### 폴더 설명
+본 프로젝트에 포함된 폴더에 대한 설명은 다음과 같습니다.
+
+* sip
+  * EchoSipServer : 통화 수신시 해당 통화를 발신자에게 다시 연결하는 프로그램
+  * SdpParser : SDP 메시지 파서/생성 라이브러리
+  * SipParser : SIP 메시지 파서/생성 라이브러리
+  * SipPlatform : 본 프로젝트에서 공통으로 사용하는 라이브러리
+  * SipServer : SIP 서버 프로그램
+  * SipStack : SIP stack 라이브러리
+  * SipUserAgent : SIP stack 기반 User Agent 라이브러리
+
+* test
+  * TestSipParser : SIP/SDP 메시지 파서/생성 라이브러리 테스트 프로그램
+  * TestSipPlatform : 공통 라이브러리 테스트 프로그램
+  * TestSipUserAgent : SipUserAgent 테스트 프로그램
+
+### EchoSipServer 실행 방법
+
+* sip/EchoSipServer/EchoSipServer.xml 설정 파일을 자신의 환경에 적합하게 수정한다.
+  * Sip -> LocalIp 를 수정한다.
+  * Log -> Folder 를 수정한다.
+* 현재 폴더에서 아래와 같이 실행한다.
+```
+python -m sip.EchoSipServer.EchoSipServer sip\EchoSipServer\EchoSipServer.xml
+```
