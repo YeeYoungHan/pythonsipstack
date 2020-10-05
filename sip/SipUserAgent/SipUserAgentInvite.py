@@ -79,8 +79,7 @@ def RecvInviteRequest( self, clsMessage ):
   clsDialog.strCallId = strCallId
   clsDialog.SetRemoteRtp( clsRtp )
 
-  clsDialog.strContactIp = clsMessage.GetTopViaIp()
-  clsDialog.iContactPort = clsMessage.GetTopViaPort()
+  clsDialog.strContactIp, clsDialog.iContactPort = clsMessage.GetTopViaIpPort()
 
   if( len(clsMessage.clsContactList) > 0 ):
     clsDialog.strContactUri = str(clsMessage.clsContactList[0])

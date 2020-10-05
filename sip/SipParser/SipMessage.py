@@ -252,26 +252,22 @@ class SipMessage():
     
     return None
 
-  def GetTopViaIp( self ):
+  def GetTopViaIpPort( self ):
     if( len(self.clsViaList) == 0 ):
-      return ''
+      return '', 0
 
     strIp = self.clsViaList[0].SelectParam( "received" )
-    if( len(strIp) > 0 ):
-      return strIp
+    if( len(strIp) == 0 ):
+      strIp = self.clsViaList[0].strHost
     
-    return self.clsViaList[0].strHost
-  
-  def GetTopViaPort( self ):
-    if( len(self.clsViaList) == 0 ):
-      return ''
-
     strPort = self.clsViaList[0].SelectParam( "rport" )
     if( len(strPort) > 0 ):
-      return int(strPort)
+      iPort = int(strPort)
+    else:
+      iPort = self.clsViaList[0].iPort
     
-    return self.clsViaList[0].iPort
-
+    return strIp, iPort
+  
   def AddIpPortToTopVia( self, strIp, iPort, eTransport ):
     if( len(self.clsViaList) == 0 ):
       return
