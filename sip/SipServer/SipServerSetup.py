@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import xml.etree.ElementTree as et
 from ..SipPlatform.Log import Log, LogLevel
+from ..SipPlatform.XmlUtility import XmlGetDataString, XmlGetDataInt, XmlGetDataBool, XmlGetAttrBool
 
 class SipServerSetup():
 
@@ -44,23 +45,23 @@ class SipServerSetup():
       print( "Sip element is not found" )
       return False
     
-    self.strLocalIp = GetDataString( clsSip, "LocalIp", self.strLocalIp )
-    self.iUdpPort = GetDataInt( clsSip, "UdpPort", self.iUdpPort )
-    self.iUdpThreadCount = GetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
-    self.strRealm = GetDataString( clsSip, "Realm", self.strRealm )
-    self.iMinRegisterTimeout = GetDataInt( clsSip, "MinRegisterTimeout", self.iMinRegisterTimeout )
-    self.strCallPickupId = GetDataString( clsSip, "CallPickupId", self.strCallPickupId )
-    self.iStackExecutePeriod = GetDataInt( clsSip, "StackExecutePeriod", self.iStackExecutePeriod )
-    self.iTimerD = GetDataInt( clsSip, "TimerD", self.iTimerD )
-    self.iTimerJ = GetDataInt( clsSip, "TimerJ", self.iTimerJ )
-    self.bIpv6 = GetDataBool( clsSip, "Ipv6", self.bIpv6 )
+    self.strLocalIp = XmlGetDataString( clsSip, "LocalIp", self.strLocalIp )
+    self.iUdpPort = XmlGetDataInt( clsSip, "UdpPort", self.iUdpPort )
+    self.iUdpThreadCount = XmlGetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
+    self.strRealm = XmlGetDataString( clsSip, "Realm", self.strRealm )
+    self.iMinRegisterTimeout = XmlGetDataInt( clsSip, "MinRegisterTimeout", self.iMinRegisterTimeout )
+    self.strCallPickupId = XmlGetDataString( clsSip, "CallPickupId", self.strCallPickupId )
+    self.iStackExecutePeriod = XmlGetDataInt( clsSip, "StackExecutePeriod", self.iStackExecutePeriod )
+    self.iTimerD = XmlGetDataInt( clsSip, "TimerD", self.iTimerD )
+    self.iTimerJ = XmlGetDataInt( clsSip, "TimerJ", self.iTimerJ )
+    self.bIpv6 = XmlGetDataBool( clsSip, "Ipv6", self.bIpv6 )
 
     clsLog = clsRoot.find("Log")
     if( clsLog == None ):
       print( "Log element is not found" )
       return False
 
-    strLogFolder = GetDataString( clsLog, "Folder", '' )
+    strLogFolder = XmlGetDataString( clsLog, "Folder", '' )
     if( len(strLogFolder) == 0 ):
       print( "Log -> Folder element is not found" )
       return False
@@ -70,15 +71,15 @@ class SipServerSetup():
     iLogLevel = 0
     clsChild = clsLog.find( "Level" )
     if( clsChild != None ):
-      if( GetAttrString( clsChild, "Debug" ) == "true" ):
+      if( XmlGetAttrBool( clsChild, "Debug", False ) ):
         iLogLevel |= LogLevel.DEBUG
-      if( GetAttrString( clsChild, "Info" ) == "true" ):
+      if( XmlGetAttrBool( clsChild, "Info", False ) ):
         iLogLevel |= LogLevel.INFO
-      if( GetAttrString( clsChild, "Network" ) == "true" ):
+      if( XmlGetAttrBool( clsChild, "Network", False ) ):
         iLogLevel |= LogLevel.NETWORK
     
     Log.SetLevel( iLogLevel )
-    Log.iMaxLogSize = GetDataInt( clsLog, "MaxSize", 20000000 )
+    Log.iMaxLogSize = XmlGetDataInt( clsLog, "MaxSize", 20000000 )
 
     return True
 
@@ -91,30 +92,3 @@ class SipServerSetup():
     
     return False
 
-def GetDataString( clsParent, strName, strValue ):
-  clsChild = clsParent.find( strName )
-  if( clsChild != None ):
-    return clsChild.text
-  
-  return strValue
-
-def GetDataInt( clsParent, strName, iValue ):
-  clsChild = clsParent.find( strName )
-  if( clsChild != None ):
-    return int(clsChild.text)
-  
-  return iValue
-
-def GetDataBool( clsParent, strName, iValue ):
-  clsChild = clsParent.find( strName )
-  if( clsChild != None and clsChild.text.lower() == "true" ):
-    return True
-  
-  return False
-
-def GetAttrString( clsNode, strName ):
-  strAttr = clsNode.attrib.get( strName )
-  if( strAttr != None ):
-    return strAttr
-  
-  return ''
