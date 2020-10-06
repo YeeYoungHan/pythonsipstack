@@ -17,7 +17,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 import xml.etree.ElementTree as et
-from ..SipPlatform.XmlUtility import XmlGetDataString, XmlGetDataInt, XmlGetDataBool
+from ..SipPlatform.Log import Log, LogLevel
+from ..SipPlatform.XmlUtility import XmlGetDataString, XmlGetDataInt, XmlGetDataBool, XmlGetAttrString, XmlGetAttrBool
 from ..SipUserAgent.SipServerInfo import SipServerInfo
 
 class XmlSipServerFlag():
@@ -55,12 +56,58 @@ class XmlSipServer(SipServerInfo):
   def Parse( self, strFileName ):
     self.Clear()
 
-    clsTree = et.ElementTree( file=strFileName )
-    clsRoot = clsTree.getroot()
+    try:
+      clsTree = et.ElementTree( file=strFileName )
+      clsRoot = clsTree.getroot()
 
-    if( XmlGetDataBool( clsRoot, "Use", False ) == False ):
+      if( XmlGetDataBool( clsRoot, "Use", False ) == False ):
+        return False
+      
+      self.strIp = XmlGetDataString( clsRoot, "Ip", "" )
+      self.iPort = XmlGetDataInt( clsRoot, "Port", 5060 )
+      self.strDomain = XmlGetDataString( clsRoot, "Domain", "" )
+      self.strUserId = XmlGetDataString( clsRoot, "UserId", "" )
+      self.strPassWord = XmlGetDataString( clsRoot, "PassWord", "" )
+      self.iLoginTimeout = XmlGetDataInt( clsRoot, "LoginTimeout", 3600 )
+
+      clsRPL = clsRoot.find( "RoutePrefixList" )
+      if( clsRPL != None ):
+        for clsChild in clsRPL:
+          if( clsChild.tag == "RoutePrefix" ):
+            clsRoutePrefix = RoutePrefix()
+            clsRoutePrefix.strPrefix = clsChild.text
+            clsRoutePrefix.bDeletePrefix = XmlGetAttrBool( clsChild, "DeletePrefix", False )
+            self.clsRoutePrefixList.append( clsRoutePrefix )
+      
+      clsIRL = clsRoot.find( "IncomingRouteList" )
+      if( clsIRL != None ):
+        for clsChild in clsIRL:
+          if( clsChild.tag == "IncomingRoute" ):
+            clsIncomingRoute = IncomingRoute()
+            clsIncomingRoute.strToId = XmlGetAttrString( clsChild, "ToId", "" )
+            clsIncomingRoute.strDestId = XmlGetAttrString( clsChild, "DestId", "" )
+            if( clsIncomingRoute.IsEmpty() == False ):
+              self.clsIncomingRouteList.append( clsIncomingRoute )
+    except Exception as other:
+      Log.Print( LogLevel.ERROR, "XmlSipServer.Parse(" + strFileName + ") error(" + str(other) + ")" )
+      return False
+
+    if( len(self.strIp) == 0 ):
       return False
     
-    self.strIp = XmlGetDataString( clsRoot, "Ip", "" )
+    if( len(self.strDomain) == 0 ):
+      self.strDomain = self.strIp
 
-  
+    if( self.iPort <= 0 ):
+      self.iPort = 5060
+    
+    return True
+
+  def Clear( self ):
+    self.strIp = ''
+    self.iPort = 5060
+    self.strDomain = ''
+    self.strUserId = ''
+    self.strPassWord = ''
+    self.clsRoutePrefixList.clear()
+    self.clsIncomingRouteList.clear()

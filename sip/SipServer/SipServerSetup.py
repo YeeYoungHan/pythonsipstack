@@ -37,49 +37,54 @@ class SipServerSetup():
     self.strSipServerXmlFolder = ''
   
   def Read( self, strFileName ):
-    clsTree = et.ElementTree( file=strFileName )
-    clsRoot = clsTree.getroot()
+    try:
+      clsTree = et.ElementTree( file=strFileName )
+      clsRoot = clsTree.getroot()
 
-    clsSip = clsRoot.find("Sip")
-    if( clsSip == None ):
-      print( "Sip element is not found" )
-      return False
+      clsSip = clsRoot.find("Sip")
+      if( clsSip == None ):
+        print( "Sip element is not found" )
+        return False
+      
+      self.strLocalIp = XmlGetDataString( clsSip, "LocalIp", self.strLocalIp )
+      self.iUdpPort = XmlGetDataInt( clsSip, "UdpPort", self.iUdpPort )
+      self.iUdpThreadCount = XmlGetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
+      self.strRealm = XmlGetDataString( clsSip, "Realm", self.strRealm )
+      self.iMinRegisterTimeout = XmlGetDataInt( clsSip, "MinRegisterTimeout", self.iMinRegisterTimeout )
+      self.strCallPickupId = XmlGetDataString( clsSip, "CallPickupId", self.strCallPickupId )
+      self.iStackExecutePeriod = XmlGetDataInt( clsSip, "StackExecutePeriod", self.iStackExecutePeriod )
+      self.iTimerD = XmlGetDataInt( clsSip, "TimerD", self.iTimerD )
+      self.iTimerJ = XmlGetDataInt( clsSip, "TimerJ", self.iTimerJ )
+      self.bIpv6 = XmlGetDataBool( clsSip, "Ipv6", self.bIpv6 )
+
+      clsLog = clsRoot.find("Log")
+      if( clsLog == None ):
+        print( "Log element is not found" )
+        return False
+
+      strLogFolder = XmlGetDataString( clsLog, "Folder", '' )
+      if( len(strLogFolder) == 0 ):
+        print( "Log -> Folder element is not found" )
+        return False
+
+      Log.SetDirectory( strLogFolder )
+
+      iLogLevel = 0
+      clsChild = clsLog.find( "Level" )
+      if( clsChild != None ):
+        if( XmlGetAttrBool( clsChild, "Debug", False ) ):
+          iLogLevel |= LogLevel.DEBUG
+        if( XmlGetAttrBool( clsChild, "Info", False ) ):
+          iLogLevel |= LogLevel.INFO
+        if( XmlGetAttrBool( clsChild, "Network", False ) ):
+          iLogLevel |= LogLevel.NETWORK
     
-    self.strLocalIp = XmlGetDataString( clsSip, "LocalIp", self.strLocalIp )
-    self.iUdpPort = XmlGetDataInt( clsSip, "UdpPort", self.iUdpPort )
-    self.iUdpThreadCount = XmlGetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
-    self.strRealm = XmlGetDataString( clsSip, "Realm", self.strRealm )
-    self.iMinRegisterTimeout = XmlGetDataInt( clsSip, "MinRegisterTimeout", self.iMinRegisterTimeout )
-    self.strCallPickupId = XmlGetDataString( clsSip, "CallPickupId", self.strCallPickupId )
-    self.iStackExecutePeriod = XmlGetDataInt( clsSip, "StackExecutePeriod", self.iStackExecutePeriod )
-    self.iTimerD = XmlGetDataInt( clsSip, "TimerD", self.iTimerD )
-    self.iTimerJ = XmlGetDataInt( clsSip, "TimerJ", self.iTimerJ )
-    self.bIpv6 = XmlGetDataBool( clsSip, "Ipv6", self.bIpv6 )
+      Log.SetLevel( iLogLevel )
+      Log.iMaxLogSize = XmlGetDataInt( clsLog, "MaxSize", 20000000 )
 
-    clsLog = clsRoot.find("Log")
-    if( clsLog == None ):
-      print( "Log element is not found" )
+    except Exception as other:
+      Log.Print( LogLevel.ERROR, "SipServerSetup.Read(" + strFileName + ") error(" + str(other) + ")" )
       return False
-
-    strLogFolder = XmlGetDataString( clsLog, "Folder", '' )
-    if( len(strLogFolder) == 0 ):
-      print( "Log -> Folder element is not found" )
-      return False
-
-    Log.SetDirectory( strLogFolder )
-
-    iLogLevel = 0
-    clsChild = clsLog.find( "Level" )
-    if( clsChild != None ):
-      if( XmlGetAttrBool( clsChild, "Debug", False ) ):
-        iLogLevel |= LogLevel.DEBUG
-      if( XmlGetAttrBool( clsChild, "Info", False ) ):
-        iLogLevel |= LogLevel.INFO
-      if( XmlGetAttrBool( clsChild, "Network", False ) ):
-        iLogLevel |= LogLevel.NETWORK
-    
-    Log.SetLevel( iLogLevel )
-    Log.iMaxLogSize = XmlGetDataInt( clsLog, "MaxSize", 20000000 )
 
     return True
 

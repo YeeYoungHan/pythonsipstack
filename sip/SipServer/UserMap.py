@@ -67,3 +67,52 @@ class UserMap():
     
     return True
   
+  def Select( self, strUserId ):
+    self.clsMutex.acquire()
+    clsUserInfo = self.clsMap.get( strUserId )
+    self.clsMutex.release()
+
+    return clsUserInfo
+  
+  def SelectGroup( self, strGroupId ):
+    clsUserIdList = []
+
+    self.clsMutex.acquire()
+    for strUserId in self.clsMap:
+      clsUserInfo = self.clsMap[strUserId]
+      if( clsUserInfo.strGroupId == strGroupId ):
+        clsUserIdList.append( strUserId )
+    self.clsMutex.release()
+
+    return clsUserIdList
+
+  def Delete( self, strUserId ):
+    self.clsMutex.acquire()
+    if( self.clsMap.get( strUserId ) != None ):
+      Log.Print( LogLevel.DEBUG, "user(" + strUserId + ") is deleted" )
+      del self.clsMap[strUserId]
+    self.clsMutex.release()
+  
+  def SetIpPort( self, strUserId, strIp, iPort ):
+    self.clsMutex.acquire()
+    clsUserInfo = self.clsMap.get( strUserId )
+    if( clsUserInfo != None ):
+      clsUserInfo.strIp = strIp
+      clsUserInfo.iPort = iPort
+      Log.Print( LogLevel.DEBUG, "user(" + strUserId + ") ip(" + strIp + ") port(" + str(iPort) + ")" )
+    self.clsMutex.release()
+
+  def DeleteTimeout( self, iTimeout ):
+    clsUserIdList = []
+    iTime = time.time()
+
+    self.clsMutex.acquire()
+    for strUserId in self.clsMap:
+      clsUserInfo = self.clsMap[strUserId]
+      if( iTime > ( clsUserInfo.iLoginTime + clsUserInfo.iLoginTimeout + iTimeout ) ):
+        clsUserIdList.append( strUserId )
+    
+    for strUserId in clsUserIdList:
+      Log.Print( LogLevel.DEBUG, "user(" + strUserId + ") is deleted - timeout" )
+      del self.clsMap[strUserId]
+    self.clsMutex.release()
