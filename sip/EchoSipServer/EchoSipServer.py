@@ -31,7 +31,9 @@ if( len(sys.argv) == 1 ):
 strSetupFileName = sys.argv[1]
 clsSetupFile = EchoSipServerSetup()
 
-clsSetupFile.Read( strSetupFileName )
+if( clsSetupFile.Read( strSetupFileName ) == False ):
+  print( "lsSetupFile.Read(" + strSetupFileName + ") error" )
+  exit()
 
 clsSetup = SipStackSetup()
 
