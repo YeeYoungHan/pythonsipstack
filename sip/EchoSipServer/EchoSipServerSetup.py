@@ -27,42 +27,47 @@ class EchoSipServerSetup():
     self.iUdpThreadCount = 10
   
   def Read( self, strFileName ):
-    clsTree = et.ElementTree( file=strFileName )
-    clsRoot = clsTree.getroot()
 
-    clsSip = clsRoot.find("Sip")
-    if( clsSip == None ):
-      print( "Sip element is not found" )
+    try:
+      clsTree = et.ElementTree( file=strFileName )
+      clsRoot = clsTree.getroot()
+
+      clsSip = clsRoot.find("Sip")
+      if( clsSip == None ):
+        print( "Sip element is not found" )
+        return False
+      
+      self.strLocalIp = GetDataString( clsSip, "LocalIp", self.strLocalIp )
+      self.iUdpPort = GetDataInt( clsSip, "UdpPort", self.iUdpPort )
+      self.iUdpThreadCount = GetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
+
+      clsLog = clsRoot.find("Log")
+      if( clsLog == None ):
+        print( "Log element is not found" )
+        return False
+
+      strLogFolder = GetDataString( clsLog, "Folder", '' )
+      if( len(strLogFolder) == 0 ):
+        print( "Log -> Folder element is not found" )
+        return False
+
+      Log.SetDirectory( strLogFolder )
+
+      iLogLevel = 0
+      clsChild = clsLog.find( "Level" )
+      if( clsChild != None ):
+        if( GetAttrString( clsChild, "Debug" ) == "true" ):
+          iLogLevel |= LogLevel.DEBUG
+        if( GetAttrString( clsChild, "Info" ) == "true" ):
+          iLogLevel |= LogLevel.INFO
+        if( GetAttrString( clsChild, "Network" ) == "true" ):
+          iLogLevel |= LogLevel.NETWORK
+      
+      Log.SetLevel( iLogLevel )
+      Log.iMaxLogSize = GetDataInt( clsLog, "MaxSize", 20000000 )
+    except Exception as other:
+      Log.Print( LogLevel.ERROR, "SipServerSetup.Read(" + strFileName + ") error(" + str(other) + ")" )
       return False
-    
-    self.strLocalIp = GetDataString( clsSip, "LocalIp", self.strLocalIp )
-    self.iUdpPort = GetDataInt( clsSip, "UdpPort", self.iUdpPort )
-    self.iUdpThreadCount = GetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
-
-    clsLog = clsRoot.find("Log")
-    if( clsLog == None ):
-      print( "Log element is not found" )
-      return False
-
-    strLogFolder = GetDataString( clsLog, "Folder", '' )
-    if( len(strLogFolder) == 0 ):
-      print( "Log -> Folder element is not found" )
-      return False
-
-    Log.SetDirectory( strLogFolder )
-
-    iLogLevel = 0
-    clsChild = clsLog.find( "Level" )
-    if( clsChild != None ):
-      if( GetAttrString( clsChild, "Debug" ) == "true" ):
-        iLogLevel |= LogLevel.DEBUG
-      if( GetAttrString( clsChild, "Info" ) == "true" ):
-        iLogLevel |= LogLevel.INFO
-      if( GetAttrString( clsChild, "Network" ) == "true" ):
-        iLogLevel |= LogLevel.NETWORK
-    
-    Log.SetLevel( iLogLevel )
-    Log.iMaxLogSize = GetDataInt( clsLog, "MaxSize", 20000000 )
 
     return True
 
