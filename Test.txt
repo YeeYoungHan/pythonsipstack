@@ -1,3 +1,4 @@
 # python -m test.TestSipParser.TestSipUri
 # python -m test.TestSipUserAgent.TestSipUserAgent
 # python -m sip.EchoSipServer.EchoSipServer sip\EchoSipServer\EchoSipServer.xml
+# python -m sip.SipServer.SipServerMain sip\SipServer\SipServer.xml

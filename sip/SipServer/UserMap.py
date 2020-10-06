@@ -38,7 +38,7 @@ class UserMap():
     self.clsMap = {}
   
   def Insert( self, clsMessage, clsContact, clsXmlUser ):
-    strUserId = clsMessage.clsFrom.clsUri.strUserId
+    strUserId = clsMessage.clsFrom.clsUri.strUser
     if( len(strUserId) == 0 ):
       return False
     

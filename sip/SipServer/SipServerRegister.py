@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from ..SipPlatform.SipMd5 import SipMd5String
 from ..SipParser.SipChallenge import SipChallenge
+from ..SipParser.SipFrom import SipFrom
 from ..SipParser.SipStatusCode import SipStatusCode
 from .XmlUser import SelectUser
 
@@ -34,6 +35,7 @@ def SendUnAuthorizedResponse( self, clsMessage ):
   clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_UNAUTHORIZED )
   self.AddChallenge( clsResponse )
   self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
+  return True
 
 class ECheckAuthResult():
   OK = 0
@@ -56,8 +58,37 @@ def CheckAuthorization( self, clsCredential, strMethod ):
   
   return ECheckAuthResult.OK, clsXmlUser
 
-def RecvRequestRegister( clsMessage ):
+def RecvRequestRegister( self, clsMessage ):
   
+  if( clsMessage.iExpires != 0 and self.clsSetupFile.iMinRegisterTimeout != 0 ):
+    if( clsMessage.iExpires < self.clsSetupFile.iMinRegisterTimeout ):
+      clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_INTERVAL_TOO_BRIEF )
+      clsResponse.AddHeader( "Min-Expires", self.clsSetupFile.iMinRegisterTimeout )
+      self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
+      return True
+
+  if( len(clsMessage.clsAuthorizationList) == 0 ):
+    return self.SendUnAuthorizedResponse( clsMessage )
+  
+  iResult, clsXmlUser = self.CheckAuthorization( clsMessage.clsAuthorizationList[0], clsMessage.strSipMethod )
+  if( iResult == ECheckAuthResult.NONCE_NOT_FOUND ):
+    return self.SendUnAuthorizedResponse( clsMessage )
+  elif( iResult == ECheckAuthResult.ERROR ):
+    return self.SendResponse( clsMessage, SipStatusCode.SIP_FORBIDDEN )
+  
+  if( clsMessage.GetExpires() == 0 ):
+    self.clsUserMap.Delete( clsMessage.clsFrom.clsUri.strUser )
+    return self.SendResponse( clsMessage, SipStatusCode.SIP_OK )
+  
+  clsContact = SipFrom()
+  
+  if( self.clsUserMap.Insert( clsMessage, clsContact, clsXmlUser ) ):
+    clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_OK )
+    clsResponse.clsContactList.append( clsContact )
+    self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
+  else:
+    return self.SendResponse( clsMessage, SipStatusCode.SIP_BAD_REQUEST )
+
   return True
 
 def CheckAuthorizationResponse( strUserName, strRealm, strNonce, strUri, strResponse, strPassWord, strMethod ):

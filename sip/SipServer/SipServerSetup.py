@@ -41,6 +41,7 @@ class SipServerSetup():
       clsTree = et.ElementTree( file=strFileName )
       clsRoot = clsTree.getroot()
 
+      # SIP 설정
       clsSip = clsRoot.find("Sip")
       if( clsSip == None ):
         print( "Sip element is not found" )
@@ -57,6 +58,7 @@ class SipServerSetup():
       self.iTimerJ = XmlGetDataInt( clsSip, "TimerJ", self.iTimerJ )
       self.bIpv6 = XmlGetDataBool( clsSip, "Ipv6", self.bIpv6 )
 
+      # 로그 설정
       clsLog = clsRoot.find("Log")
       if( clsLog == None ):
         print( "Log element is not found" )
@@ -81,6 +83,15 @@ class SipServerSetup():
     
       Log.SetLevel( iLogLevel )
       Log.iMaxLogSize = XmlGetDataInt( clsLog, "MaxSize", 20000000 )
+
+      # XML 폴더 설정
+      clsXmlFolder = clsRoot.find("XmlFolder")
+      if( clsXmlFolder == None ):
+        print( "XmlFolder element is not found" )
+        return False
+      
+      self.strUserXmlFolder = XmlGetDataString( clsXmlFolder, "User", self.strUserXmlFolder )
+      self.strSipServerXmlFolder = XmlGetDataString( clsXmlFolder, "SipServer", self.strSipServerXmlFolder )
 
     except Exception as other:
       Log.Print( LogLevel.ERROR, "SipServerSetup.Read(" + strFileName + ") error(" + str(other) + ")" )

@@ -1,0 +1,20 @@
+<Setup>
+	<Sip>
+		<LocalIp>192.168.0.94</LocalIp>
+		<UdpPort>5060</UdpPort>
+		<UdpThreadCount>1</UdpThreadCount>
+		<Realm>pythonsipserver</Realm>
+		<MinRegisterTimeout>300</MinRegisterTimeout>
+		<CallPickupId>**</CallPickupId>
+		<StackExecutePeriod>20</StackExecutePeriod>
+	</Sip>
+	<Log>
+		<Folder>c:\temp\sipserver</Folder>
+		<Level Debug="true" Info="true" Network="true" Sql="true" />
+		<MaxSize>10000000</MaxSize>
+	</Log>
+	<XmlFolder>
+		<User>sip/SipServer/UserXml</User>
+		<SipServer>sip/SipServer/SipServerXml</SipServer>
+	</XmlFolder>
+</Setup>

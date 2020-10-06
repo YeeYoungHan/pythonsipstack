@@ -33,7 +33,7 @@ class SipServer(SipUserAgentCallBack,SipStackCallBack):
 
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()
-    self.clsCallMap = CallMap()
+    self.clsCallMap = CallMap( self.clsUserAgent )
     self.clsNonceMap = NonceMap()
     self.clsSipServerMap = SipServerMap()
     self.clsUserMap = UserMap()
@@ -67,6 +67,7 @@ class SipServer(SipUserAgentCallBack,SipStackCallBack):
   def SendResponse( self, clsMessage, iStatusCode ):
     clsResponse = clsMessage.CreateResponseWithToTag( iStatusCode )
     self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
+    return True
   
   def StopCall( self, strCallId, iStatusCode ):
     self.clsUserAgent.StopCall( strCallId, iStatusCode )

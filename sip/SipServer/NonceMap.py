@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import time
 import threading
+from ..SipPlatform.SipMd5 import SipMd5String
 
 class NonceMap():
 
@@ -31,7 +32,7 @@ class NonceMap():
     i = 0
 
     while bInsert == False:
-      strNonce = str(i) + "::" + str(iTime) + "::pythonsipserver"
+      strNonce = SipMd5String( str(i) + "::" + str(iTime) + "::pythonsipserver" )
 
       self.clsMutex.acquire()
       if( self.clsMap.get( strNonce ) == None ):
