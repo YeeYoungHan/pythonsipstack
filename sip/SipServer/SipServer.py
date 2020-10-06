@@ -29,6 +29,8 @@ from .UserMap import UserMap
 
 class SipServer(SipUserAgentCallBack,SipStackCallBack):
 
+  from .SipServerRegister import AddChallenge, SendUnAuthorizedResponse, CheckAuthorization, RecvRequestRegister
+
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()
     self.clsCallMap = CallMap()

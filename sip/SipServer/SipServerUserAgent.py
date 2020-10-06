@@ -16,22 +16,3 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from ..SipParser.SipChallenge import SipChallenge
-from ..SipParser.SipStatusCode import SipStatusCode
-
-def AddChallenge( self, clsResponse ):
-  clsChallenge = SipChallenge()
-
-  clsChallenge.strType = "Digest"
-  clsChallenge.strNonce = self.clsNonceMap.GetNewValue()
-  clsChallenge.strRealm = self.clsSetupFile.strRealm
-
-  clsResponse.clsWwwAuthenticateList.append( clsChallenge )
-
-def SendUnAuthorizedResponse( self, clsMessage ):
-  clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_UNAUTHORIZED )
-  self.AddChallenge( clsResponse )
-  self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
-
-def CheckAuthorizationResponse( strUserName, strRealm, strNonce, strUri, strResponse, strPassWord, strMethod ):
-  return True
