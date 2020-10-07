@@ -30,10 +30,13 @@ from .UserMap import UserMap
 class SipServer(SipUserAgentCallBack,SipStackCallBack):
 
   from .SipServerRegister import AddChallenge, SendUnAuthorizedResponse, CheckAuthorization, RecvRequestRegister
+  from .SipServerUserAgent import CheckAuthrization, EventRegister, EventIncomingRequestAuth, EventIncomingCall, EventCallStart, EventCallEnd
+  from .SipServerUserAgent import EventReInvite 
 
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()
     self.clsCallMap = CallMap( self.clsUserAgent )
+    self.clsTransCallMap = CallMap( self.clsUserAgent )
     self.clsNonceMap = NonceMap()
     self.clsSipServerMap = SipServerMap()
     self.clsUserMap = UserMap()

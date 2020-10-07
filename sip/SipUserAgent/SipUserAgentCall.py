@@ -215,7 +215,7 @@ def StopCallAll( self ):
   clsCallIdList = self.GetCallIdList()
 
   for strCallId in clsCallIdList:
-    self.StopCall( strCallId )
+    self.StopCall( strCallId, 0 )
 
 def CreateCall( self, strFrom, strTo, clsRtp, clsRoute ):
   if( len(strFrom) == 0 or len(strTo) == 0 ):

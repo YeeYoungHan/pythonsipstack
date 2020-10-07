@@ -22,6 +22,11 @@ from ..SipParser.SipFrom import SipFrom
 from ..SipParser.SipStatusCode import SipStatusCode
 from .XmlUser import SelectUser
 
+class ECheckAuthResult():
+  OK = 0
+  NONCE_NOT_FOUND = 1
+  ERROR = 2
+
 def AddChallenge( self, clsResponse ):
   clsChallenge = SipChallenge()
 
@@ -36,11 +41,6 @@ def SendUnAuthorizedResponse( self, clsMessage ):
   self.AddChallenge( clsResponse )
   self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
   return True
-
-class ECheckAuthResult():
-  OK = 0
-  NONCE_NOT_FOUND = 1
-  ERROR = 2
 
 def CheckAuthorization( self, clsCredential, strMethod ):
   if( len(clsCredential.strUserName) == 0 ):

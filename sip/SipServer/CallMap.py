@@ -135,7 +135,7 @@ class CallMap():
   def StopCallAll( self ):
     self.clsMutex.acquire()
     for strCallId in self.clsMap:
-      self.clsUserAgent.StopCall( strCallId )
+      self.clsUserAgent.StopCall( strCallId, 0 )
     self.clsMutex.release()
   
   

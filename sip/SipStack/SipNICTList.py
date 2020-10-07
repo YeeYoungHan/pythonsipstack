@@ -108,7 +108,7 @@ class SipNICTList(SipTransactionList):
     self.clsMutex.acquire()
     clsTransaction = self.clsMap.get( strKey )
     if( clsTransaction != None ):
-      del clsMap[strKey]
+      del self.clsMap[strKey]
     self.clsMutex.release()
 
   def DeleteAll( self ):

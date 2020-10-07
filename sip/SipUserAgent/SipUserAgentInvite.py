@@ -205,7 +205,7 @@ def RecvInviteResponse( self, clsMessage ):
   
   if( bStopCall ):
     # CANCEL 전송 후, INVITE 200 OK 수신하였으면 BYE 를 전송한다.
-    self.StopCall( strCallId )
+    self.StopCall( strCallId, 0 )
     bFound = False
   
   if( bFound ):

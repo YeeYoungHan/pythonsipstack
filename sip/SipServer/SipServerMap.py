@@ -79,7 +79,7 @@ class SipServerMap():
 
   def Select( self, strIp, strUserId ):
     bRes = False
-    strKey = GetKeyIpUserId( strIp, strUserId )
+    strKey = self.GetKeyIpUserId( strIp, strUserId )
 
     self.clsMutex.acquire()
     if( self.clsMap.get( strKey ) != None ):

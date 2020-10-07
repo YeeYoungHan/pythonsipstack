@@ -20,6 +20,7 @@ import time
 import threading
 from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipTransport import SipTransport, SipGetTransport
+from ..SipUserAgent.SipCallRoute import SipCallRoute
 
 class UserInfo():
 
@@ -30,6 +31,16 @@ class UserInfo():
     self.iLoginTime = 0.0
     self.iLoginTimeout = 0
     self.strGroupId = ''
+
+  def GetCallRoute( self ):
+    clsRoute = SipCallRoute()
+
+    clsRoute.strDestIp = self.strIp
+    clsRoute.iDestPort = self.iPort
+    clsRoute.eTransport = self.eTransport
+
+    return clsRoute
+
 
 class UserMap():
 
