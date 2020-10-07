@@ -51,13 +51,15 @@ def RecvInviteRequest( self, clsMessage ):
     self.clsDialogMutex.acquire()
     clsDialog = self.clsDialogMap.get(strCallId)
     if( clsDialog != None ):
-      clsDialog.SetLocalRtp( clsRtp )
+      clsDialog.SetLocalRtp( clsLocalRtp )
       clsResponse = clsMessage.CreateResponse( SipStatusCode.SIP_OK, '' )
       clsResponse = clsDialog.AddSdp( clsResponse )
     self.clsDialogMutex.release()
 
     if( clsResponse != None ):
       self.clsSipStack.SendSipMessage( clsResponse )
+    
+    return True
 
   # 새로운 INVITE 인 경우
   strTag = SipMakeTag( )
@@ -85,7 +87,7 @@ def RecvInviteRequest( self, clsMessage ):
   clsDialog.strContactIp, clsDialog.iContactPort = clsMessage.GetTopViaIpPort()
 
   if( len(clsMessage.clsContactList) > 0 ):
-    clsDialog.strContactUri = str(clsMessage.clsContactList[0])
+    clsDialog.strContactUri = str(clsMessage.clsContactList[0].clsUri)
   
   clsDialog.iInviteTime = time.time()
   clsDialog.clsInviteRecv = clsMessage
@@ -151,7 +153,7 @@ def RecvInviteResponse( self, clsMessage ):
           bCreateAck = True
         
         if( len(clsMessage.clsContactList) > 0 ):
-          clsDialog.strContactUri = str(clsMessage.clsContactList[0])
+          clsDialog.strContactUri = str(clsMessage.clsContactList[0].clsUri)
           bCreateAck = True
         
         if( bCreateAck ):

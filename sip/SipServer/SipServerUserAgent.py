@@ -37,6 +37,8 @@ def CheckAuthrization( self, clsMessage ):
     self.SendResponse( clsMessage, SipStatusCode.SIP_FORBIDDEN )
     return False
   
+  self.clsUserMap.Insert( clsMessage, None, clsXmlUser )
+  
   return True
 
 def EventRegister( self, clsServerInfo, iStatus ):
@@ -51,7 +53,7 @@ def EventIncomingRequestAuth( self, clsMessage ):
   
   # IP-PBX 에서 전송한 SIP 요청 메시지는 인증 허용으로 처리한다.
   if( self.clsSipServerMap.Select( strIp, clsMessage.clsTo.clsUri.strUser ) ):
-    Log.Print( LogLevel.DEBUG, "EventIncomingRequestAuth ip(" + strIp + ") user(" + clsMessage.strTo.clsUri.strUser + ") IP-PBX => allowed" )
+    Log.Print( LogLevel.DEBUG, "EventIncomingRequestAuth ip(" + strIp + ") user(" + clsMessage.clsTo.clsUri.strUser + ") IP-PBX => allowed" )
     return True
   
   clsUserInfo = self.clsUserMap.Select( clsMessage.clsFrom.clsUri.strUser )
@@ -63,12 +65,16 @@ def EventIncomingRequestAuth( self, clsMessage ):
         Log.Print( LogLevel.DEBUG, "EventIncomingRequestAuth BYE CallId(" + strCallId + ") is found" )
         return True
     
-    bRes, strDestId = self.clsSipServerMap.SelectIncomingRoute( strIp, clsMessage.strTo.clsUri.strUser )
+    bRes, strDestId = self.clsSipServerMap.SelectIncomingRoute( strIp, clsMessage.clsTo.clsUri.strUser )
     if( bRes ):
-      Log.Print( LogLevel.DEBUG, "EventIncomingRequestAuth ip(" + strIp + ") user(" + clsMessage.strTo.clsUri.strUser + ") IP-PBX dest_user(" + strDestId + ")" )
+      Log.Print( LogLevel.DEBUG, "EventIncomingRequestAuth ip(" + strIp + ") user(" + clsMessage.clsTo.clsUri.strUser + ") IP-PBX dest_user(" + strDestId + ")" )
       return True
     
     if( self.CheckAuthrization( clsMessage ) == False ):
+      return False
+    
+    clsUserInfo = self.clsUserMap.Select( clsMessage.clsFrom.clsUri.strUser )
+    if( clsUserInfo == None ):
       return False
     
   if( strIp != clsUserInfo.strIp or iPort != clsUserInfo.iPort ):

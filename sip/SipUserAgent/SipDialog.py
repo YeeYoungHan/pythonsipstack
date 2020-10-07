@@ -54,6 +54,7 @@ class SipDialog():
     self.clsInviteRecv = None
     self.clsInviteSend = None
     self.clsRouteList = []
+    self.m_iSessionVersion = 0
     self.bSendCall = True
     self.clsSipStack = clsSipStack
   
@@ -137,7 +138,8 @@ class SipDialog():
     if( self.strLocalRtpIp.find(':') != -1 ):
       strAddrType = "IP6"
     
-    strText = "v=0\r\n" + "o=PSS 4 2 IN " + strAddrType + " " + self.strLocalRtpIp + "\r\n" + "s=PSS\r\n"
+    self.m_iSessionVersion += 1
+    strText = "v=0\r\n" + "o=PSS 4 " + str(self.m_iSessionVersion) + " IN " + strAddrType + " " + self.strLocalRtpIp + "\r\n" + "s=PSS\r\n"
     strText += "c=IN " + strAddrType + " " + self.strLocalRtpIp + "\r\n"
     strText += "t=0 0\r\n"
 

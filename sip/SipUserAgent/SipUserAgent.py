@@ -119,8 +119,7 @@ class SipUserAgent():
 
       for strFmt in clsMedia.clsFmtList:
         iCodec = int(strFmt)
-        if( clsRtp.iCodec == -1 or iCodec == 0 ):
-          # PCMU 가 존재하면 PCMU 를 무조건 선택한다.
+        if( clsRtp.iCodec == -1 ):
           clsRtp.iCodec = iCodec
         
         clsRtp.clsCodecList.append( iCodec )

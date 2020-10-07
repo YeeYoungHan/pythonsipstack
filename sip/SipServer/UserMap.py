@@ -57,7 +57,7 @@ class UserMap():
     clsUserInfo.strIp, clsUserInfo.iPort = clsMessage.GetTopViaIpPort()
     clsUserInfo.iLoginTimeout = clsMessage.GetExpires()
 
-    if( clsUserInfo.iLoginTimeout == 0 ):
+    if( clsUserInfo.iLoginTimeout == 0 and clsMessage.IsMethod("REGISTER") ):
       return False
     
     clsUserInfo.eTransport = clsMessage.eTransport
@@ -65,7 +65,7 @@ class UserMap():
     clsUserInfo.strGroupId = clsXmlUser.strGroupId
 
     self.clsMutex.acquire()
-    Log.Print( LogLevel.DEBUG, "user(" + strUserId + ") set (" + clsUserInfo.strIp + ":" + str(clsUserInfo.iPort) + ":" + SipGetTransport(clsUserInfo.eTransport) + ") group(" + clsUserInfo.strGroupId + ")" )
+    Log.Print( LogLevel.DEBUG, "user(" + strUserId + ") set(" + clsUserInfo.strIp + ":" + str(clsUserInfo.iPort) + ":" + SipGetTransport(clsUserInfo.eTransport) + ") group(" + clsUserInfo.strGroupId + ")" )
     self.clsMap[strUserId] = clsUserInfo
     self.clsMutex.release()
 
