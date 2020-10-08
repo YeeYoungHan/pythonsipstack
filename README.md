@@ -25,10 +25,12 @@ Python 언어로 SIP stack 을 개발하는 프로젝트입니다.
 
 * sip
   * EchoSipServer : 통화 수신시 해당 통화를 발신자에게 다시 연결하는 프로그램
+    * 통화 수신 처리 기능이 포함된 전화 발신 서비스를 테스트하는 용도로 사용될 수 있다.
   * SdpParser : SDP 메시지 파서/생성 라이브러리
   * SipParser : SIP 메시지 파서/생성 라이브러리
   * SipPlatform : 본 프로젝트에서 공통으로 사용하는 라이브러리
   * SipServer : SIP 서버 프로그램
+    * Python SIP stack 기반 IP-PBX 프로그램
   * SipStack : SIP stack 라이브러리
   * SipUserAgent : SIP stack 기반 User Agent 라이브러리
 
@@ -36,6 +38,16 @@ Python 언어로 SIP stack 을 개발하는 프로젝트입니다.
   * TestSipParser : SIP/SDP 메시지 파서/생성 라이브러리 테스트 프로그램
   * TestSipPlatform : 공통 라이브러리 테스트 프로그램
   * TestSipUserAgent : SipUserAgent 테스트 프로그램
+
+### SipServer 실행 방법
+
+* sip/SipServer/SipServer.xml 설정 파일을 자신의 환경에 적합하게 수정한다.
+  * Sip -> LocalIp 를 수정한다.
+  * Log -> Folder 를 수정한다.
+* 현재 폴더에서 아래와 같이 실행한다.
+```
+python -m sip.SipServer.SipServerMain sip\SipServer\SipServer.xml
+```
 
 ### EchoSipServer 실행 방법
 
