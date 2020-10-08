@@ -24,6 +24,7 @@ from ..SdpParser.SdpMessage import SdpMessage
 from ..SipStack.SipStack import SipStack
 from .SipCallRtp import SipCallRtp
 from .RtpDirection import RtpDirection
+from .SipDialog import IsUseCodec
 from .SipRegisterThread import SipRegisterThread
 
 import threading
@@ -119,10 +120,14 @@ class SipUserAgent():
 
       for strFmt in clsMedia.clsFmtList:
         iCodec = int(strFmt)
-        if( clsRtp.iCodec == -1 ):
+        if( IsUseCodec( iCodec ) == False ):
+          continue
+
+        if( clsRtp.iCodec == -1 or clsRtp.iCodec == 0 ):
           clsRtp.iCodec = iCodec
-        
-        clsRtp.clsCodecList.append( iCodec )
+          clsRtp.clsCodecList.insert( 0, iCodec )
+        else:
+          clsRtp.clsCodecList.append( iCodec )
 
       clsRtp.eDirection = RtpDirection.SEND_RECV
 

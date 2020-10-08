@@ -147,7 +147,7 @@ class SipDialog():
       strText += "m=audio " + str(self.iLocalRtpPort) + " RTP/AVP"
 
       for iCodec in self.clsCodecList:
-        if( iCodec == 0 or iCodec == 3 or iCodec == 4 or iCodec == 8 or iCodec == 18 ):
+        if( IsUseCodec( iCodec ) ):
           strText += " " + str(iCodec)
       
       strText += " 101\r\n"
@@ -298,3 +298,9 @@ class SipDialog():
       return True
     
     return False
+  
+def IsUseCodec( iCodec ):
+  if( iCodec == 0 or iCodec == 3 or iCodec == 4 or iCodec == 8 or iCodec == 18 ):
+    return True
+  
+  return False
