@@ -58,9 +58,12 @@ def StartCall( self, strFrom, strTo, clsRtp, clsRoute ):
     self.clsDialogMutex.acquire()
     if( self.clsDialogMap.get( clsDialog.strCallId ) == None ):
       clsMessage = clsDialog.CreateInvite()
-      clsDialogMap[clsDialog.strCallId] = clsDialog
+      self.clsDialogMap[clsDialog.strCallId] = clsDialog
       bInsert = True
     self.clsDialogMutex.release()
+  
+  if( clsMessage ):
+    self.clsSipStack.SendSipMessage( clsMessage )
   
   return clsDialog.strCallId
 

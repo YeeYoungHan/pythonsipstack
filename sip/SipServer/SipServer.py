@@ -31,7 +31,7 @@ class SipServer(SipUserAgentCallBack,SipStackCallBack):
 
   from .SipServerRegister import AddChallenge, SendUnAuthorizedResponse, CheckAuthorization, RecvRequestRegister
   from .SipServerUserAgent import CheckAuthrization, EventRegister, EventIncomingRequestAuth, EventIncomingCall, EventCallStart, EventCallEnd
-  from .SipServerUserAgent import EventReInvite 
+  from .SipServerUserAgent import EventReInvite, EventPrack, EventTransfer, EventBlindTransfer
 
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()

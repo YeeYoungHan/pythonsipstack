@@ -23,6 +23,7 @@ from ..SipParser.SipStatusCode import SipStatusCode
 from .SipServerRegister import ECheckAuthResult
 from .XmlUser import XmlUser, SelectUser
 from .UserMap import UserInfo
+from ..SipUserAgent.RtpDirection import RtpDirection
 
 def CheckAuthrization( self, clsMessage ):
   if( len(clsMessage.clsAuthorizationList) == 0 ):
@@ -233,3 +234,90 @@ def EventReInvite( self, strCallId, clsRemoteRtp, clsLocalRtp ):
   clsCallInfo = self.clsCallMap.SelectCallInfo( strCallId )
   if( clsCallInfo != None ):
     self.clsUserAgent.SendReInvite( clsCallInfo.strPeerCallId, clsRemoteRtp )
+
+def EventPrack( self, strCallId, clsRtp ):
+  Log.Print( LogLevel.DEBUG, "EventPrack(" + strCallId + ")" )
+  
+  clsCallInfo = self.clsCallMap.SelectCallInfo( strCallId )
+  if( clsCallInfo != None ):
+    self.clsUserAgent.SendPrack( clsCallInfo.strPeerCallId, clsRtp )
+  
+def EventTransfer( self, strCallId, strReferToCallId, bScreenedTransfer ):
+  Log.Print( LogLevel.DEBUG, "EventTransfer(" + strCallId + "," + strReferToCallId + "," + str(bScreenedTransfer) + ")" )
+
+  clsCallInfo = self.clsCallMap.SelectCallInfo( strCallId )
+  if( clsCallInfo == None ):
+    return False
+  
+  clsReferToCallInfo = self.clsCallMap.SelectCallInfo( strReferToCallId )
+  if( clsReferToCallInfo != None ):
+    return False
+  
+  self.clsCallMap.Delete( strCallId )
+  self.clsCallMap.Delete( strReferToCallId )
+
+  clsRtp = self.clsUserAgent.GetRemoteCallRtp( clsCallInfo.strPeerCallId )
+  if( clsRtp == None ):
+    return False
+  clsRtp.eDirection = RtpDirection.SEND_RECV
+
+  if( bScreenedTransfer ):
+    clsReferToRtp = self.clsUserAgent.GetRemoteCallRtp( clsReferToCallInfo.strPeerCallId )
+    if( clsReferToRtp == None ):
+      return False
+    clsReferToRtp = RtpDirection.SEND_RECV
+
+    self.clsCallMap.Insert( clsCallInfo.strPeerCallId, clsReferToCallInfo.strPeerCallId )
+    self.clsUserAgent.SendReInvite( clsCallInfo.strPeerCallId.c_str(), clsReferToRtp )
+    self.clsUserAgent.SendReInvite( clsReferToCallInfo.strPeerCallId.c_str(), clsRtp )
+  
+  self.clsUserAgent.StopCall( strCallId, 0 )
+  self.clsUserAgent.StopCall( strReferToCallId, SipStatusCode.SIP_REQUEST_TERMINATED )
+
+  if( bScreenedTransfer == False ):
+    strFromId = self.clsUserAgent.GetToId( clsCallInfo.strPeerCallId )
+    strToId = self.clsUserAgent.GetToId( clsReferToCallInfo.m_strPeerCallId )
+
+    clsUserInfo = self.clsUserMap.Select( strToId )
+    if( clsUserInfo != None ):
+      clsRoute = clsUserInfo.GetCallRoute()
+
+      self.clsUserAgent.StopCall( clsReferToCallInfo.strPeerCallId, 0 )
+      strNewCallId = self.clsUserAgent.StartCall( strFromId, strToId, clsRtp, clsRoute )
+
+      self.clsCallMap.Insert( strNewCallId, clsCallInfo.strPeerCallId )
+    else:
+      self.clsUserAgent.StopCall( clsCallInfo.strPeerCallId, 0 )
+      self.clsUserAgent.StopCall( clsReferToCallInfo.m_strPeerCallId, 0 )
+  
+  return True
+
+
+def EventBlindTransfer( self, strCallId, strReferToId ):
+  Log.Print( LogLevel.DEBUG, "EventBlindTransfer(" + strCallId + "," + strReferToId + ")" )
+
+  strPeerCallId = self.clsCallMap.SelectCallId( strCallId )
+  if( len(strPeerCallId) == 0 ):
+    return False
+  
+  strToId = self.clsUserAgent.GetToId( strPeerCallId )
+  if( len(strToId) == 0 ):
+    return False
+  
+  clsUserInfo = self.clsUserMap.Select( strReferToId )
+  if( clsUserInfo == None ):
+    return False
+  
+  clsRtp = self.clsUserAgent.GetRemoteCallRtp( strPeerCallId )
+  if( clsRtp == None ):
+    return False
+  clsRtp.eDirection = RtpDirection.SEND_RECV
+
+  clsRoute = clsUserInfo.GetCallRoute()
+  strNewCallId = self.clsUserAgent.StartCall( strToId, strReferToId, clsRtp, clsRoute )
+  if( len(strNewCallId) == 0 ):
+    return False
+  
+  self.clsTransCallMap.Insert( strCallId, strNewCallId )
+
+  return True
