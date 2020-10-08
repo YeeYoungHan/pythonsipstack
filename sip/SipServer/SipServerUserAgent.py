@@ -250,7 +250,7 @@ def EventTransfer( self, strCallId, strReferToCallId, bScreenedTransfer ):
     return False
   
   clsReferToCallInfo = self.clsCallMap.SelectCallInfo( strReferToCallId )
-  if( clsReferToCallInfo != None ):
+  if( clsReferToCallInfo == None ):
     return False
   
   self.clsCallMap.Delete( strCallId )
@@ -265,18 +265,18 @@ def EventTransfer( self, strCallId, strReferToCallId, bScreenedTransfer ):
     clsReferToRtp = self.clsUserAgent.GetRemoteCallRtp( clsReferToCallInfo.strPeerCallId )
     if( clsReferToRtp == None ):
       return False
-    clsReferToRtp = RtpDirection.SEND_RECV
+    clsReferToRtp.eDirection = RtpDirection.SEND_RECV
 
     self.clsCallMap.Insert( clsCallInfo.strPeerCallId, clsReferToCallInfo.strPeerCallId )
-    self.clsUserAgent.SendReInvite( clsCallInfo.strPeerCallId.c_str(), clsReferToRtp )
-    self.clsUserAgent.SendReInvite( clsReferToCallInfo.strPeerCallId.c_str(), clsRtp )
+    self.clsUserAgent.SendReInvite( clsCallInfo.strPeerCallId, clsReferToRtp )
+    self.clsUserAgent.SendReInvite( clsReferToCallInfo.strPeerCallId, clsRtp )
   
   self.clsUserAgent.StopCall( strCallId, 0 )
   self.clsUserAgent.StopCall( strReferToCallId, SipStatusCode.SIP_REQUEST_TERMINATED )
 
   if( bScreenedTransfer == False ):
     strFromId = self.clsUserAgent.GetToId( clsCallInfo.strPeerCallId )
-    strToId = self.clsUserAgent.GetToId( clsReferToCallInfo.m_strPeerCallId )
+    strToId = self.clsUserAgent.GetToId( clsReferToCallInfo.strPeerCallId )
 
     clsUserInfo = self.clsUserMap.Select( strToId )
     if( clsUserInfo != None ):
@@ -288,7 +288,7 @@ def EventTransfer( self, strCallId, strReferToCallId, bScreenedTransfer ):
       self.clsCallMap.Insert( strNewCallId, clsCallInfo.strPeerCallId )
     else:
       self.clsUserAgent.StopCall( clsCallInfo.strPeerCallId, 0 )
-      self.clsUserAgent.StopCall( clsReferToCallInfo.m_strPeerCallId, 0 )
+      self.clsUserAgent.StopCall( clsReferToCallInfo.strPeerCallId, 0 )
   
   return True
 
