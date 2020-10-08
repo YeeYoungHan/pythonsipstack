@@ -39,10 +39,10 @@ def Test( strText ):
 
   iEndTime = time.time()
   iTime = iEndTime - iStartTime
-  strPps = "%.2f" % ( iLoopCount * 1000.0 / iTime )
+  strPps = "%.2f" % ( iLoopCount / iTime )
 
   print( "test time = " + str(iTime) + " sec" )
-  print( "parse time = " + strPps + "pps" )
+  print( "parse time = " + strPps + " pps" )
 
 
 Test( "OPTIONS sip:carol@chicago.com SIP/2.0\r\n"
