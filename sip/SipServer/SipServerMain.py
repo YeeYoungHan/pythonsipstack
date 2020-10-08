@@ -25,7 +25,7 @@ from .SipServerSetup import SipServerSetup
 from .SipServer import SipServer
 
 if( len(sys.argv) == 1 ):
-  print( "[Usage] python -m sip.EchoSipServer.EchoSipServer {setup file path")
+  print( "[Usage] python -m sip.EchoSipServer.EchoSipServer {setup file path}")
   exit()
 
 strSetupFileName = sys.argv[1]

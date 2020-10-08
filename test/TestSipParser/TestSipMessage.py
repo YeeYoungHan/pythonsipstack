@@ -1,4 +1,3 @@
-
 ''' 
 Copyright (C) 2020 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
 
