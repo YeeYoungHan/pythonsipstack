@@ -49,6 +49,9 @@ class SipServerInfo():
     self.iNonceCount = 1
   
   def __eq__( self, clsServerInfo ):
+    if( clsServerInfo == None ):
+      return False
+      
     if( self.strIp == clsServerInfo.strIp and self.strUserId == clsServerInfo.strUserId and self.iPort == clsServerInfo.iPort and self.eTransport == clsServerInfo.eTransport ):
       return True
     

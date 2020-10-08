@@ -16,6 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
 import xml.etree.ElementTree as et
 from ..SipPlatform.Log import Log, LogLevel
 from ..SipPlatform.XmlUtility import XmlGetDataString, XmlGetDataBool
@@ -40,6 +41,10 @@ class XmlUser():
   
   def Parse( self, strFileName ):
     self.Clear()
+
+    # 파일이 존재하지 않으면 사용자가 존재하지 않다고 리턴한다.
+    if( os.path.isfile( strFileName ) == False ):
+      return False
 
     try:
       clsTree = et.ElementTree( file=strFileName )

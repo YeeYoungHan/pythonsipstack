@@ -177,7 +177,7 @@ def RecvInviteResponse( self, clsMessage ):
           self.clsRegisterMutex.acquire()
           for clsServerInfo in self.clsRegisterList:
             if( clsServerInfo.strUserId == strUserId ):
-              clsServerInfo.AddAuth( clsInvite, clsMessage )
+              clsServerInfo.AddAuthResponse( clsInvite, clsMessage )
               break
           self.clsRegisterMutex.release()
 

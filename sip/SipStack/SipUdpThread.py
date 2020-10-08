@@ -36,7 +36,7 @@ def SipUdpThread( clsSipStack ):
         szPacket, clsClientIpPort = read_socket.recvfrom( 8192 )
         iRecvLen = len(szPacket)
     except Exception as other:
-      Log.Print( LogLevel.LOG_ERROR, "SipUdpThread exception - " + other )
+      Log.Print( LogLevel.ERROR, "SipUdpThread exception - " + str(other) )
     clsSipStack.clsUdpRecvMutex.release()
 
     if( iRecvLen > 0 ):

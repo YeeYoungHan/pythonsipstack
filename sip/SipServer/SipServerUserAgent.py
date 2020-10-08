@@ -161,7 +161,7 @@ def EventIncomingCall( self, strCallId, strFrom, strTo, clsRtp ):
       return self.StopCall( strCallId, SipStatusCode.SIP_NOT_FOUND )
   
   clsRoute = clsUserInfo.GetCallRoute()
-  clsRoute.b100rel = self.clsUserAgent.Is100rel( strCallId )
+  #clsRoute.b100rel = self.clsUserAgent.Is100rel( strCallId )
 
   strNewCallId = self.clsUserAgent.CreateCall( strFrom, strTo, clsRtp, clsRoute )
   if( len(strNewCallId) == 0 ):

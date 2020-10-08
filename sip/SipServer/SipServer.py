@@ -52,6 +52,10 @@ class SipServer(SipUserAgentCallBack,SipStackCallBack):
     clsSetup.iLocalUdpPort = clsSetupFile.iUdpPort
     clsSetup.iUdpThreadCount = clsSetupFile.iUdpThreadCount
 
+    if( len(clsSetupFile.strSipServerXmlFolder) > 0 ):
+      self.clsSipServerMap.Load( clsSetupFile.strSipServerXmlFolder )
+      self.clsSipServerMap.SetSipUserAgentRegisterInfo( self.clsUserAgent )
+
     if( self.clsUserAgent.Start( clsSetup, self ) == False ):
       Log.Print( LogLevel.ERROR, "clsUserAgent.Start error" )
       return False

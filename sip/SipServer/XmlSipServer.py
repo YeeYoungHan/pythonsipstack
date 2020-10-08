@@ -48,6 +48,7 @@ class IncomingRoute():
 class XmlSipServer(SipServerInfo):
 
   def __init__( self ):
+    super().__init__()
     self.strName = ''
     self.iFlag = 0
     self.clsRoutePrefixList = []

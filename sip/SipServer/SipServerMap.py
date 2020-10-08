@@ -98,7 +98,7 @@ class SipServerMap():
     for strKey in self.clsMap:
       clsSipServer = self.clsMap[strKey]
       for clsRoutePrefix in clsSipServer.clsRoutePrefixList:
-        iLen = clsRoutePrefix.strPrefix
+        iLen = len(clsRoutePrefix.strPrefix)
         if( iToLen >= iLen ):
           strPrefix = strTo[:iLen]
           if( strPrefix == clsRoutePrefix.strPrefix ):
@@ -142,7 +142,7 @@ class SipServerMap():
     return bRes, strResTo
   
   def Set( self, clsServerInfo, iStatus ):
-    strKey = GetKey( clsServerInfo )
+    strKey = self.GetKey( clsServerInfo )
 
     self.clsMutex.acquire()
     clsSipServer = self.clsMap.get( strKey )
