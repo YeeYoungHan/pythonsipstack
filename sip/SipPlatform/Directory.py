@@ -19,6 +19,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import os
 
 def GetFilePathList( strDirName ):
+  """ 폴더에 포함된 모든 파일 리스트를 리턴한다.
+
+  Args:
+      strDirName (string): 폴더 path
+
+  Returns:
+      list: 폴더에 포함된 모든 파일 리스트를 리턴한다.
+  """
   arrList = os.listdir( strDirName )
   arrFileList = []
 

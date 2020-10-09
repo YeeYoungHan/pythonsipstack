@@ -29,6 +29,8 @@ class LogLevel():
   SYSTEM = 0x0400
 
 class Log():
+  """ 로그 파일 저장 클래스
+  """
 
   strDirName = ''
   strDate = ''
@@ -42,6 +44,11 @@ class Log():
 
   @classmethod
   def SetDirectory( cls, strDirName ):
+    """ 로그 파일을 저정할 폴더를 설정한다.
+
+    Args:
+        strDirName (string): 로그 파일을 저장할 폴더 path
+    """
     if( os.path.isdir( strDirName ) == False ):
       os.mkdir( strDirName )
     cls.strDirName = strDirName
@@ -50,6 +57,13 @@ class Log():
 
   @classmethod
   def Print( cls, eLevel, strText ):
+    """ 로그 메시지를 저장한다.
+
+    Args:
+        eLevel (LogLevel): 로그 레벨
+        strText (string): 로그 메시지
+    """
+
     if( ( cls.iLevel & eLevel ) == 0 ):
       return
     
@@ -110,5 +124,10 @@ class Log():
 
   @classmethod
   def SetLevel( cls, iLevel ):
+    """ 로그 레벨을 설정한다.
+
+    Args:
+        iLevel (LogLevel): 로그 레벨 (예: LogLevel.DEBUG | LogLevel.INFO)
+    """
     cls.iLevel = LogLevel.ERROR | LogLevel.SYSTEM
     cls.iLevel |= iLevel

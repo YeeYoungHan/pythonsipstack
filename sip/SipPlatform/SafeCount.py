@@ -19,22 +19,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import threading
 
 class SafeCount():
+  """ thread safe 하게 숫자를 +1 증가하고 -1 감소할 수 있는 클래스
+  """
 
   def __init__( self ):
     self.clsMutex = threading.Lock()
     self.iCount = 0
   
   def Increase( self ):
+    """ +1 증가시킨다.
+    """
     self.clsMutex.acquire()
     self.iCount += 1
     self.clsMutex.release()
   
   def Decrease( self ):
+    """ -1 감소시킨다.
+    """
     self.clsMutex.acquire()
     self.iCount -= 1
     self.clsMutex.release()
   
   def GetCount( self ):
+    """ 현재 숫자를 리턴한다.
+
+    Returns:
+        int: 현재 숫자를 리턴한다.
+    """
     self.clsMutex.acquire()
     iCount = self.iCount
     self.clsMutex.release()

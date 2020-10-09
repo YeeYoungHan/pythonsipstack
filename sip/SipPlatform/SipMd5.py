@@ -19,6 +19,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import hashlib
 
 def SipMd5String( strInput ):
+  """ 입력된 문자열을 MD5 로 변환한 후, HEX 문자열을 생성하여서 리턴한다.
+
+  Args:
+      strInput (string): 입력 문자열
+
+  Returns:
+      string: 입력된 문자열을 MD5 연산후, HEX 로 변환한 문자열을 리턴한다.
+  """
   clsMd5 = hashlib.md5()
   clsMd5.update( strInput.encode() )
   strMd5 = clsMd5.hexdigest()

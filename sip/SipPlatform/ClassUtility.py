@@ -17,4 +17,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 def HasMethod( clsObject, strMethod ):
-	return callable( getattr( clsObject, strMethod, None ) )
+  """ 객체에 메소드가 존재하는지 확인한다.
+
+  Args:
+      clsObject (object): 객체
+      strMethod (string): 메소드 이름
+
+  Returns:
+      bool: 객체에 메소드가 존재하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
+  return callable( getattr( clsObject, strMethod, None ) )

@@ -17,6 +17,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 def DeQuoteString( strInput ):
+  """ 문자열의 시작과 끝에 " 가 존재하면 문자열의 시작과 끝의 " 를 제거한 문자열을 리턴한다.
+
+  Args:
+      strInput (string): 문자열
+
+  Returns:
+      string: 문자열의 시작과 끝의 " 를 제거한 문자열을 리턴한다.
+  """
   iLen = len(strInput)
 
   if( iLen > 0 ):

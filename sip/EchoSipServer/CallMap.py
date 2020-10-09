@@ -38,6 +38,14 @@ class CallMap():
     self.clsMutex.release()
 
   def Select( self, strCallId ):
+    """[summary]
+
+    Args:
+        strCallId ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     strCallId2 = ''
     self.clsMutex.acquire()
     strValue = self.clsMap.get(strCallId)
