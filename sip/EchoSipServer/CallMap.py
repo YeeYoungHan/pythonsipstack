@@ -25,6 +25,12 @@ class CallMap():
     self.clsMutex = threading.Lock()
   
   def Insert( self, strCallId1, strCallId2 ):
+    """ 연결된 2개의 통화의 SIP Call-ID 를 저장한다.
+
+    Args:
+        strCallId1 (string): SIP Call-ID #1
+        strCallId2 (string): SIP Call-ID #2
+    """
     self.clsMutex.acquire()
     if( self.clsMap.get(strCallId1) == None and self.clsMap.get(strCallId2) == None ):
       self.clsMap[strCallId1] = strCallId2
