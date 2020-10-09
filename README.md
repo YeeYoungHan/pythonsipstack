@@ -49,6 +49,11 @@ Python 언어로 SIP stack 을 개발하는 프로젝트입니다.
 python -m sip.SipServer.SipServerMain sip\SipServer\SipServer.xml
 ```
 
+* Python SipServer 는 KSipServer 와 거의 비슷한 설정 파일을 사용하므로 설정 파일 관련 설명은 KSipServer 설정 파일을 설명한 아래의 포스트를 참고하세요.
+  * https://blog.naver.com/websearch/70147577937 : KSipServer 설정 파일 설명
+  * https://blog.naver.com/websearch/70148992602 : KSipServer 사용자 XML 파일 설명
+  * https://blog.naver.com/websearch/70149037102 : KSipServer 외부 IP-PBX XML 파일 설명
+
 ### EchoSipServer 실행 방법
 
 * sip/EchoSipServer/EchoSipServer.xml 설정 파일을 자신의 환경에 적합하게 수정한다.
