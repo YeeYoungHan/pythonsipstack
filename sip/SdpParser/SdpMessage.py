@@ -25,6 +25,8 @@ from .SdpOrigin import SdpOrigin
 from .SdpTime import SdpTime
 
 class SdpMessage():
+  """ SDP 메시지 저장 클래스
+  """
 
   def __init__( self ):
     self.strVersion = ''
@@ -42,6 +44,14 @@ class SdpMessage():
     self.clsMediaList = []
 
   def Parse( self, strText ):
+    """ SDP 메시지 문자열을 파싱하여서 멤버 변수에 저장한다.
+
+    Args:
+        strText (string): SDP 메시지 문자열
+
+    Returns:
+        int: 성공하면 파싱 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = 0
@@ -116,6 +126,11 @@ class SdpMessage():
     return iPos
   
   def __str__( self ):
+    """ SDP 메시지 문자열를 리턴한다.
+
+    Returns:
+        string: SDP 메시지 문자열를 리턴한다.
+    """
     strText = ''
 
     if( len(self.strVersion) > 0 ):
@@ -178,6 +193,8 @@ class SdpMessage():
     return strText
 
   def Clear( self ):
+    """ 멤버 변수를 초기화시킨다.
+    """
     self.strVersion = ''
     self.strSessionName = ''
     self.strSessionInformation = ''
@@ -193,6 +210,14 @@ class SdpMessage():
     self.clsMediaList.clear()
     
   def SelectMedia( self, strName ):
+    """ 입력된 이름과 일치하는 media 객체를 리턴한다.
+
+    Args:
+        strName (string): media 이름
+
+    Returns:
+        SdpMedia: 입력된 이름과 일치하는 media 객체가 존재하면 해당 media 객체를 리턴하고 그렇지 않으면 None 를 리턴한다.
+    """
     for clsMedia in self.clsMediaList:
       if( clsMedia.strName == strName ):
         return clsMedia

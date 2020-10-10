@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from .SdpConnection import SdpConnection
 
 class SdpMedia():
+  """ SDP media 저장 클래스
+  """
 
   def __init__( self ):
     self.strMedia = ''
@@ -32,6 +34,14 @@ class SdpMedia():
     self.clsAttributeList = []
 
   def Parse( self, strText ):
+    """ SDP media 문자열을 파싱하여서 멤버 변수에 저장한다.
+
+    Args:
+        strText (string): SDP media 문자열
+
+    Returns:
+        int: 성공하면 파싱 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = 0
@@ -59,6 +69,11 @@ class SdpMedia():
     return iTextLen
   
   def __str__( self ):
+    """ SDP media 문자열를 리턴한다.
+
+    Returns:
+        string: SDP media 문자열를 리턴한다.
+    """
     strText = self.strMedia + " "
 
     if( self.iNumOfPort == -1 ):
@@ -101,6 +116,8 @@ class SdpMedia():
 
 
   def Clear( self ):
+    """ 멤버 변수를 초기화시킨다.
+    """
     self.strMedia = ''
     self.iPort = -1
     self.iNumOfPort = -1
@@ -112,12 +129,25 @@ class SdpMedia():
     self.clsAttributeList.clear()
   
   def AddFmt( self, iPayLoadType ):
+    """ fmt 리스트에 payload type 을 추가한다.
+
+    Args:
+        iPayLoadType (int): payload type
+    """
     if( self.SelectFmt( iPayLoadType ) ):
       return
     
     self.clsFmtList.append( str(iPayLoadType) )
   
   def SelectFmt( self, iPayLoadType ):
+    """ fmt 리스트에 payload type 이 존재하는지 확인한다.
+
+    Args:
+        iPayLoadType (int): payload type
+
+    Returns:
+        bool: fmt 리스트에 payload type 이 존재하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     strPayLoadType = str(iPayLoadType)
 
     for strFmt in self.clsFmtList:
@@ -127,6 +157,14 @@ class SdpMedia():
     return False
   
   def DeleteAttribute( self, strName ):
+    """ media 에 포함된 애트리뷰트 리스트에서 입력된 애트리뷰트 이름인 애트리뷰트를 삭제한다.
+
+    Args:
+        strName (string): 애트리뷰트 이름
+
+    Returns:
+        bool: 애트리뷰트가 존재하여서 삭제되었으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     clsDeleteList = []
     bRes = False
 
@@ -141,6 +179,14 @@ class SdpMedia():
     return bRes
   
   def DeleteFmtAttribute( self, iPayLoadType ):
+    """ 입력 payload type 과 일치하는 항목을 fmt 리스트 및 애트리뷰트 리스트에서 삭제한다.
+
+    Args:
+        iPayLoadType (int): payload type
+
+    Returns:
+        bool: 입력 payload type 과 일치하는 항목이 존재하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     strPayLoadType = str(iPayLoadType)
     bRes = False
 

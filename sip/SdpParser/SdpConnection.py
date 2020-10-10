@@ -16,7 +16,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
+
 class SdpConnection():
+  """ SDP connection 저장 클래스
+  """
 
   def __init__( self ):
     self.strNetType = ''
@@ -26,6 +30,14 @@ class SdpConnection():
     self.iMulticastNum = -1
   
   def Parse( self, strText ):
+    """ SDP connection 문자열을 파싱하여서 멤버 변수에 저장한다.
+
+    Args:
+        strText (string): SDP connection 문자열
+
+    Returns:
+        int: 성공하면 파싱 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = 0
@@ -49,6 +61,11 @@ class SdpConnection():
     return iTextLen
   
   def __str__( self ):
+    """ SDP connection 문자열를 리턴한다.
+
+    Returns:
+        string: SDP connection 문자열를 리턴한다.
+    """
     if( self.Empty() ):
       return ''
     
@@ -63,6 +80,8 @@ class SdpConnection():
     return strText
 
   def Clear( self ):
+    """ 멤버 변수를 초기화시킨다.
+    """
     self.strNetType = ''
     self.strAddrType = ''
     self.strAddr = ''
@@ -70,6 +89,11 @@ class SdpConnection():
     self.iMulticastNum = -1
   
   def Empty( self ):
+    """ SDP connection 이 저장되어 있는지 확인한다.
+
+    Returns:
+        bool: SDP connection 이 저장되어 있으면 False 를 리턴하고 그렇지 않으면 True 를 리턴한다.
+    """
     if( len(self.strNetType) == 0 or len(self.strAddrType) == 0 or len(self.strAddr) == 0 ):
       return True
     

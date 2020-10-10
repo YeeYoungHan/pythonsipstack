@@ -16,7 +16,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
+
 class SdpAttributeCrypto():
+  """ SDP 암호화 애트리뷰트 저장 클래스
+  """
 
   def __init__( self ):
     self.strTag = ''
@@ -25,6 +29,14 @@ class SdpAttributeCrypto():
     self.strText = ''
   
   def Parse( self, strText ):
+    """ SDP 암호화 애트리뷰트 문자열을 파싱하여서 멤버 변수에 저장한다.
+
+    Args:
+        strText (string): SDP 암호화 애트리뷰트 문자열
+
+    Returns:
+        int: 성공하면 파싱 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = 0
@@ -61,6 +73,11 @@ class SdpAttributeCrypto():
 
 
   def __str__( self ):
+    """ SDP 암호화 애트리뷰트 문자열를 리턴한다.
+
+    Returns:
+        string: SDP 암호화 애트리뷰트 문자열를 리턴한다.
+    """
     if( self.Empty() ):
       return ''
     
@@ -71,12 +88,19 @@ class SdpAttributeCrypto():
     return strText
   
   def Clear( self ):
+    """ 멤버 변수를 초기화시킨다.
+    """
     self.strTag = ''
     self.strCryptoSuite = ''
     self.strKey = ''
     self.strText = ''
 
   def Empty( self ):
+    """ SDP 암호화 애트리뷰트가 저장되어 있는지 확인한다.
+
+    Returns:
+        bool: SDP 암호화 애트리뷰트가 저장되어 있으면 False 를 리턴하고 그렇지 않으면 True 를 리턴한다.
+    """
     if( len(self.strTag) == 0 or len(self.strCryptoSuite) == 0 or len(self.strKey) == 0 ):
       return True
     
