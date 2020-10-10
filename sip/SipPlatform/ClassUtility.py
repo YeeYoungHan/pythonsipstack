@@ -16,6 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
+
 def HasMethod( clsObject, strMethod ):
   """ 객체에 메소드가 존재하는지 확인한다.
 

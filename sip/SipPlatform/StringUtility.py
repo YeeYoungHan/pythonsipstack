@@ -16,6 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
+
 def DeQuoteString( strInput ):
   """ 문자열의 시작과 끝에 " 가 존재하면 문자열의 시작과 끝의 " 를 제거한 문자열을 리턴한다.
 

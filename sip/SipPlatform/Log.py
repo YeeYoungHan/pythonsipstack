@@ -22,6 +22,8 @@ import threading
 import platform
 
 class LogLevel():
+  """ 로그 레벨
+  """
   ERROR = 0x0001
   INFO = 0x0010
   DEBUG = 0x0100
