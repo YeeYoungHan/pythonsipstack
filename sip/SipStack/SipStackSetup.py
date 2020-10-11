@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser.SipTransport import SipTransport
 
 class SipStackSetup():
+  """ SIP stack 설정 정보를 저장하는 클래스
+  """
 
   def __init__( self ):
     self.strLocalIp = ''
@@ -32,7 +34,14 @@ class SipStackSetup():
     self.bUseRegisterSession = False
   
   def GetLocalPort( self, eTransport ):
+    """ SIP transport 에 해당하는 포트 번호를 리턴한다.
 
+    Args:
+        eTransport (int): SIP transport 정수
+
+    Returns:
+        int: SIP transport 에 해당하는 포트 번호를 리턴한다.
+    """
     if( eTransport == SipTransport.UDP ):
       return self.iLocalUdpPort
     

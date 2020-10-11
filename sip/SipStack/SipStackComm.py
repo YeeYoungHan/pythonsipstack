@@ -25,6 +25,14 @@ from ..SipParser.SipStatusCode import SipStatusCode
 from .SipStackVersion import SipStackVersion
 
 def SendSipMessage( self, clsMessage ):
+  """ 입력된 SIP 메시지를 네트워크로 전송한다.
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   self.CheckSipMessage( clsMessage )
 
   if( clsMessage.IsRequest() ):
@@ -49,6 +57,14 @@ def SendSipMessage( self, clsMessage ):
   return False
 
 def RecvSipMessage( self, clsMessage ):
+  """ SIP 메시지 수신 처리 메소드
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   if( clsMessage.IsRequest() ):
     if( clsMessage.IsMethod("INVITE") or clsMessage.IsMethod("ACK") ):
       if( self.clsIST.Insert( clsMessage ) ):
@@ -77,6 +93,17 @@ def RecvSipMessage( self, clsMessage ):
     
 
 def RecvSipPacket( self, strPacket, strIp, iPort, eTransport ):
+  """ SIP 메시지 수신 처리 메소드
+
+  Args:
+      strPacket (string): 수신한 SIP 메시지 문자열
+      strIp (string): SIP 메시지 전송 IP 주소
+      iPort (int): SIP 메시지 전송 포트 번호
+      eTransport (int): SIP 메시지 전송 SIP transport 숫자
+
+  Returns:
+      bool: 수신한 SIP 메시지 파싱에 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   clsMessage = SipMessage()
 
   if( clsMessage.Parse( strPacket ) == -1 ):
@@ -91,7 +118,18 @@ def RecvSipPacket( self, strPacket, strIp, iPort, eTransport ):
 
   self.RecvSipMessage( clsMessage )
 
+  return True
+
 def Send( self, clsMessage, bCheckMessage ):
+  """ SIP 메시지를 전송한다.
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+      bCheckMessage (bool): SIP 메시지 객체의 유효성을 검사하면 True 를 입력하고 그렇지 않으면 False 를 입력
+
+  Returns:
+      bool: SIP 메시지 전송에 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   strIp = ''
   iPort = -1
   eTransport = SipTransport.UDP
@@ -163,6 +201,14 @@ def Send( self, clsMessage, bCheckMessage ):
   return True
 
 def SendIpPort( self, strPacket, strIp, iPort, eTransport ):
+  """ SIP 메시지 문자열을 입력된 IP 주소, 포트 번호, SIP transport 로 전송한다.
+
+  Args:
+      strPacket (string): SIP 메시지 문자열
+      strIp (string): IP 주소
+      iPort (int): 포트 번호
+      eTransport (int): SIP transport 숫자
+  """
   szPacket = strPacket.encode()
 
   if( eTransport == SipTransport.UDP ):
@@ -171,6 +217,11 @@ def SendIpPort( self, strPacket, strIp, iPort, eTransport ):
     self.clsUdpSendMutex.release()
 
 def CheckSipMessage( self, clsMessage ):
+  """ 전송할 SIP 메시지의 유효성을 검사하여서 유효하지 않은 항목을 유효하게 저장한다.
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+  """
   if( clsMessage.IsRequest() ):
     if( len(clsMessage.clsViaList) == 0 ):
       iPort = self.clsSetup.GetLocalPort( clsMessage.eTransport )

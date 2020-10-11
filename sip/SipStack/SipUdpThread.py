@@ -21,6 +21,11 @@ from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipTransport import SipTransport
 
 def SipUdpThread( clsSipStack ):
+  """ UDP 기반 SIP 메시지 수신 쓰레드
+
+  Args:
+      clsSipStack (SipStack): SipStack 객체
+  """
 
   clsSipStack.clsThreadCount.Increase()
 

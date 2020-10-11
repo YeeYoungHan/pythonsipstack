@@ -19,12 +19,38 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser.SipStatusCode import SipStatusCode
 
 class SipStackCallBack():
+  """ SipStack 의 이벤트를 응용으로 전달하는 callback 인터페이스
+  """
 
   def RecvRequest( self, clsMessage ):
+    """ SIP 요청 메시지 수신 이벤트 핸들러
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        bool: 응용에서 응답 메시지를 전송하였고 다음 callback 에서 처리할 필요가 없는 경우에는 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     return False
   
   def RecvResponse( self, clsMessage ):
+    """ SIP 응답 메시지 수신 이벤트 핸들러
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        bool: 응용에서 응답 메시지를 처리하였고 다음 callback 에서 처리할 필요가 없는 경우에는 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     return False
   
   def SendTimeout( self, clsMessage ):
+    """ SIP 메시지 전송 timeout 이벤트 핸들러
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        bool: 응용에서 SIP 메시지를 처리하였고 다음 callback 에서 처리할 필요가 없는 경우에는 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     return False

@@ -16,7 +16,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
+
 class SipTransactionList():
+  """ SIP transaction list 에서 공통적으로 사용되는 메소드 정의 클래스
+  """
 
   MAX_ICT_RESEND_COUNT = 11
   arrICTReSendTime = [ 0.5
@@ -32,6 +36,14 @@ class SipTransactionList():
     , 32.0]
   
   def GetKey( self, clsMessage ):
+    """ SIP 메시지로 자료구조에 저장할 KEY 문자열을 생성한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        string: 성공하면 KEY 문자열을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+    """
     if( len(clsMessage.clsViaList) == 0 ):
       return ""
     
@@ -52,6 +64,15 @@ class SipTransactionList():
     return strKey
   
   def GetKeyMethod( self, clsMessage, strMethod ):
+    """ SIP 메시지와 SIP 메소드 문자열로 자료구조에 저장할 KEY 문자열을 생성한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+        strMethod (string): SIP 메소드 문자열
+
+    Returns:
+        string: 성공하면 KEY 문자열을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+    """
     if( len(clsMessage.clsViaList) == 0 ):
       return ""
     

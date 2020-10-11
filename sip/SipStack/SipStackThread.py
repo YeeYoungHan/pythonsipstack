@@ -19,6 +19,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import time
 
 def SipStackThread( clsSipStack ):
+  """ SIP stack transaction 관리 쓰레드
+
+  Args:
+      clsSipStack (SipStack): SipStack 객체
+  """
 
   clsSipStack.clsThreadCount.Increase()
 
