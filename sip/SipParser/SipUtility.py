@@ -27,11 +27,21 @@ giCallId = 0
 gstrSystemId = ''
 
 def SipSetSystemId( strId ):
+  """ 시스템 아이디 전역 변수에 입력된 문자열을 저장한다.
+
+  Args:
+      strId (string): 시스템 아이디
+  """
   global gstrSystemId
 
   gstrSystemId = strId
 
 def SipMakeTag( ):
+  """ tag 문자열을 리턴한다.
+
+  Returns:
+      string: tag 문자열을 리턴한다.
+  """
   global gclsMutex, giTag
 
   gclsMutex.acquire()
@@ -45,6 +55,11 @@ def SipMakeTag( ):
   return str( iTag )
 
 def SipMakeBranch( ):
+  """ branch 문자열을 리턴한다.
+
+  Returns:
+      string: branch 문자열을 리턴한다.
+  """
   global gclsMutex, giBranch, gstrSystemId
 
   gclsMutex.acquire()
@@ -65,6 +80,11 @@ def SipMakeBranch( ):
   return strBranch
 
 def SipMakeCallIdName( ):
+  """ SIP Call-ID 이름에 저장할 문자열을 리턴한다.
+
+  Returns:
+      string: SIP Call-ID 이름에 저장할 문자열을 리턴한다.
+  """
   global gclsMutex, giCallId, gstrSystemId
 
   gclsMutex.acquire()
@@ -85,6 +105,14 @@ def SipMakeCallIdName( ):
   return strCallId
 
 def SipIpv6Parse( strHost ):
+  """ IPv6 구분자([])를 제거한 IP 주소를 리턴한다.
+
+  Args:
+      strHost (string): IP 주소
+
+  Returns:
+      string: IPv6 구분자를 제거한 IP 주소를 리턴한다.
+  """
   iLen = len(strHost)
   if( iLen > 0 and strHost[0] == '[' and strHost[iLen-1] == ']' ):
     return strHost[1:iLen]
@@ -92,6 +120,14 @@ def SipIpv6Parse( strHost ):
   return strHost
 
 def SipIpv6Print( strHost ):
+  """ IPv6 구분자([])를 포함한 IP 주소 문자열을 리턴한다.
+
+  Args:
+      strHost (string): IP 주소
+
+  Returns:
+      string: IPv6 구분자([])를 포함한 IP 주소 문자열을 리턴한다.
+  """
   iLen = len(strHost)
 
   if( iLen > 2 and strHost[0] != '[' and strHost.find(':') != -1 ):

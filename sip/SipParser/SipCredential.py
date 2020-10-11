@@ -37,6 +37,15 @@ class SipCredential():
     self.clsParamList = []
   
   def Parse( self, strText, iStartPos ):
+    """ SIP Authorization, Proxy-Authorization 헤더의 값을 파싱한다.
+
+    Args:
+        strText (string): SIP Credential 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -88,8 +97,15 @@ class SipCredential():
         self.strNonceCount = clsParam.strValue
       else:
         self.clsParamList.append( clsParam )
+    
+    return iPos
 
   def __str__( self ):
+    """ SIP Authorization, Proxy-Authorization 헤더의 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP WWW-Authenticate, Proxy-Authenticate 헤더의 값 문자열을 리턴한다.
+    """
     strText = ""
     strText = SetQuoteString( strText, "username", self.strUserName )
     strText = SetQuoteString( strText, "realm", self.strRealm )
@@ -108,6 +124,8 @@ class SipCredential():
     return self.strType + " " + strText
 
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strType = ''
     self.strUserName = ''
     self.strRealm = ''
@@ -123,6 +141,15 @@ class SipCredential():
 
   
 def ParseSipCredential( clsList, strText ):
+  """ SIP credential 문자열을 파싱하여서 credential 리스트에 저장한다.
+
+  Args:
+      clsList (list): credential 리스트
+      strText (string): SIP credential 문자열
+
+  Returns:
+      int: 성공하면 파싱한 문자열 길이를 리턴하고 그렇지 않으면 -1 을 리턴한다.
+  """
   clsCredential = SipCredential()
 
   iPos = clsCredential.Parse( strText, 0 )

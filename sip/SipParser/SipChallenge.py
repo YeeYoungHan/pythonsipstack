@@ -33,6 +33,15 @@ class SipChallenge():
     self.clsParamList = []
   
   def Parse( self, strText, iStartPos ):
+    """ SIP WWW-Authenticate, Proxy-Authenticate 헤더의 값을 파싱한다.
+
+    Args:
+        strText (string): SIP Chanllenge 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -78,8 +87,15 @@ class SipChallenge():
         self.strQop = DeQuoteString( clsParam.strValue )
       else:
         self.clsParamList.append( clsParam )
+    
+    return iPos
 
   def __str__( self ):
+    """ SIP WWW-Authenticate, Proxy-Authenticate 헤더의 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP WWW-Authenticate, Proxy-Authenticate 헤더의 값 문자열을 리턴한다.
+    """
     strText = ""
     strText = SetQuoteString( strText, "realm", self.strRealm )
     strText = SetQuoteString( strText, "domain", self.strDomain )
@@ -95,6 +111,8 @@ class SipChallenge():
     return self.strType + " " + strText
 
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strType = ''
     self.strRealm = ''
     self.strDomain = ''
@@ -124,6 +142,15 @@ def SetQuoteString( strText, strName, strValue ):
   return strText + strName + "=\"" + strValue + "\""
   
 def ParseSipChallenge( clsList, strText ):
+  """ SIP challenge 문자열을 파싱하여서 challenge 리스트에 저장한다.
+
+  Args:
+      clsList (list): challenge 리스트
+      strText (string): SIP challenge 문자열
+
+  Returns:
+      int: 성공하면 파싱한 문자열 길이를 리턴하고 그렇지 않으면 -1 을 리턴한다.
+  """
   clsChallenge = SipChallenge()
 
   iPos = clsChallenge.Parse( strText, 0 )
@@ -131,3 +158,5 @@ def ParseSipChallenge( clsList, strText ):
     return -1
   
   clsList.append( clsChallenge )
+
+  return iPos

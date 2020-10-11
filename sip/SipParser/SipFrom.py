@@ -28,6 +28,15 @@ class SipFrom(SipParameterList):
     self.clsUri = SipUri()
 
   def Parse( self, strText, iStartPos ):
+    """ SIP From, To, Contact, Route, Record-Route 등의 헤더의 값을 파싱한다.
+
+    Args:
+        strText (string): SIP From 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -77,6 +86,11 @@ class SipFrom(SipParameterList):
     return iPos
 
   def __str__( self ):
+    """ SIP From, To, Contact, Route, Record-Route 등의 헤더의 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP From, To, Contact, Route, Record-Route 등의 헤더의 값 문자열을 리턴한다.
+    """
     if( len(self.strDisplayName) > 0 ):
       strText = '"' + self.strDisplayName + '" <'
     else:
@@ -89,15 +103,28 @@ class SipFrom(SipParameterList):
 
 
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strDisplayName = ''
     self.clsUri.Clear()
     super().ClearParam()
   
   def InsertTag( self ):
+    """ tag 파라미터를 추가한다.
+    """
     super().InsertParam( "tag", SipMakeTag() )
   
 
 def ParseSipFrom( clsList, strText ):
+  """ SIP 헤더 문자열을 파싱하여 SipFrom 객체 리스트에 저장한다.
+
+  Args:
+      clsList (list): SipFrom 객체 리스트
+      strText (string): 파싱할 문자열
+
+  Returns:
+      int: 성공하면 파싱한 문자열의 길이를 리턴하고 그렇지 않으면 -1 을 리턴한다.
+  """
   iCurPos = 0
   iTextLen = len(strText)
 
@@ -113,3 +140,5 @@ def ParseSipFrom( clsList, strText ):
     iCurPos = iPos
 
     clsList.append( clsFrom )
+  
+  return iCurPos

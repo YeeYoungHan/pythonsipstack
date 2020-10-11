@@ -23,6 +23,15 @@ class SipParameter():
     self.strValue = ''
 
   def Parse( self, strText, iStartPos ):
+    """ SIP 파라미터 이름, 값을 파싱한다.
+
+    Args:
+        strText (string): SIP 파라미터 이름, 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -59,11 +68,12 @@ class SipParameter():
     
     return -1
 
-  def Clear( self ):
-    self.strName = ''
-    self.strValue = ''
-
   def __str__( self ):
+    """ SIP 파라미터 이름, 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP 파라미터 이름, 값 문자열을 리턴한다.
+    """
     if( len(self.strName) == 0 ):
       return ""
 
@@ -72,8 +82,24 @@ class SipParameter():
     
     return self.strName + "=" + self.strValue
 
+  def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
+    self.strName = ''
+    self.strValue = ''
+
 
 def ParseSipParameter( clsList, strText, iStartPos ):
+  """ parameter 리스트 문자열을 파싱하여서 parameter 리스트 객체에 저장한다.
+
+  Args:
+      clsList (list): parameter 리스트 객체
+      strText (string): parameter 리스트 문자열
+      iStartPos (int): strText 에서 분석을 시작할 위치
+
+  Returns:
+      [type]: [description]
+  """
   clsParam = SipParameter()
   
   iPos = clsParam.Parse( strText, iStartPos )
@@ -85,6 +111,15 @@ def ParseSipParameter( clsList, strText, iStartPos ):
   return iPos
 
 def SearchSipParameter( clsList, strName ):
+  """ parameter 리스트에서 parameter 이름에 대한 값을 검색한다.
+
+  Args:
+      clsList (list): parameter 리스트 객체
+      strName (string): parameter 이름
+
+  Returns:
+      string: parameter 리스트에서 parameter 이름이 존재하면 해당 parameter 의 값을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   for clsParam in clsList:
     if( clsParam.strName == strName ):
       return clsParam.strValue
@@ -92,6 +127,13 @@ def SearchSipParameter( clsList, strName ):
   return ''
 
 def InsertSipParameter( clsList, strName, strValue ):
+  """ parameter 리스트에 paramter 를 추가한다.
+
+  Args:
+      clsList (list): parameter 리스트 객체
+      strName (string): parameter 이름
+      strValue (string): parameter 값
+  """
   clsParam = SipParameter()
 
   clsParam.strName = strName
@@ -100,6 +142,14 @@ def InsertSipParameter( clsList, strName, strValue ):
   clsList.append( clsParam )
 
 def MakeSipParameterString( clsList ):
+  """ parameter 리스트 객체를 parameter 리스트 문자열로 생성하여 리턴한다.
+
+  Args:
+      clsList (list): parameter 리스트 객체
+
+  Returns:
+      string: parameter 리스트 문자열의 길이를 리턴한다.
+  """
   strText = ''
 
   for clsParam in clsList:

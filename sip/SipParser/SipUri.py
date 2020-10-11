@@ -31,6 +31,15 @@ class SipUri():
     self.clsHeaderList = []
 
   def Parse( self, strText, iStartPos ):
+    """ SIP Uri 를 파싱한다.
+
+    Args:
+        strText (string): SIP Uri 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     iPos = self.ParseProtocol( strText, iStartPos )
     if( iPos == -1 ):
       return -1
@@ -73,6 +82,11 @@ class SipUri():
     return iCurPos
 
   def __str__( self ):
+    """ SIP Uri 문자열을 리턴한다.
+
+    Returns:
+        string: SIP Uri 문자열을 리턴한다.
+    """
     strUri = self.strProtocol + ":"
     
     if( len( self.strUser ) > 0 ):
@@ -98,6 +112,8 @@ class SipUri():
     return strUri
 
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strProtocol = ''
     self.strUser = ''
     self.strHost = ''
@@ -106,16 +122,31 @@ class SipUri():
     self.clsHeaderList.clear()
   
   def InsertParam( self, strName, strValue ):
+    """ uri param 을 추가한다.
+
+    Args:
+        strName (string): param 이름
+        strValue (string): param 값
+    """
     InsertSipParameter( self.clsUriParamList, strName, strValue )
 
   def InsertTransport( self, eTransport ):
+    """ SIP URI 에 transport tag 를 추가한다.
+
+    Args:
+        eTransport (int): SIP transport 숫자
+    """
     if( eTransport == SipTransport.TCP ):
       InsertSipParameter( self.clsUriParamList, "transport", "tcp" )
     elif( eTransport == SipTransport.TLS ):
       InsertSipParameter( self.clsUriParamList, "transport", "tls" )
 
   def SelectTransport( self ):
+    """ SIP URI 에서 전송 프로토콜을 가져온다.
 
+    Returns:
+        int: SIP transport 숫자
+    """
     if( self.strProtocol == "sips" ):
       return SipTransport.TLS
     
@@ -130,6 +161,14 @@ class SipUri():
     return SipTransport.UDP
   
   def Set( self, strProtocol, strUser, strHost, iPort ):
+    """ 멤버 변수에 입력된 데이터를 저장한다.
+
+    Args:
+        strProtocol (string): SIP 프로토콜 문자열
+        strUser (string): 사용자 아이디 문자열
+        strHost (string): 도메인 이름 또는 IP 주소 문자열
+        iPort (int): 포트 번호
+    """
     if( len(strProtocol) > 0 ):
       self.strProtocol = strProtocol
     else:

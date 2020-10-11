@@ -64,6 +64,14 @@ class SipMessage():
 
 
   def Parse( self, strText ):
+    """ SIP 메시지를 파싱한다.
+
+    Args:
+        strText (string): SIP 메시지를 포함한 문자열
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     iTextLen = len(strText)
     if( iTextLen <= 4 ):
       return -1
@@ -134,6 +142,11 @@ class SipMessage():
     return iCurPos
 
   def __str__( self ):
+    """ SIP 메시지 문자열을 리턴한다.
+
+    Returns:
+        string: SIP 메시지 문자열을 리턴한다.
+    """
     if( len(self.strSipVersion) == 0 ):
       self.strSipVersion = "SIP/2.0"
     
@@ -188,16 +201,32 @@ class SipMessage():
     return strText
   
   def MakePacket( self ):
+    """ strPacket 멤버 변수에 값이 저장되어 있지 않다면 SIP 메시지 문자열을 생성하여서 strPacket 멤버 변수 저장한다.
+        SIP stack 에서 재전송할 때에 SIP 메시지 문자열을 생성하지 않고 기존에 생성된 SIP 메시지 문자열을 이용하여서 전송하기 위한 기능
+    """
     if( len(self.strPacket) == 0 ):
       self.strPacket = str(self)
   
   def IsRequest( self ):
+    """ SIP 요청 메시지인지 검사한다.
+
+    Returns:
+        bool: SIP 요청 메시지이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( len(self.strSipMethod) == 0 ):
       return False
     
     return True
   
   def IsMethod( self, strMethod ):
+    """ 입력된 SIP 메소드와 동일한 메시지인지 검사한다.
+
+    Args:
+        strMethod (string): SIP 메소드 문자열
+
+    Returns:
+        bool: 입력된 SIP 메소드와 동일한 메시지이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( len(self.strSipMethod) > 0 ):
       if( self.strSipMethod == strMethod ):
         return True
@@ -208,15 +237,36 @@ class SipMessage():
     return False
 
   def IsEqualCallId( self, clsMessage ):
+    """ 입력된 SIP 메시지 객체와 동일한 SIP Call-ID 인지 검사한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        bool: 입력된 SIP 메소드와 동일한 SIP Call-ID 이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     return self.clsCallId == clsMessage.clsCallId
 
   def IsEqualCallIdSeq( self, clsMessage ):
+    """ 입력된 SIP 메시지 객체와 동일한 SIP Call-ID 이고 CSeq 의 숫자도 동일한지 검사한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        bool: 입력된 SIP 메소드와 동일한 SIP Call-ID 이고 CSeq 의 숫자도 동일하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( self.clsCallId == clsMessage.clsCallId and self.clsCSeq.iDigit == clsMessage.clsCSeq.iDigit ):
       return True
     
     return False
 
   def Is100rel( self ):
+    """ 100rel 을 사용하는지 검사한다.
+
+    Returns:
+        bool: 100rel 을 사용하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     clsHeader = self.GetHeader( "Supported" )
     if( clsHeader != None and clsHeader.strValue.find( "100rel" ) != -1 ):
         return True
@@ -228,9 +278,19 @@ class SipMessage():
     return False
 
   def GetCallId( self ):
+    """ SIP Call-ID 문자열을 리턴한다.
+
+    Returns:
+        string: SIP Call-ID 문자열을 리턴한다.
+    """
     return str(self.clsCallId)
 
   def GetExpires( self ):
+    """ 만료 시간(초단위)을 리턴한다.
+
+    Returns:
+        int: 만료 시간이 존재하면 만료 시간(초단위)을 리턴하고 그렇지 않으면 0 을 리턴한다.
+    """
     if( self.iExpires != -1 ):
       return self.iExpires
     
@@ -244,6 +304,14 @@ class SipMessage():
     return 0
 
   def GetHeader( self, strName ):
+    """ 입력된 이름과 일치하는 SIP 헤더의 값을 저장한 객체를 리턴한다.
+
+    Args:
+        strName (string): 헤더 이름
+
+    Returns:
+        SipHeader: 입력된 이름과 일치하는 SIP 헤더의 값을 저장한 객체를 리턴한다.
+    """
     strName = strName.lower()
 
     for clsHeader in self.clsHeaderList:
@@ -253,6 +321,11 @@ class SipMessage():
     return None
 
   def GetTopViaIpPort( self ):
+    """ 최상위 Via 헤더의 IP, Port 를 리턴한다.
+
+    Returns:
+        (IP,Port): 최상위 Via 헤더의 IP, Port 를 튜플로 리턴한다.
+    """
     if( len(self.clsViaList) == 0 ):
       return '', 0
 
@@ -269,12 +342,27 @@ class SipMessage():
     return strIp, iPort
   
   def AddIpPortToTopVia( self, strIp, iPort, eTransport ):
+    """ 최상위 Via 헤더에 IP, Port, transport 를 저장한다.
+
+    Args:
+        strIp (string): IP 주소
+        iPort (int): Port 번호
+        eTransport (int): transport 정수
+    """
     if( len(self.clsViaList) == 0 ):
       return
 
     self.clsViaList[0].AddIpPort( strIp, iPort, eTransport )
 
   def AddVia( self, strIp, iPort, strBranch, eTransport ):
+    """ Via 헤더를 추가한다.
+
+    Args:
+        strIp (string): IP 주소
+        iPort (int): Port 번호
+        strBranch (string): branch 문자열
+        eTransport (int): transport 정수
+    """
     clsVia = SipVia()
 
     clsVia.strProtocolName = "SIP"
@@ -292,6 +380,13 @@ class SipMessage():
     self.clsViaList.append( clsVia )
   
   def AddRoute( self, strIp, iPort, eTransport ):
+    """ Route 헤더를 추가한다.
+
+    Args:
+        strIp (string): IP 주소
+        iPort (int): Port 번호
+        eTransport (int): transport 정수
+    """
     clsFrom = SipFrom()
 
     clsFrom.clsUri.strProtocol = SipGetProtocol( eTransport )
@@ -304,6 +399,13 @@ class SipMessage():
     self.clsRouteList.insert( 0, clsFrom )
 
   def AddRecordRoute( self, strIp, iPort, eTransport ):
+    """ Record-Route 헤더를 추가한다.
+
+    Args:
+        strIp (string): IP 주소
+        iPort (int): Port 번호
+        eTransport (int): transport 정수
+    """
     clsFrom = SipFrom()
 
     clsFrom.clsUri.strProtocol = SipGetProtocol( eTransport )
@@ -316,6 +418,12 @@ class SipMessage():
     self.clsRecordRouteList.insert( 0, clsFrom )
 
   def AddHeader( self, strName, strValue ):
+    """ SIP 헤더를 추가한다.
+
+    Args:
+        strName (string): SIP 헤더 이름 문자열
+        strValue (string): SIP 헤더 값 문자열
+    """
     clsHeader = SipHeader()
 
     clsHeader.strName = strName
@@ -324,6 +432,15 @@ class SipMessage():
     self.clsHeaderList.append( clsHeader )
 
   def CreateResponse( self, iStatusCode, strToTag ):
+    """ SIP 응답 메시지를 생성한다.
+
+    Args:
+        iStatusCode (int): SIP 응답 코드
+        strToTag (string): SIP To 헤더에 저장할 tag 문자열, SIP To 헤더에 tag 문자열을 저장하지 않을 경우 공백 문자열을 입력하라
+
+    Returns:
+        SipMessage: SIP 응답 메시지를 리턴한다.
+    """
     clsResponse = SipMessage()
 
     clsResponse.iStatusCode = iStatusCode
@@ -343,6 +460,14 @@ class SipMessage():
     return clsResponse
   
   def CreateResponseWithToTag( self, iStatusCode ):
+    """ SIP 요청 메시지에 To 헤더의 tag 값이 존재하지 않으면 To 헤더에 tag 값을 저장한 SIP 응답 메시지를 생성하고 그렇지 않으면 To 헤더의 tag 값을 수정하지 않은 SIP 응답 메시지를 생성한다.
+
+    Args:
+        iStatusCode (int): SIP 응답 코드
+
+    Returns:
+        SipMessage: SIP 응답 메시지를 리턴한다.
+    """
     clsResponse = SipMessage()
 
     clsResponse.iStatusCode = iStatusCode

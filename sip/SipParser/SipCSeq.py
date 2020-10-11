@@ -23,6 +23,12 @@ class SipCSeq():
     self.strMethod = ''
   
   def Parse( self, strText, iStartPos ):
+    """ SIP CSeq 헤더의 값을 파싱한다.
+
+    Args:
+        strText (string): SIP CSeq 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -43,18 +49,36 @@ class SipCSeq():
       iPos += 1
 
   def __str__( self ):
+    """ SIP CSeq 헤더의 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP CSeq 헤더의 값 문자열을 리턴한다.
+    """
     return str(self.iDigit) + " " + self.strMethod
   
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.iDigit = -1
     self.strMethod = ''
   
   def Empty( self ):
+    """ 멤버 변수에 값이 저장되지 않았는지 검사한다.
+
+    Returns:
+        bool: 멤버 변수에 값이 저장되지 않았으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( self.iDigit == -1 ):
       return True
     
     return False
 
   def Set( self, iDigit, strMethod ):
+    """ 입력된 숫자 및 메소드 문자열로 멤버 변수에 저장한다.
+
+    Args:
+        iDigit (int): 숫자
+        strMethod (string): 메소드 이름
+    """
     self.iDigit = iDigit
     self.strMethod = strMethod

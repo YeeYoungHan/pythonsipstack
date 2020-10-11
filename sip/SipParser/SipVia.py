@@ -31,6 +31,15 @@ class SipVia( SipParameterList ):
     self.iPort = -1
   
   def Parse( self, strText, iStartPos ):
+    """ SIP Via 헤더의 값을 파싱한다.
+
+    Args:
+        strText (string): SIP Via 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iCurPos = iStartPos
@@ -52,6 +61,11 @@ class SipVia( SipParameterList ):
     return iCurPos
 
   def __str__( self ):
+    """ SIP Via 헤더의 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP Via 헤더의 값 문자열을 리턴한다.
+    """
     strVia = self.strProtocolName + "/" + self.strProtocolVersion + "/" + self.strTransport + " "
 
     strVia += SipIpv6Print( self.strHost )
@@ -64,6 +78,8 @@ class SipVia( SipParameterList ):
     return strVia
 
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strProtocolName = ''
     self.strProtocolVersion = ''
     self.strTransport = ''
@@ -72,6 +88,13 @@ class SipVia( SipParameterList ):
     super().ClearParam()
 
   def AddIpPort( self, strIp, iPort, eTransport ):
+    """ SIP Via 헤더에 IP, Port, transport 를 저장한다.
+
+    Args:
+        strIp (string): IP 주소
+        iPort (int): 포트 번호
+        eTransport (SipTransport): transport
+    """
     strPort = str(iPort)
     if( super().UpdateParam( "rport", strPort ) == False and self.iPort != iPort ):
       super().InsertParam( "rport", strPort )
@@ -159,6 +182,15 @@ class SipVia( SipParameterList ):
 
 
 def ParseSipVia( clsList, strText ):
+  """ SIP 헤더 문자열을 파싱하여 SipVia 객체 리스트에 저장한다.
+
+  Args:
+      clsList (list): SIP Via 헤더 리스트
+      strText (string): SIP Via 헤더 값을 저장한 문자열
+
+  Returns:
+      int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+  """
   iCurPos = 0
   iTextLen = len(strText)
 
@@ -174,3 +206,5 @@ def ParseSipVia( clsList, strText ):
     iCurPos = iPos
 
     clsList.append( clsVia )
+  
+  return iCurPos

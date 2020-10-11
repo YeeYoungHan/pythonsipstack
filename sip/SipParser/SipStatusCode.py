@@ -16,7 +16,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import os
+
 class SipStatusCode():
+  """ SIP 응답 코드 저장 클래스
+  """
   SIP_TRYING = 100
   SIP_RINGING = 180
   SIP_SESSION_PROGRESS = 183
@@ -42,6 +46,14 @@ class SipStatusCode():
   SIP_CONNECT_ERROR = 660
 
 def GetReasonPhrase( iSipCode ):
+  """ SIP 응답 코드에 해당하는 설명 문자열을 리턴한다.
+
+  Args:
+      iSipCode (int): SIP 응답 코드
+
+  Returns:
+      string: SIP 응답 코드에 해당하는 설명 문자열을 리턴한다.
+  """
   if( iSipCode == 100 ):
     return "Trying"
   elif( iSipCode == 180 ):

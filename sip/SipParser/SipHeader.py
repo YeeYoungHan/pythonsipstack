@@ -23,6 +23,15 @@ class SipHeader():
     self.strValue = ''
 
   def Parse( self, strText, iStartPos ):
+    """ SIP 헤더의 이름, 값을 파싱한다.
+
+    Args:
+        strText (string): SIP 헤더의 이름, 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -78,11 +87,18 @@ class SipHeader():
     return iPos
 
   def __str__( self ):
+    """ SIP 헤더의 이름, 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP 헤더의 이름, 값 문자열을 리턴한다.
+    """
     if( len(self.strValue) == 0 ):
       return self.strName + ": \r\n"
     
     return self.strName + ": " + self.strValue + "\r\n"
   
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strName = ''
     self.strValue = ''

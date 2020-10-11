@@ -25,6 +25,15 @@ class SipReason( SipParameterList ):
     self.strProtocol = ''
   
   def Parse( self, strText, iStartPos ):
+    """ SIP Reason 헤더의 값을 파싱한다.
+
+    Args:
+        strText (string): SIP Reason 헤더의 값을 포함한 문자열
+        iStartPos (int): strText 에서 분석을 시작할 위치
+
+    Returns:
+        int: 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
+    """
     self.Clear()
 
     iPos = iStartPos
@@ -55,10 +64,19 @@ class SipReason( SipParameterList ):
       for clsParam in super().clsParamList:
         if( len(clsParam.strValue) > 0 and clsParam.strValue[0] == '"' ):
           clsParam.strValue.replace( '"', '' )
+    
+    return iCurPos
 
   def __str__( self ):
+    """ SIP Reason 헤더의 값 문자열을 리턴한다.
+
+    Returns:
+        string: SIP Reason 헤더의 값 문자열을 리턴한다.
+    """
     return self.strProtocol + super().__str__()
 
   def Clear( self ):
+    """ 멤버 변수를 초기화 시킨다.
+    """
     self.strProtocol = ''
     super().ClearParam()
