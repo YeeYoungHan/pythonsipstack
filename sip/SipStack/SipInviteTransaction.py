@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser import SipMessage
 
 class SipInviteTransaction():
+  """ Invite Transaction 정보 저장 클래스
+  """
 
   def __init__( self ):
     self.clsRequest = None

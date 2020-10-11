@@ -17,6 +17,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 class SipHeader():
+  """ SIP 헤더 저장 클래스
+  """
 
   def __init__( self ):
     self.strName = ''

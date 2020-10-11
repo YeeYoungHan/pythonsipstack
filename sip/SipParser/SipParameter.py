@@ -17,6 +17,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 class SipParameter():
+  """ SIP 파라미터의 이름, 값 문자열을 저장하는 클래스
+  """
 
   def __init__( self ):
     self.strName = ''

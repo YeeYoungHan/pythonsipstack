@@ -31,6 +31,8 @@ from .SipNISTList import SipNISTList
 from .SipISTList import SipISTList
 
 class SipStack():
+  """ SIP stack 클래스
+  """
 
   from .SipStackComm import SendSipMessage, RecvSipMessage, RecvSipPacket, Send, SendIpPort, CheckSipMessage
 
@@ -49,6 +51,11 @@ class SipStack():
     self.clsCallBackList = []
   
   def Start( self, clsSetup ):
+    """ SIP stack 을 시작한다.
+
+    Args:
+        clsSetup (SipStackSetup): SIP stack 설정 객체
+    """
     self.clsSetup = clsSetup
 
     self.clsICT.iTimerD = clsSetup.iTimerD
@@ -69,6 +76,8 @@ class SipStack():
     self.bStarted = True
   
   def Stop( self ):
+    """ SIP stack 을 중지시킨다.
+    """
     if( self.bStarted == False or self.bStopEvent ):
       return
     
@@ -92,6 +101,8 @@ class SipStack():
     self.bStarted = False
 
   def Execute( self ):
+    """ Transaction 리스트에서 재전송할 SIP 메시지가 존재하면 재전송하고 만료된 Transaction 은 삭제한다.
+    """
     iTime = time.time()
 
     self.clsNICT.Execute( iTime )
@@ -100,12 +111,27 @@ class SipStack():
     self.clsIST.Execute( iTime )
   
   def DeleteAllTransaction( self ):
+    """ 모든 transaction 정보를 삭제한다.
+    """
     self.clsNICT.DeleteAll()
+    self.clsICT.DeleteAll()
+    self.clsNIST.DeleteAll()
+    self.clsIST.DeleteAll()
   
   def AddCallBack( self, clsCallBack ):
+    """ SipStackCallBack 을 상속받은 객체를 추가한다.
+
+    Args:
+        clsCallBack (SipStackCallBack): SipStackCallBack 을 상속받은 객체
+    """
     self.clsCallBackList.append( clsCallBack )
 
   def RecvRequest( self, clsMessage ):
+    """ SIP 요청 메시지 수신 callback 메소드를 호출한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+    """
     bSendResponse = False
 
     for clsCallBack in self.clsCallBackList:
@@ -117,9 +143,19 @@ class SipStack():
       self.SendSipMessage( clsResponse )
 
   def RecvResponse( self, clsMessage ):
+    """ SIP 응답 메시지 수신 callback 메소드를 호출한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+    """
     for clsCallBack in self.clsCallBackList:
       clsCallBack.RecvResponse( clsMessage )
 
   def SendTimeout( self, clsMessage ):
+    """ SIP 메시지 전송 timeout callback 메소드를 호출한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+    """
     for clsCallBack in self.clsCallBackList:
       clsCallBack.SendTimeout( clsMessage )

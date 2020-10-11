@@ -19,6 +19,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from .SipParameterList import SipParameterList
 
 class SipReason( SipParameterList ):
+  """ SIP Reason 헤더의 값 저장 클래스
+
+  Args:
+      SipParameterList (SipParameterList): SIP 파라미터 리스트 저장 클래스
+  """
 
   def __init__( self ):
     super().__init__()

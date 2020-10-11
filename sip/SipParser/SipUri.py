@@ -21,6 +21,8 @@ from .SipParameter import ParseSipParameter, MakeSipParameterString, InsertSipPa
 from .SipTransport import SipTransport
 
 class SipUri():
+  """ SIP Uri 저장 클래스
+  """
 
   def __init__( self ):
     self.strProtocol = ''

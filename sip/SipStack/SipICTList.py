@@ -25,6 +25,11 @@ from .SipInviteTransaction import SipInviteTransaction
 from .SipTransactionList import SipTransactionList
 
 class SipICTList(SipTransactionList):
+  """ Invite Client Transaction 리스트 저장 클래스
+
+  Args:
+      SipTransactionList (SipTransactionList): SipTransactionList
+  """
 
   def __init__( self, clsSipStack ):
     self.clsMutex = threading.Lock()
@@ -33,6 +38,14 @@ class SipICTList(SipTransactionList):
     self.iTimerD = 32.0
 
   def Insert( self, clsMessage ):
+    """ Invite Client Transaction 리스트에 SIP 메시지를 저장한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        bool: SIP 메시지 저장에 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     bRes = False
     strKey = super().GetKey( clsMessage )
 
@@ -97,6 +110,11 @@ class SipICTList(SipTransactionList):
     return bRes
   
   def Execute( self, iTime ):
+    """ Invite Client Transaction 리스트에서 재전송할 SIP 메시지가 존재하면 재전송하고 만료된 Transaction 은 삭제한다.
+
+    Args:
+        iTime (int): 현재 시간
+    """
     clsDeleteList = []
     clsResponseList = []
 
@@ -131,6 +149,8 @@ class SipICTList(SipTransactionList):
       self.clsSipStack.RecvResponse( clsResponse )
    
   def DeleteAll( self ):
+    """ Invite Client Transaction 리스트를 초기화시킨다.
+    """
     self.clsMutex.acquire()
     self.clsMap.clear()
     self.clsMutex.release()

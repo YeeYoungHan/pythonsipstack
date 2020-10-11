@@ -21,6 +21,8 @@ from .SipParameter import ParseSipParameter
 from ..SipPlatform.StringUtility import DeQuoteString
 
 class SipCredential():
+  """ SIP Authorization, Proxy-Authorization 헤더의 값을 저장하는 클래스
+  """
 
   def __init__( self ):
     self.strType = ''

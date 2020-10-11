@@ -21,6 +21,11 @@ from .SipUtility import SipIpv6Print
 from .SipTransport import SipTransport
 
 class SipVia( SipParameterList ):
+  """ SIP Via 헤더의 값 저장 클래스
+
+  Args:
+      SipParameterList (SipParameterList): SIP 파라미터 리스트 저장 클래스
+  """
 
   def __init__( self ):
     super().__init__()

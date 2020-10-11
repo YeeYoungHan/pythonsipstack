@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from .SipUtility import SipMakeCallIdName
 
 class SipCallId():
+  """ SIP Call-ID 헤더의 값을 저장하는 클래스
+  """
 
   def __init__( self ):
     self.strName = ''

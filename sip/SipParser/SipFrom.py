@@ -21,6 +21,11 @@ from .SipUri import SipUri
 from .SipUtility import SipMakeTag
 
 class SipFrom(SipParameterList):
+  """ SIP From, To, Contact, Route, Record-Route 등의 헤더의 값을 저장하는 클래스
+
+  Args:
+      SipParameterList (SipParameterList): SIP 파라미터 리스트 저장 클래스
+  """
 
   def __init__( self ):
     super().__init__()

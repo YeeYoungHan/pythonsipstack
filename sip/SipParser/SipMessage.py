@@ -31,6 +31,8 @@ from .SipStatusCode import SipStatusCode, GetReasonPhrase
 from .SipUtility import SipMakeBranch
 
 class SipMessage():
+  """ SIP 메시지 저장 클래스
+  """
 
   def __init__( self ):
     self.strSipMethod = ''
