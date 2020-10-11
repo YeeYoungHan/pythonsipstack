@@ -25,6 +25,8 @@ from ..SipParser.SipStatusCode import SipStatusCode
 from ..SipPlatform.SipMd5 import SipMd5String
 
 class SipServerInfo():
+  """ 외부 IP-PBX 정보 저장 클래스
+  """
 
   def __init__( self ):
     self.strIp = ''
@@ -49,6 +51,14 @@ class SipServerInfo():
     self.iNonceCount = 1
   
   def __eq__( self, clsServerInfo ):
+    """ 입력된 IP-PBX 정보와 일치하는지 검사한다.
+
+    Args:
+        clsServerInfo (SipServerInfo): 외부 IP-PBX 정보 저장 클래스
+
+    Returns:
+        bool: 입력된 IP-PBX 정보와 일치하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( clsServerInfo == None ):
       return False
       
@@ -58,6 +68,8 @@ class SipServerInfo():
     return False
   
   def ClearLogin( self ):
+    """ 로그인 정보를 초기화시킨다.
+    """
     self.bLogin = False
     self.iLoginTime = 0.0
     self.iSendTime = 0.0
@@ -68,6 +80,15 @@ class SipServerInfo():
     self.iNonceCount = 1
   
   def CreateRegister( self, clsSipStack, clsResponse ):
+    """ SIP REGISTER 메시지를 리턴한다.
+
+    Args:
+        clsSipStack (SipStack): SIP stack 객체
+        clsResponse (SipMessage): SIP 응답 메시지 객체가 존재하면 SIP 응답 메시지 객체를 입력하고 그렇지 않으면 None 를 입력
+
+    Returns:
+        SipMessage: SIP REGISTER 메시지를 리턴한다.
+    """
     clsRequest = SipMessage()
 
     # REGISTER sip:127.0.0.1 SIP/2.0

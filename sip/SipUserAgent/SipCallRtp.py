@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from .RtpDirection import RtpDirection
 
 class SipCallRtp():
+  """ SIP 통화에 사용할 RTP 정보를 저장하는 클래스
+  """
 
   def __init__( self ):
     self.strIp = ''

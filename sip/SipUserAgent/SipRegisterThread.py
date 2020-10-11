@@ -19,6 +19,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 import time
 
 def SipRegisterThread( clsUserAgent ):
+  """ IP-PBX 에 로그인 또는 로그아웃하는 쓰레드
+
+  Args:
+      clsUserAgent (SipUserAgent): SipUserAgent 객체
+  """
 
   while( clsUserAgent.bStopEvent == False ):
     iTime = time.time()

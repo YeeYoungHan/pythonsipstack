@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser.SipTransport import SipTransport
 
 class SipCallRoute():
+  """ SIP 메시지를 전송할 대상 호스트 및 프로토콜 정보를 저장하는 클래스
+  """
 
   def __init__( self ):
     self.strDestIp = ''

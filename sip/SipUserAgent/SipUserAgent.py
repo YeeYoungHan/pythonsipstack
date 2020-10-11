@@ -30,6 +30,8 @@ from .SipRegisterThread import SipRegisterThread
 import threading
 
 class SipUserAgent():
+  """ SIP UserAgent 클래스
+  """
 
   from .SipUserAgentCall import StartCall, StopCall, StopCallForward, RingCall, RingCallStatus, AcceptCall, HoldCall, ResumeCall, GetCallCount, GetCallIdList
   from .SipUserAgentCall import StopCallAll, CreateCall, StartCreatedCall, TransferCallBlind, TransferCall
@@ -62,6 +64,15 @@ class SipUserAgent():
     self.iSeq = 0
   
   def Start( self, clsSetup, clsCallBack ):
+    """ SIP UserAgent 를 시작한다.
+
+    Args:
+        clsSetup (SipStackSetup): SIP 설정 정보를 저장한 객체
+        clsCallBack (SipUserAgentCallBack): SIP UserAgent 의 이벤트를 수신할 callback 객체
+
+    Returns:
+        bool: 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( self.bStart ):
       return False
 

@@ -23,6 +23,8 @@ from .RtpDirection import RtpDirection, GetRtpDirectionString
 from .SipCallRtp import SipCallRtp
 
 class SipDialog():
+  """ SIP 다이얼로그 정보를 저장하는 클래스
+  """
 
   def __init__( self, clsSipStack ):
     self.strFromId = ''
@@ -59,6 +61,11 @@ class SipDialog():
     self.clsSipStack = clsSipStack
   
   def CreateInvite( self ):
+    """ SIP INVITE 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP INVITE 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "INVITE" )
     if( clsMessage == None ):
       return None
@@ -76,6 +83,11 @@ class SipDialog():
     return clsMessage
   
   def CreateAck( self, iStatusCode ):
+    """ SIP ACK 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP ACK 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "ACK" )
     if( clsMessage == None ):
       return None
@@ -86,6 +98,11 @@ class SipDialog():
     return clsMessage
   
   def CreateCancel( self ):
+    """ SIP CANCEL 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP CANCEL 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "CANCEL" )
     if( clsMessage == None ):
       return None
@@ -95,6 +112,11 @@ class SipDialog():
     return clsMessage
   
   def CreateBye( self ):
+    """ SIP BYE 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP BYE 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "BYE" )
     if( clsMessage == None ):
       return None
@@ -102,6 +124,11 @@ class SipDialog():
     return clsMessage
   
   def CreateNotify( self ):
+    """ SIP NOTIFY 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP NOTIFY 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "NOTIFY" )
     if( clsMessage == None ):
       return None
@@ -109,6 +136,11 @@ class SipDialog():
     return clsMessage
   
   def CreateRefer( self ):
+    """ SIP REFER 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP REFER 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "REFER" )
     if( clsMessage == None ):
       return None
@@ -116,6 +148,11 @@ class SipDialog():
     return clsMessage
   
   def CreatePrack( self ):
+    """ SIP PRACK 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP PRACK 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "PRACK" )
     if( clsMessage == None ):
       return None
@@ -126,6 +163,11 @@ class SipDialog():
     return clsMessage
   
   def CreateInfo( self ):
+    """ SIP INFO 메시지를 리턴한다.
+
+    Returns:
+        SipMessage: SIP INFO 메시지를 리턴한다.
+    """
     clsMessage = self.CreateMessage( "INFO" )
     if( clsMessage == None ):
       return None
@@ -133,6 +175,14 @@ class SipDialog():
     return clsMessage
   
   def AddSdp( self, clsMessage ):
+    """ 입력된 SIP 메시지에 SDP 를 추가한 후, SIP 메시지를 리턴한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지
+
+    Returns:
+        SipMessage: SDP 가 추가된 SIP 메시지를 리턴한다.
+    """
     strAddrType = "IP4"
 
     if( self.strLocalRtpIp.find(':') != -1 ):
@@ -189,6 +239,11 @@ class SipDialog():
     return clsMessage
 
   def SetLocalRtp( self, clsRtp ):
+    """ 로컬 RTP 정보를 저장한다.
+
+    Args:
+        clsRtp (SipCallRtp): 로컬 RTP 정보를 저장하는 객체
+    """
     self.strLocalRtpIp = clsRtp.strIp
     self.iLocalRtpPort = clsRtp.iPort
     self.iCodec = clsRtp.iCodec
@@ -203,6 +258,11 @@ class SipDialog():
       self.eRemoteDirection = RtpDirection.SEND
   
   def SetRemoteRtp( self, clsRtp ):
+    """ 상대방 RTP 정보를 저장한다.
+
+    Args:
+        clsRtp (SipCallRtp): 상대방 RTP 정보를 저장하는 객체
+    """
     # ReINVITE 에서 hold 인 경우 IP 주소가 0.0.0.0 으로 수신되어서 Transfer 할 때에 정상적으로 SDP IP 주소가 전달되지 않기 위해서 수정함.
     if( clsRtp.strIp != "0.0.0.0" ):
       self.strRemoteRtpIp = clsRtp.strIp
@@ -219,6 +279,11 @@ class SipDialog():
       self.eLocalDirection = RtpDirection.SEND
 
   def SelectLocalRtp( self ):
+    """ 로컬 RTP 정보를 저장하는 객체를 리턴한다.
+
+    Returns:
+        SipCallRtp: 로컬 RTP 정보를 저장하는 객체를 리턴한다.
+    """
     clsRtp = SipCallRtp()
 
     clsRtp.strIp = self.strLocalRtpIp
@@ -229,6 +294,11 @@ class SipDialog():
     return clsRtp
   
   def SelectRemoteRtp( self ):
+    """ 상대방 RTP 정보를 저장하는 객체를 리턴한다.
+
+    Returns:
+        SipCallRtp: 상대방 RTP 정보를 저장하는 객체를 리턴한다.
+    """
     clsRtp = SipCallRtp()
 
     clsRtp.strIp = self.strRemoteRtpIp
@@ -239,6 +309,14 @@ class SipDialog():
     return clsRtp
 
   def CreateMessage( self, strSipMethod ):
+    """ 입력된 SIP 메소드에 대한 SIP 메시지 객체를 리턴한다.
+
+    Args:
+        strSipMethod (string): SIP 메소드 문자열
+
+    Returns:
+        SipMessage: 입력된 SIP 메소드에 대한 SIP 메시지 객체를 리턴한다.
+    """
     clsMessage = SipMessage()
 
     if( clsMessage.clsCallId.Parse( self.strCallId, 0 ) == -1 ):
@@ -294,12 +372,25 @@ class SipDialog():
     return clsMessage
   
   def IsConnected( self ):
+    """ 통화 연결 유무를 리턴한다.
+
+    Returns:
+        bool: 통화 연결되었으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( self.iStartTime != 0.0 and self.iEndTime == 0.0 ):
       return True
     
     return False
   
 def IsUseCodec( iCodec ):
+  """ 사용 가능한 코덱인지 확인한다.
+
+  Args:
+      iCodec (int): SDP payload type
+
+  Returns:
+      bool: 사용 가능한 코덱이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   if( iCodec == 0 or iCodec == 3 or iCodec == 4 or iCodec == 8 or iCodec == 18 ):
     return True
   
