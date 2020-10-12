@@ -137,6 +137,7 @@ class SipStack():
     for clsCallBack in self.clsCallBackList:
       if( clsCallBack.RecvRequest( clsMessage ) == True ):
         bSendResponse = True
+        break
 
     if( bSendResponse == False ):
       clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_NOT_IMPLEMENTED )
@@ -149,7 +150,8 @@ class SipStack():
         clsMessage (SipMessage): SIP 메시지 객체
     """
     for clsCallBack in self.clsCallBackList:
-      clsCallBack.RecvResponse( clsMessage )
+      if( clsCallBack.RecvResponse( clsMessage ) ):
+        break
 
   def SendTimeout( self, clsMessage ):
     """ SIP 메시지 전송 timeout callback 메소드를 호출한다.
@@ -158,4 +160,5 @@ class SipStack():
         clsMessage (SipMessage): SIP 메시지 객체
     """
     for clsCallBack in self.clsCallBackList:
-      clsCallBack.SendTimeout( clsMessage )
+      if( clsCallBack.SendTimeout( clsMessage ) ):
+        break

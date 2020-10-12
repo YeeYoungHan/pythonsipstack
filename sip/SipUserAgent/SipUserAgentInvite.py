@@ -23,6 +23,14 @@ from ..SipParser.SipUtility import SipMakeTag
 from .SipDialog import SipDialog
   
 def RecvInviteRequest( self, clsMessage ):
+  """ SIP INVITE 요청 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: True 를 리턴한다.
+  """
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )
@@ -114,6 +122,14 @@ def RecvInviteRequest( self, clsMessage ):
   return True
 
 def RecvInviteResponse( self, clsMessage ):
+  """ SIP INVITE 응답 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: True 를 리턴한다.
+  """
   if( clsMessage.iStatusCode == SipStatusCode.SIP_TRYING ):
     return True
   

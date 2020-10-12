@@ -21,6 +21,14 @@ from .SipCallRoute import SipCallRoute
 from .RtpDirection import RtpDirection
 
 def GetRemoteCallRtp( self, strCallId ):
+  """ 상대방 RTP 정보를 가져온다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      SipCallRtp: 성공하면 상대방 RTP 정보를 저장한 객체를 리턴하고 그렇지 않으면 None 를 리턴한다.
+  """
   clsRtp = None
 
   self.clsDialogMutex.acquire()
@@ -32,6 +40,14 @@ def GetRemoteCallRtp( self, strCallId ):
   return clsRtp
 
 def GetToId( self, strCallId ):
+  """ TO 전화번호를 가져온다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      string: 성공하면 TO 전화번호를 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   strToId = ''
 
   self.clsDialogMutex.acquire()
@@ -43,6 +59,14 @@ def GetToId( self, strCallId ):
   return strToId
 
 def GetFromId( self, strCallId ):
+  """ From 전화번호를 가져온다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      string: 성공하면 From 전화번호를 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   strFromId = ''
 
   self.clsDialogMutex.acquire()
@@ -54,6 +78,14 @@ def GetFromId( self, strCallId ):
   return strFromId
 
 def GetContact( self, strCallId ):
+  """ 상대방 통신 정보를 가져온다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      SipCallRoute: 상대방 통신 정보를 저장하는 객체
+  """
   clsRoute = None
 
   self.clsDialogMutex.acquire()
@@ -68,6 +100,15 @@ def GetContact( self, strCallId ):
   return clsRoute
 
 def GetInviteHeaderValue( self, strCallId, strName ):
+  """ 수신된 SIP INVITE 메시지에서 입력된 헤더 이름에 대한 헤더 값을 가져온다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      strName (string): 헤더 이름
+
+  Returns:
+      string: 성공하면 수신된 SIP INVITE 메시지에서 입력된 헤더 이름에 대한 헤더 값을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   strValue = ''
 
   self.clsDialogMutex.acquire()
@@ -82,6 +123,14 @@ def GetInviteHeaderValue( self, strCallId, strName ):
   return strValue
 
 def GetRSeq( self, strCallId ):
+  """ RSeq 값을 리턴한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      int: 성공하면 다이얼로그의 RSeq 값을 리턴하고 그렇지 않으면 -1 를 리턴한다.
+  """
   iRSeq = -1
 
   self.clsDialogMutex.acquire()
@@ -93,6 +142,12 @@ def GetRSeq( self, strCallId ):
   return iRSeq
 
 def SetRSeq( self, strCallId, iRSeq ):
+  """ RSeq 값을 저장한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      iRSeq (int): RSeq 값
+  """
   self.clsDialogMutex.acquire()
   clsDialog = self.clsDialogMap.get(strCallId)
   if( clsDialog != None ):
@@ -100,6 +155,15 @@ def SetRSeq( self, strCallId, iRSeq ):
   self.clsDialogMutex.release()
 
 def IsRingCall( self, strCallId, strTo ):
+  """ 통화 RING 중인지 검사한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      strTo (string): 수신자 전화번호
+
+  Returns:
+      bool: 통화 RING 중이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   bRes = False
 
   self.clsDialogMutex.acquire()
@@ -116,6 +180,14 @@ def IsRingCall( self, strCallId, strTo ):
   return bRes
 
 def Is100rel( self, strCallId ):
+  """ 100rel 설정 여부를 확인한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      bool: 100rel 설정되어 있으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   b100rel = False
 
   self.clsDialogMutex.acquire()
@@ -129,6 +201,14 @@ def Is100rel( self, strCallId ):
   return b100rel
 
 def IsHold( self, strCallId ):
+  """ 통화 hold 중인지 검사한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      bool: 통화 hold 중이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   bHold = False
 
   self.clsDialogMutex.acquire()
@@ -141,6 +221,14 @@ def IsHold( self, strCallId ):
   return bHold
 
 def IsConnected( self, strCallId ):
+  """ 통화가 연결된 상태인지 검사한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      bool: 통화가 연결된 상태이면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   bConnected = False
 
   self.clsDialogMutex.acquire()
@@ -153,6 +241,14 @@ def IsConnected( self, strCallId ):
   return bConnected
 
 def DeleteIncomingCall( self, strCallId ):
+  """ 수신 통화를 삭제한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      SipMessage: 성공하면 수신 통화의 SIP 메시지 저장 객체를 리턴하고 그렇지 않으면 None 를 리턴한다.
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()

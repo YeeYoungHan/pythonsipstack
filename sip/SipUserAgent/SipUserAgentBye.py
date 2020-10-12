@@ -21,6 +21,14 @@ from ..SipPlatform.Log import Log, LogLevel
 from ..SipParser.SipStatusCode import SipStatusCode
   
 def RecvByeRequest( self, clsMessage ):
+  """ SIP BYE 요청 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: True 를 리턴한다.
+  """
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )

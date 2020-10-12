@@ -17,6 +17,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
 def InsertRegisterInfo( self, clsServerInfo ):
+  """ 로그인할 IP-PBX 정보를 저장한다.
+
+  Args:
+      clsServerInfo (SipServerInfo): IP-PBX 정보 저장 객체
+
+  Returns:
+      성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   if( len(clsServerInfo.strIp) == 0 ):
     return False
   if( len(clsServerInfo.strUserId) == 0 ):
@@ -36,4 +44,6 @@ def InsertRegisterInfo( self, clsServerInfo ):
   if( bFound == False ):
     self.clsRegisterList.append( clsServerInfo )
   self.clsRegisterMutex.release()
+
+  return True
   

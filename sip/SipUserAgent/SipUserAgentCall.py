@@ -28,6 +28,17 @@ from .SipDialog import SipDialog
 from .RtpDirection import RtpDirection
 
 def StartCall( self, strFrom, strTo, clsRtp, clsRoute ):
+  """ 통화 요청을 전송한다. SIP INVITE 메시지를 전송한다.
+
+  Args:
+      strFrom (string): 발신자 전화번호
+      strTo (string): 수신자 전화번호
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+      clsRoute (SipCallRoute): 수신자 통신 정보 저장 객체
+
+  Returns:
+      string: 성공하면 SIP Call-ID 문자열을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   if( len(strFrom) == 0 or len(strTo) == 0 ):
     return ''
   
@@ -68,6 +79,12 @@ def StartCall( self, strFrom, strTo, clsRtp, clsRoute ):
   return clsDialog.strCallId
 
 def StopCall( self, strCallId, iSipCode ):
+  """ 통화 요청을 중지시키거나 연결된 통화를 종료시킨다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      iSipCode (int): 응답 SIP 코드
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -93,6 +110,12 @@ def StopCall( self, strCallId, iSipCode ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def StopCallForward( self, strCallId, strForward ):
+  """ 수신한 통화 요청을 종료시키면서 착신전환 전화번호를 알려 준다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      strForward (string): 착신전환 전화번호
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -110,6 +133,12 @@ def StopCallForward( self, strCallId, strForward ):
     self.clsSipStack.SendSipMessage( clsMessage )
   
 def RingCall( self, strCallId, clsRtp ):
+  """ 183 응답 메시지를 전송한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -128,6 +157,13 @@ def RingCall( self, strCallId, clsRtp ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def RingCallStatus( self, strCallId, iSipStatus, clsRtp ):
+  """ 수신된 통화에 대한 ring 응답 메시지를 전송한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      iSipStatus (int): 응답 SIP 코드
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -152,6 +188,15 @@ def RingCallStatus( self, strCallId, iSipStatus, clsRtp ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def AcceptCall( self, strCallId, clsRtp ):
+  """ 수신된 통화를 연결시킨다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+
+  Returns:
+      bool: 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -172,6 +217,12 @@ def AcceptCall( self, strCallId, clsRtp ):
   return False
 
 def HoldCall( self, strCallId, eDirection ):
+  """ 통화를 hold 시킨다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      eDirection (int): RtpDirection 숫자
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -185,6 +236,11 @@ def HoldCall( self, strCallId, eDirection ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def ResumeCall( self, strCallId ):
+  """ 통화를 resume 시킨다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -198,6 +254,11 @@ def ResumeCall( self, strCallId ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def GetCallCount( self ):
+  """ 통화 개수를 리턴한다.
+
+  Returns:
+      int: 통화 개수를 리턴한다.
+  """
   self.clsDialogMutex.acquire()
   iCount = len(self.clsDialogMap)
   self.clsDialogMutex.release()
@@ -205,6 +266,11 @@ def GetCallCount( self ):
   return iCount
 
 def GetCallIdList( self ):
+  """ 모든 통화 SIP Call-ID 리스트를 리턴한다.
+
+  Returns:
+      list: 모든 통화 SIP Call-ID 리스트를 리턴한다.
+  """
   clsCallIdList = []
 
   self.clsDialogMutex.acquire()
@@ -215,12 +281,27 @@ def GetCallIdList( self ):
   return clsCallIdList
 
 def StopCallAll( self ):
+  """ 모든 통화를 종료시킨다.
+  """
   clsCallIdList = self.GetCallIdList()
 
   for strCallId in clsCallIdList:
     self.StopCall( strCallId, 0 )
 
 def CreateCall( self, strFrom, strTo, clsRtp, clsRoute ):
+  """ 통화 요청을 위한 다이얼로그를 생성하고 SIP INVITE 메시지를 생성한다.
+      본 메소드를 호출하면 다이얼로그 및 SIP INVITE 메시지만 생성되지 SIP INVITE 메시지는 전송되지 않는다.
+      본 메소드를 호출한 후, StartCreatedCall() 메소드를 호출해야 SIP INVITE 메시지가 전송된다.
+
+  Args:
+      strFrom (string): 발신자 전화번호
+      strTo (string): 수신자 전화번호
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+      clsRoute (SipCallRoute): 수신자 통신 정보 저장 객체
+
+  Returns:
+      string: 성공하면 SIP Call-ID 문자열을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   if( len(strFrom) == 0 or len(strTo) == 0 ):
     return ''
   
@@ -258,6 +339,14 @@ def CreateCall( self, strFrom, strTo, clsRtp, clsRoute ):
   return clsDialog.strCallId
 
 def StartCreatedCall( self, strCallId ):
+  """ CreateCall() 메소드로 생성된 SIP INVITE 메시지로 통화 요청한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+
+  Returns:
+      bool: 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -273,6 +362,12 @@ def StartCreatedCall( self, strCallId ):
   return False
 
 def TransferCallBlind( self, strCallId, strTo ):
+  """ 통화를 전달한다. ( blind transfer )
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      strTo (string): 통화를 전달받을 전화번호
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -289,6 +384,12 @@ def TransferCallBlind( self, strCallId, strTo ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def TransferCall( self, strCallId, strToCallId ):
+  """ 통화를 전달한다. ( screened, unscreened transfer )
+
+  Args:
+      strCallId (string): 현재 통화에 대한 SIP Call-ID 문자열
+      strToCallId (string): 전달할 통화에 대한 SIP Call-ID 문자열
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()

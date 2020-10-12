@@ -19,6 +19,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser.SipStatusCode import SipStatusCode
 
 def RecvMessageRequest( self, clsMessage ):
+  """ SIP MESSAGE 요청 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: True 를 리턴한다.
+  """
   if( self.clsCallBack.EventIncomingRequestAuth( clsMessage ) == False ):
     return True
     

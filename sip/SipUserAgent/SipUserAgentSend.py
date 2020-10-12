@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 from ..SipParser.SipStatusCode import GetReasonPhrase
 
 def SendReInvite( self, strCallId, clsRtp ):
+  """ SIP ReINVITE 메시지를 전송한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -32,6 +38,12 @@ def SendReInvite( self, strCallId, clsRtp ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def SendNotify( self, strCallId, iSipCode ):
+  """ SIP 통화 전달에 대한 응답 이벤트를 전송한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      iSipCode (int): SIP 응답 코드
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -56,6 +68,12 @@ def SendNotify( self, strCallId, iSipCode ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def SendDtmf( self, strCallId, strDtmf ):
+  """ SIP INFO 기반의 DTMF 를 전송한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      strDtmf (string): 하나의 DTMF 문자를 저장한 문자열 (예: 1)
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()
@@ -73,6 +91,12 @@ def SendDtmf( self, strCallId, strDtmf ):
     self.clsSipStack.SendSipMessage( clsMessage )
 
 def SendPrack( self, strCallId, clsRtp ):
+  """ SIP PRACK 메시지를 전송한다.
+
+  Args:
+      strCallId (string): SIP Call-ID 문자열
+      clsRtp (SipCallRtp): 로컬 RTP 정보 저장 객체
+  """
   clsMessage = None
 
   self.clsDialogMutex.acquire()

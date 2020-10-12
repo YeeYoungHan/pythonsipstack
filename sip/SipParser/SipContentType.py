@@ -122,7 +122,7 @@ class SipContentType(SipParameterList):
     """ SIP Content-Type 객체가 동일한 값을 저장하고 있는지 검사한다.
 
     Args:
-        clsCallId (SipContentType): SIP Content-Type 객체
+        clsContentType (SipContentType): SIP Content-Type 객체
 
     Returns:
         bool: SIP Content-Type 객체가 동일한 값을 가지고 있다면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.

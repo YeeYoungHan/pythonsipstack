@@ -90,6 +90,11 @@ class SipUserAgent():
     return True
   
   def Stop( self ):
+    """ SIP UserAgent 를 중지시킨다.
+
+    Returns:
+        bool: 성공하면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+    """
     if( self.bStart == False ):
       return False
     
@@ -101,6 +106,11 @@ class SipUserAgent():
     return True
   
   def Delete( self, strCallId ):
+    """ 다이얼로그 자료구조에서 입력된 SIP Call-ID 관련 정보를 삭제한다.
+
+    Args:
+        strCallId (string): SIP Call-ID 문자열
+    """
     self.clsDialogMutex.acquire()
     clsDialog = self.clsDialogMap.get( strCallId )
     if( clsDialog != None ):
@@ -108,6 +118,14 @@ class SipUserAgent():
     self.clsDialogMutex.release()
 
   def GetSipCallRtp( self, clsMessage ):
+    """ SIP 메시지의 SDP 를 분석하여서 RTP 정보를 저장하는 객체를 리턴한다.
+
+    Args:
+        clsMessage (SipMessage): SIP 메시지 객체
+
+    Returns:
+        SipCallRtp: 성공하면 RTP 정보를 저장하는 객체를 리턴하고 그렇지 않으면 None 를 리턴한다.
+    """
     if( clsMessage.clsContentType.IsEqual( "application", "sdp" ) and len(clsMessage.strBody) > 0 ):
       clsSdp = SdpMessage()
 

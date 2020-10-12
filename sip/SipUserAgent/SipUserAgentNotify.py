@@ -20,6 +20,14 @@ from ..SipParser.SipMessage import SipMessage
 from ..SipParser.SipStatusCode import SipStatusCode
 
 def RecvNotifyRequest( self, clsMessage ):
+  """ SIP NOTIFY 요청 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: True 를 리턴한다.
+  """
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )

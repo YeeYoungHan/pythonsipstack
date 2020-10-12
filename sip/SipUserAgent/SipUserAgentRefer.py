@@ -20,6 +20,14 @@ from ..SipParser.SipUri import SipUri
 from ..SipParser.SipStatusCode import SipStatusCode
 
 def RecvReferRequest( self, clsMessage ):
+  """ SIP REFER 요청 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: SIP 메시지를 처리하였으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
     self.clsSipStack.SendSipMessage( clsMessage.CreateResponse( SipStatusCode.SIP_BAD_REQUEST, '' ) )
@@ -83,6 +91,14 @@ def RecvReferRequest( self, clsMessage ):
   return False
 
 def RecvReferResponse( self, clsMessage ):
+  """ SIP REFER 응답 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: SIP 메시지를 처리하였으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   strCallId = clsMessage.GetCallId()
   if( len(strCallId) == 0 ):
     return True
@@ -101,6 +117,14 @@ def RecvReferResponse( self, clsMessage ):
 
 
 def GetCallIdFromReferTo( strValue ):
+  """ ReferTo 헤더 값에서 SIP Call-ID 문자열을 가져온다.
+
+  Args:
+      strValue (string): ReferTo 헤더 값 문자열
+
+  Returns:
+      string: 성공하면 SIP Call-ID 문자열을 리턴하고 그렇지 않으면 공백 문자열을 리턴한다.
+  """
   iPos = strValue.find( "Replaces=" )
   if( iPos == -1 ):
     return ''

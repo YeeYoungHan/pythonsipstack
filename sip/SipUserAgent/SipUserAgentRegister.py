@@ -26,6 +26,14 @@ def ClearLogin( self, clsServerInfo, iStatusCode ):
   self.clsCallBack.EventRegister( clsServerInfo, iStatusCode )
 
 def RecvRegisterResponse( self, clsMessage ):
+  """ SIP REGISTER 응답 메시지 수신 이벤트 핸들러
+
+  Args:
+      clsMessage (SipMessage): SIP 메시지 객체
+
+  Returns:
+      bool: SIP 메시지를 처리하였으면 True 를 리턴하고 그렇지 않으면 False 를 리턴한다.
+  """
   strUserId = clsMessage.clsFrom.clsUri.strUser
   clsDeleteServerList = []
   bRes = False
