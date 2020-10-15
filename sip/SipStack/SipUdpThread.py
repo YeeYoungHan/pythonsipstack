@@ -34,7 +34,6 @@ def SipUdpThread( clsSipStack ):
   while( clsSipStack.bStopEvent == False ):
     iRecvLen = 0
 
-    clsSipStack.clsUdpRecvMutex.acquire()
     try:
       read_socket_list, write_socket_list, except_socket_list = select.select( read_list, [], [], 1.0 )
       for read_socket in read_socket_list:
@@ -42,7 +41,6 @@ def SipUdpThread( clsSipStack ):
         iRecvLen = len(szPacket)
     except Exception as other:
       Log.Print( LogLevel.ERROR, "SipUdpThread exception - " + str(other) )
-    clsSipStack.clsUdpRecvMutex.release()
 
     if( iRecvLen > 0 ):
       strPacket = szPacket.decode()

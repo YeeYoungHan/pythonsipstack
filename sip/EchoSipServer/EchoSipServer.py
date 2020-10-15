@@ -43,7 +43,6 @@ else:
   clsSetup.strLocalIp = clsSetupFile.strLocalIp
 
 clsSetup.iLocalUdpPort = clsSetupFile.iUdpPort
-clsSetup.iUdpThreadCount = clsSetupFile.iUdpThreadCount
 
 clsSipServer = SipServer()
 if( clsSipServer.Start( clsSetup ) == False ):

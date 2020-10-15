@@ -25,7 +25,6 @@ class SipServerSetup():
   def __init__( self ):
     self.strLocalIp = ''
     self.iUdpPort = 5060
-    self.iUdpThreadCount = 10
     self.strCallPickupId = ''
     self.iStackExecutePeriod = 0.02
     self.iTimerD = 32.0
@@ -49,7 +48,6 @@ class SipServerSetup():
       
       self.strLocalIp = XmlGetDataString( clsSip, "LocalIp", self.strLocalIp )
       self.iUdpPort = XmlGetDataInt( clsSip, "UdpPort", self.iUdpPort )
-      self.iUdpThreadCount = XmlGetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
       self.strRealm = XmlGetDataString( clsSip, "Realm", self.strRealm )
       self.iMinRegisterTimeout = XmlGetDataInt( clsSip, "MinRegisterTimeout", self.iMinRegisterTimeout )
       self.strCallPickupId = XmlGetDataString( clsSip, "CallPickupId", self.strCallPickupId )

@@ -50,7 +50,6 @@ class SipServer(SipUserAgentCallBack,SipStackCallBack):
       clsSetup.strLocalIp = clsSetupFile.strLocalIp
     
     clsSetup.iLocalUdpPort = clsSetupFile.iUdpPort
-    clsSetup.iUdpThreadCount = clsSetupFile.iUdpThreadCount
 
     if( len(clsSetupFile.strSipServerXmlFolder) > 0 ):
       self.clsSipServerMap.Load( clsSetupFile.strSipServerXmlFolder )

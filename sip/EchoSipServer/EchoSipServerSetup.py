@@ -24,7 +24,6 @@ class EchoSipServerSetup():
   def __init__( self ):
     self.strLocalIp = ''
     self.iUdpPort = 5060
-    self.iUdpThreadCount = 10
   
   def Read( self, strFileName ):
 
@@ -39,7 +38,6 @@ class EchoSipServerSetup():
       
       self.strLocalIp = GetDataString( clsSip, "LocalIp", self.strLocalIp )
       self.iUdpPort = GetDataInt( clsSip, "UdpPort", self.iUdpPort )
-      self.iUdpThreadCount = GetDataInt( clsSip, "UdpThreadCount", self.iUdpThreadCount )
 
       clsLog = clsRoot.find("Log")
       if( clsLog == None ):

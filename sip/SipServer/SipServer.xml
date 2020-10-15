@@ -2,7 +2,6 @@
 	<Sip>
 		<LocalIp>192.168.0.94</LocalIp>
 		<UdpPort>5060</UdpPort>
-		<UdpThreadCount>1</UdpThreadCount>
 		<Realm>pythonsipserver</Realm>
 		<MinRegisterTimeout>300</MinRegisterTimeout>
 		<CallPickupId>**</CallPickupId>

@@ -25,7 +25,6 @@ class SipStackSetup():
   def __init__( self ):
     self.strLocalIp = ''
     self.iLocalUdpPort = 5060
-    self.iUdpThreadCount = 1
     self.strUserAgent = ""
     self.iStackExecutePeriod = 0.02
     self.iTimerD = 32.0

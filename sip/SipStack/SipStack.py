@@ -39,7 +39,6 @@ class SipStack():
   def __init__( self ):
     self.clsMutex = threading.Lock()
     self.clsUdpSendMutex = threading.Lock()
-    self.clsUdpRecvMutex = threading.Lock()
     self.hUdpSocket = None
     self.bStopEvent = False
     self.bStarted = False
