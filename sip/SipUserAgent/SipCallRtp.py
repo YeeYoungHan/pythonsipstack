@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-from .RtpDirection import RtpDirection
+from .RtpDirection import RtpDirection, GetRtpDirectionString
 
 class SipCallRtp():
   """ SIP 통화에 사용할 RTP 정보를 저장하는 클래스
@@ -28,3 +28,9 @@ class SipCallRtp():
     self.iCodec = -1
     self.eDirection = RtpDirection.SEND_RECV
     self.clsCodecList = []
+  
+  def __repr__( self ):
+    strText = "SipCallRtp(" + self.strIp + ":" + str(self.iPort) + ") codec(" + str(self.iCodec) + ")"
+    strText += " direction(" + GetRtpDirectionString(self.eDirection) + ") codec list" + str(self.clsCodecList)
+
+    return strText
