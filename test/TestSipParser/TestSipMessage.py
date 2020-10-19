@@ -31,7 +31,6 @@ def Test( strInput, strOutput ):
     print( "sip message(" + strInput + ") output(" + strOutput + ") != result(" + strMessage + ")" )
     exit()
 
-'''
 # Body
 Test(	"OPTIONS sip:carol@chicago.com SIP/2.0\r\n"
 	    "To: <sip:carol@chicago.com>\r\n"
@@ -274,7 +273,6 @@ Test(	"OPTIONS sip:carol@chicago.com SIP/2.0\r\n"
 				"opaque=\"5ccc069c403ebaf9f0171e9517f40e41\", qop=auth\r\n"
 			"Content-Length: 0\r\n"
 			"\r\n" )
-'''
 
 # Proxy-Authorization
 Test(	"OPTIONS sip:carol@chicago.com SIP/2.0\r\n"
