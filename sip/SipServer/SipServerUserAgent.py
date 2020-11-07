@@ -180,11 +180,12 @@ def EventCallRing( self, strCallId, iSipStatus, clsRtp ):
 
   clsCallInfo = self.clsCallMap.SelectCallInfo( strCallId )
   if( clsCallInfo != None ):
-    iRSeq = self.clsUserAgent.GetRSeq( strCallId )
-    if( iRSeq != -1 ):
-      self.clsUserAgent.SetRSeq( clsCallInfo.strPeerCallId, iRSeq )
-    
-    self.clsUserAgent.RingCall( clsCallInfo.strPeerCallId, iSipStatus, clsRtp )
+    if( iSipStatus == SipStatusCode.SIP_SESSION_PROGRESS ):
+      iRSeq = self.clsUserAgent.GetRSeq( strCallId )
+      if( iRSeq != -1 ):
+        self.clsUserAgent.SetRSeq( clsCallInfo.strPeerCallId, iRSeq )
+      
+      self.clsUserAgent.RingCall( clsCallInfo.strPeerCallId, clsRtp )
   else:
     clsCallInfo = self.clsTransCallMap.SelectCallInfo( strCallId )
     if( clsCallInfo != None ):
