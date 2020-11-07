@@ -61,7 +61,7 @@ class RtpThread():
   
 def RtpSendThread( clsRtpThread ):
   clsAudio = pyaudio.PyAudio()
-  clsStream = clsAudio.open( format = 8, channels = 1, rate = 8000, output = False )
+  clsStream = clsAudio.open( format = 8, channels = 1, rate = 8000, input = True )
 
   iFlags = 0x80
   iPayload = 0

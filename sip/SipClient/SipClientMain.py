@@ -36,7 +36,10 @@ if( clsClient.Start( clsSetupFile ) == False ):
   print( "clsClient.Start() error" )
   exit()
 
-for strLine in sys.stdin.readline():
+while True:
+  strLine = sys.stdin.readline()
+  strLine = strLine[:-1]
+  
   if( strLine[0] == 'c' ):
     strNumber = strLine[2:]
     clsClient.StartCall( strNumber )
