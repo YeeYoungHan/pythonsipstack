@@ -102,6 +102,9 @@ class SipServerInfo():
     clsRequest.clsFrom.clsUri.Set( "sip", self.strUserId, self.strDomain, self.iPort )
     clsRequest.clsFrom.InsertTag()
 
+    # Expires
+    clsRequest.iExpires = self.iLoginTimeout
+
     # CSeq: 1 REGISTER
     self.iSeqNo += 1
     if( self.iSeqNo >= 2000000000 ):
@@ -209,7 +212,7 @@ class SipServerInfo():
       strA1 = clsCredential.strUserName + ":" + clsCredential.strRealm + ":" + self.strPassWord
       strA1 = SipMd5String( strA1 )
 
-      strA2 = clsRequest.strMethod + ":" + clsCredential.strUri
+      strA2 = clsRequest.strSipMethod + ":" + clsCredential.strUri
       strA2 = SipMd5String( strA2 )
 
       strResponse = strA1 + ":" + clsCredential.strNonce + ":" + strA2
