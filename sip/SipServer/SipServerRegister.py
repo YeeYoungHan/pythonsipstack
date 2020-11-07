@@ -63,7 +63,7 @@ def RecvRequestRegister( self, clsMessage ):
   if( clsMessage.iExpires != 0 and self.clsSetupFile.iMinRegisterTimeout != 0 ):
     if( clsMessage.iExpires < self.clsSetupFile.iMinRegisterTimeout ):
       clsResponse = clsMessage.CreateResponseWithToTag( SipStatusCode.SIP_INTERVAL_TOO_BRIEF )
-      clsResponse.AddHeader( "Min-Expires", self.clsSetupFile.iMinRegisterTimeout )
+      clsResponse.AddHeader( "Min-Expires", str(self.clsSetupFile.iMinRegisterTimeout) )
       self.clsUserAgent.clsSipStack.SendSipMessage( clsResponse )
       return True
 

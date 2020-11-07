@@ -30,7 +30,7 @@ from .UserMap import UserMap
 class SipServer(SipUserAgentCallBack,SipStackCallBack):
 
   from .SipServerRegister import AddChallenge, SendUnAuthorizedResponse, CheckAuthorization, RecvRequestRegister
-  from .SipServerUserAgent import CheckAuthrization, EventRegister, EventIncomingRequestAuth, EventIncomingCall, EventCallStart, EventCallEnd
+  from .SipServerUserAgent import CheckAuthrization, EventRegister, EventIncomingRequestAuth, EventIncomingCall, EventCallRing, EventCallStart, EventCallEnd
   from .SipServerUserAgent import EventReInvite, EventPrack, EventTransfer, EventBlindTransfer
 
   def __init__( self ):
