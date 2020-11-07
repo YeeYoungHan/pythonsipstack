@@ -16,3 +16,49 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import socket
+from ..SipPlatform.Log import Log, LogLevel
+from ..SipStack.SipStackSetup import SipStackSetup
+from ..SipUserAgent.SipUserAgent import SipUserAgent
+from ..SipUserAgent.SipUserAgentCallBack import SipUserAgentCallBack
+from ..SipUserAgent.SipServerInfo import SipServerInfo
+
+class SipClient(SipUserAgentCallBack):
+
+  from .SipClientUserAgent import EventRegister, EventIncomingRequestAuth, EventIncomingCall, EventCallStart, EventCallEnd
+
+  def __init__( self ):
+    self.clsUserAgent = SipUserAgent()
+    self.strCallId = ''
+  
+  def Start( self, clsSetupFile ):
+    clsSetup = SipStackSetup()
+
+    if( len(clsSetupFile.strLocalIp) == 0 ):
+      clsSetup.strLocalIp = socket.gethostbyname(socket.gethostname())
+    else:
+      clsSetup.strLocalIp = clsSetupFile.strLocalIp
+    
+    clsSetup.iLocalUdpPort = clsSetupFile.iUdpPort
+
+    clsSipServerInfo = SipServerInfo()
+    clsSipServerInfo.strIp = clsSetupFile.strSipServerIp
+    clsSipServerInfo.strDomain = clsSetupFile.strSipDomain
+    clsSipServerInfo.strUserId = clsSetupFile.strSipUserId
+    clsSipServerInfo.strPassWord = clsSetupFile.strSipPassWord
+
+    if( self.clsUserAgent.InsertRegisterInfo( clsSipServerInfo ) == False ):
+      Log.Print( LogLevel.ERROR, "clsUserAgent.InsertRegisterInfo error" )
+      return False
+
+    if( self.clsUserAgent.Start( clsSetup, self ) == False ):
+      Log.Print( LogLevel.ERROR, "clsUserAgent.Start error" )
+      return False
+    
+    self.clsUserAgent.clsSipStack.AddCallBack( self )
+    self.clsSetupFile = clsSetupFile
+
+    return True
+  
+  def StartCall( self, strTo ):
+    

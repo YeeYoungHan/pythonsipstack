@@ -16,3 +16,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import sys
+import time
+from .SipClientSetup import SipClientSetup
+from .SipClient import SipClient
+
+if( len(sys.argv) == 1 ):
+  print( "[Usage] python -m sip.SipClient.SipClientMain {setup file path}")
+  exit()
+
+strSetupFileName = sys.argv[1]
+clsSetupFile = SipClientSetup()
+
+if( clsSetupFile.Read( strSetupFileName ) == False ):
+  print( "lsSetupFile.Read(" + strSetupFileName + ") error" )
+  exit()
+
+clsSipServer = SipClient()
+if( clsSipServer.Start( clsSetupFile ) == False ):
+  exit()
+
+while True:
+  time.sleep(1.0)

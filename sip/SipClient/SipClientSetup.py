@@ -48,6 +48,10 @@ class SipClientSetup():
       self.strSipUserId = XmlGetDataString( clsSip, "UserId", '' )
       self.strSipPassWord = XmlGetDataString( clsSip, "UserPassword", '' )
 
+      if( len(self.strSipServerIp) == 0 ):
+        print( "Sip -> ServerIp element is not found" )
+        return False
+
       if( len(self.strSipUserId) == 0 ):
         print( "Sip -> UserId element is not found" )
         return False

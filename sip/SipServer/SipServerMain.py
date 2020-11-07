@@ -18,14 +18,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import sys
 import time
-import socket
-from ..SipPlatform.Log import Log, LogLevel
-from ..SipStack.SipStackSetup import SipStackSetup
 from .SipServerSetup import SipServerSetup
 from .SipServer import SipServer
 
 if( len(sys.argv) == 1 ):
-  print( "[Usage] python -m sip.EchoSipServer.EchoSipServer {setup file path}")
+  print( "[Usage] python -m sip.SipServer.SipServerMain {setup file path}")
   exit()
 
 strSetupFileName = sys.argv[1]

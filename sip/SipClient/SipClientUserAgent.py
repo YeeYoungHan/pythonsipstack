@@ -16,3 +16,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+from ..SipParser.SipStatusCode import SipStatusCode
+
+def EventRegister( self, clsServerInfo, iStatus ):
+  print( "sip server(" + clsServerInfo.strIp + ") login status(" + str(iStatus) + ")" )
+
+def EventIncomingCall( self, strCallId, strFrom, strTo, clsRtp ):
+  print( "EventIncomingCall(" + strCallId + "," + strFrom + "," + strTo + ")" )
+
+  if( len(self.strCallId) > 0 ):
+    self.clsUserAgent.StopCall( strCallId, SipStatusCode.SIP_BUSY_HERE )
+    print( "Send Response(486)" )
+    return
+
+def EventCallRing( self, strCallId, iSipStatus, clsRtp ):
+  print( "EventCallRing(" + strCallId + "," + str(iSipStatus) + ")" )
+
+def EventCallStart( self, strCallId, clsRtp ):
+  print( "EventCallStart(" + strCallId + ")" )
+
+def EventCallEnd( self, strCallId, iSipStatus ):
+  print( "EventCallEnd(" + strCallId + "," + str(iSipStatus) + ")" )

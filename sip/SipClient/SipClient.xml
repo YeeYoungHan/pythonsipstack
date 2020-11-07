@@ -1,0 +1,14 @@
+<Setup>
+	<Sip>
+		<LocalIp>192.168.0.94</LocalIp>
+		<UdpPort>5080</UdpPort>
+		<ServerIp>192.168.0.94</ServerIp>
+		<UserId>1010</UserId>
+		<UserPassword>1234</UserPassword>
+	</Sip>
+	<Log>
+		<Folder>c:\temp\sipclient</Folder>
+		<Level Debug="true" Info="true" Network="true" />
+		<MaxSize>10000000</MaxSize>
+	</Log>
+</Setup>
