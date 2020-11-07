@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
+import fileinput
 import sys
-import time
 from .SipClientSetup import SipClientSetup
 from .SipClient import SipClient
 
@@ -32,9 +32,17 @@ if( clsSetupFile.Read( strSetupFileName ) == False ):
   print( "lsSetupFile.Read(" + strSetupFileName + ") error" )
   exit()
 
-clsSipServer = SipClient()
-if( clsSipServer.Start( clsSetupFile ) == False ):
+clsClient = SipClient()
+if( clsClient.Start( clsSetupFile ) == False ):
   exit()
 
-while True:
-  time.sleep(1.0)
+for strLine in fileinput.input():
+  if( strLine[0] == 'c' ):
+    strNumber = strLine[2:]
+    clsClient.StartCall( strNumber )
+  elif( strLine[0] == 'a' ):
+    clsClient.AcceptCall( )
+  elif( strLine[0] == 'e' ):
+    clsClient.StopCall( )
+  elif( strLine[0] == 'q' ):
+    break

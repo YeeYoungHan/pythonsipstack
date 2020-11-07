@@ -24,10 +24,13 @@ def EventRegister( self, clsServerInfo, iStatus ):
 def EventIncomingCall( self, strCallId, strFrom, strTo, clsRtp ):
   print( "EventIncomingCall(" + strCallId + "," + strFrom + "," + strTo + ")" )
 
-  if( len(self.strCallId) > 0 ):
+  if( self.CanNewCall() == False ):
     self.clsUserAgent.StopCall( strCallId, SipStatusCode.SIP_BUSY_HERE )
     print( "Send Response(486)" )
     return
+  
+  self.strCallId = strCallId
+  self.clsDestRtp = clsRtp
 
 def EventCallRing( self, strCallId, iSipStatus, clsRtp ):
   print( "EventCallRing(" + strCallId + "," + str(iSipStatus) + ")" )
@@ -35,5 +38,12 @@ def EventCallRing( self, strCallId, iSipStatus, clsRtp ):
 def EventCallStart( self, strCallId, clsRtp ):
   print( "EventCallStart(" + strCallId + ")" )
 
+  self.clsDestRtp = clsRtp
+  self.clsRtpThread.SetDestIpPort( clsRtp.strIp, clsRtp.iPort )
+
 def EventCallEnd( self, strCallId, iSipStatus ):
   print( "EventCallEnd(" + strCallId + "," + str(iSipStatus) + ")" )
+
+  if( self.strCallId == strCallId ):
+    self.strCallId = ''
+    self.StopCall()
