@@ -26,6 +26,7 @@ class SipClientSetup():
     self.strLocalIp = ''
     self.iUdpPort = 5060
     self.strSipServerIp = ''
+    self.iSipServerPort = 5060
     self.strSipDomain = ''
     self.strSipUserId = ''
     self.strSipPassWord = ''
@@ -44,6 +45,7 @@ class SipClientSetup():
       self.strLocalIp = XmlGetDataString( clsSip, "LocalIp", self.strLocalIp )
       self.iUdpPort = XmlGetDataInt( clsSip, "UdpPort", self.iUdpPort )
       self.strSipServerIp = XmlGetDataString( clsSip, "ServerIp", '' )
+      self.iSipServerPort = XmlGetDataInt( clsSip, "ServerPort", self.iSipServerPort )
       self.strSipDomain = XmlGetDataString( clsSip, "Domain", '' )
       self.strSipUserId = XmlGetDataString( clsSip, "UserId", '' )
       self.strSipPassWord = XmlGetDataString( clsSip, "UserPassword", '' )

@@ -28,7 +28,7 @@ from .RtpThread import RtpThread
 
 class SipClient(SipUserAgentCallBack):
 
-  from .SipClientUserAgent import EventRegister, EventIncomingRequestAuth, EventIncomingCall, EventCallStart, EventCallEnd
+  from .SipClientUserAgent import EventRegister, EventIncomingCall, EventCallRing, EventCallStart, EventCallEnd
 
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()
@@ -67,7 +67,7 @@ class SipClient(SipUserAgentCallBack):
     return True
   
   def StartCall( self, strTo ):
-    if( CanNewCall( self ) == False ):
+    if( self.CanNewCall( ) == False ):
       return
     
     self.clsRtpThread = RtpThread()
@@ -80,7 +80,7 @@ class SipClient(SipUserAgentCallBack):
 
     clsRoute = SipCallRoute()
     clsRoute.strDestIp = self.clsSetupFile.strSipServerIp
-    clsRoute.iDestPort = 5060
+    clsRoute.iDestPort = self.clsSetupFile.iSipServerPort
 
     self.strCallId = self.clsUserAgent.StartCall( self.clsSetupFile.strSipUserId, strTo, clsRtp, clsRoute )
     if( len(self.strCallId) == 0 ):

@@ -16,7 +16,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '''
 
-import fileinput
 import sys
 from .SipClientSetup import SipClientSetup
 from .SipClient import SipClient
@@ -34,9 +33,10 @@ if( clsSetupFile.Read( strSetupFileName ) == False ):
 
 clsClient = SipClient()
 if( clsClient.Start( clsSetupFile ) == False ):
+  print( "clsClient.Start() error" )
   exit()
 
-for strLine in fileinput.input():
+for strLine in sys.stdin.readline():
   if( strLine[0] == 'c' ):
     strNumber = strLine[2:]
     clsClient.StartCall( strNumber )
