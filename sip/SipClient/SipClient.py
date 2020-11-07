@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import socket
 from ..SipPlatform.Log import Log, LogLevel
+from ..SipParser.SipStatusCode import SipStatusCode
 from ..SipStack.SipStackSetup import SipStackSetup
 from ..SipUserAgent.SipUserAgent import SipUserAgent
 from ..SipUserAgent.SipUserAgentCallBack import SipUserAgentCallBack
@@ -60,7 +61,6 @@ class SipClient(SipUserAgentCallBack):
       Log.Print( LogLevel.ERROR, "clsUserAgent.Start error" )
       return False
     
-    self.clsUserAgent.clsSipStack.AddCallBack( self )
     self.clsSetupFile = clsSetupFile
     self.clsSetup = clsSetup
 
@@ -93,7 +93,7 @@ class SipClient(SipUserAgentCallBack):
       self.clsRtpThread = None
 
     if( len(self.strCallId) > 0 ):
-      self.clsUserAgent.StopCall( self.strCallId )
+      self.clsUserAgent.StopCall( self.strCallId, 0 )
       self.strCallId = ''
     
     self.clsDestRtp = None
@@ -109,6 +109,7 @@ class SipClient(SipUserAgentCallBack):
     
     self.clsRtpThread = RtpThread()
     self.clsRtpThread.Start()
+    self.clsRtpThread.SetDestIpPort( self.clsDestRtp.strIp, self.clsDestRtp.iPort )
 
     clsRtp = SipCallRtp()
     clsRtp.strIp = self.clsSetup.strLocalIp

@@ -48,10 +48,12 @@ class RtpThread():
     self.strDestIp = strDestIp
     self.iDestPort = iDestPort
 
+    '''
     p = threading.Thread( target=RtpSendThread, args=(self,))
     p.daemon = True
     p.start()
-
+    '''
+    
     p = threading.Thread( target=RtpRecvThread, args=(self,))
     p.daemon = True
     p.start()
