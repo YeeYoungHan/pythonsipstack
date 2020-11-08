@@ -82,6 +82,8 @@ c 1001
 * 수신된 전화를 수락하려면 a 를 입력한 후, Enter 키를 클릭한다.
 * 전화 통화 종료하려면 e 를 입력한 후, Enter 키를 클릭한다.
 * 프로그램 종료하려면 q 를 입력한 후, Enter 키를 클릭한다.
+* SipClient 관련 포스트
+  * https://blog.naver.com/websearch/222138751930 : 오픈소스 Python SIP stack 기반 SIP 클라이언트 1차 개발 완료
 
 ### EchoSipServer 실행 방법
 
