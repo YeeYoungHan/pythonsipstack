@@ -32,6 +32,7 @@ C++ SIP stack API 문서는 아래의 홈페이지에서 확인하실 수 있습니다.
   * EchoSipServer : 통화 수신시 해당 통화를 발신자에게 다시 연결하는 프로그램
     * 통화 수신 처리 기능이 포함된 전화 발신 서비스를 테스트하는 용도로 사용될 수 있다.
   * SdpParser : SDP 메시지 파서/생성 라이브러리
+  * SipClient : SIP 클라이언트 프로그램
   * SipParser : SIP 메시지 파서/생성 라이브러리
   * SipPlatform : 본 프로젝트에서 공통으로 사용하는 라이브러리
   * SipServer : SIP 서버 프로그램
@@ -58,6 +59,29 @@ python -m sip.SipServer.SipServerMain sip\SipServer\SipServer.xml
   * https://blog.naver.com/websearch/70147577937 : KSipServer 설정 파일 설명
   * https://blog.naver.com/websearch/70148992602 : KSipServer 사용자 XML 파일 설명
   * https://blog.naver.com/websearch/70149037102 : KSipServer 외부 IP-PBX XML 파일 설명
+
+### SipClient 실행 방법
+
+* pyaudio 모듈이 설치되어 있지 않으면 아래와 같이 실행하여서 설치한다.
+
+```
+python -m pip install pyaudio
+```
+
+* sip/SipClient/SipClient.xml 설정 파일을 자신의 환경에 적합하게 수정한다.
+* 현재 폴더에서 아래와 같이 실행한다.
+```
+python -m sip.SipClient.SipClientMain sip\SipClient\SipClient.xml
+```
+
+* 전화 호출하려면 아래와 같이 c 문자 + 공백 + 수신자 전화번호를 입력한 후, Enter 키를 클릭한다.
+```
+c 1001
+```
+
+* 수신된 전화를 수락하려면 a 를 입력한 후, Enter 키를 클릭한다.
+* 전화 통화 종료하려면 e 를 입력한 후, Enter 키를 클릭한다.
+* 프로그램 종료하려면 q 를 입력한 후, Enter 키를 클릭한다.
 
 ### EchoSipServer 실행 방법
 
