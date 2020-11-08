@@ -54,7 +54,7 @@ class RtpThread():
     self.iDestPort = iDestPort
 
     self.clsAudio = pyaudio.PyAudio()
-    self.clsStream = self.clsAudio.open( format = 8, channels = 1, rate = 8000, input = True, output = True )
+    self.clsStream = self.clsAudio.open( format = 8, channels = 1, rate = 8000, input = True, output = True, frames_per_buffer = 160 )
 
     p = threading.Thread( target=RtpSendThread, args=(self,))
     p.daemon = True
