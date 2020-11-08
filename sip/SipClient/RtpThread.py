@@ -21,6 +21,7 @@ import pyaudio
 import select
 import socket
 import struct
+import time
 import threading
 from ..SipPlatform.Log import Log, LogLevel
 
@@ -32,11 +33,15 @@ class RtpThread():
     self.strDestIp = ''
     self.iDestPort = 0
     self.bStopEvent = False
+    self.clsAudio = None
+    self.clsStream = None
+    self.bSendThreadRun = False
+    self.bRecvThreadRun = False
   
   def Start( self ):
     self.hUdpSocket = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
     bBind = False
-
+    
     while bBind == False:
       try:
         self.hUdpSocket.bind( ('0.0.0.0', self.iUdpPort) )
@@ -48,11 +53,12 @@ class RtpThread():
     self.strDestIp = strDestIp
     self.iDestPort = iDestPort
 
-    '''
+    self.clsAudio = pyaudio.PyAudio()
+    self.clsStream = self.clsAudio.open( format = 8, channels = 1, rate = 8000, input = True, output = True )
+
     p = threading.Thread( target=RtpSendThread, args=(self,))
     p.daemon = True
     p.start()
-    '''
     
     p = threading.Thread( target=RtpRecvThread, args=(self,))
     p.daemon = True
@@ -60,10 +66,16 @@ class RtpThread():
   
   def Stop( self ):
     self.bStopEvent = True
+
+    while( self.bSendThreadRun or self.bRecvThreadRun ):
+      time.sleep(0.1)
+
+    self.clsStream.close()
+    self.clsAudio.terminate()
+
   
 def RtpSendThread( clsRtpThread ):
-  clsAudio = pyaudio.PyAudio()
-  clsStream = clsAudio.open( format = 8, channels = 1, rate = 8000, input = True )
+  clsRtpThread.bSendThreadRun = True
 
   iFlags = 0x80
   iPayload = 0
@@ -75,20 +87,17 @@ def RtpSendThread( clsRtpThread ):
     iSeq += 1
     iTimeStamp += 160
 
-    arrPcm = clsStream.read( 160 )
+    arrPcm = clsRtpThread.clsStream.read( 160 )
     arrPayload = audioop.lin2ulaw( arrPcm, 2 )
     szPacket = struct.pack( '!BBHII', iFlags, iPayload, iSeq, iTimeStamp, iSsrc ) + arrPayload
     clsRtpThread.hUdpSocket.sendto( szPacket, (clsRtpThread.strDestIp, clsRtpThread.iDestPort) )
 
-  clsStream.close()
-  clsAudio.terminate()
-
+  clsRtpThread.bSendThreadRun = False
 
 def RtpRecvThread( clsRtpThread ):
-  read_list = [ clsRtpThread.hUdpSocket ]
+  clsRtpThread.bRecvThreadRun = True
 
-  clsAudio = pyaudio.PyAudio()
-  clsStream = clsAudio.open( format = 8, channels = 1, rate = 8000, output = True )
+  read_list = [ clsRtpThread.hUdpSocket ]
   
   while( clsRtpThread.bStopEvent == False ):
     iRecvLen = 0
@@ -104,7 +113,6 @@ def RtpRecvThread( clsRtpThread ):
     if( iRecvLen > 0 ):
       arrPayload = szPacket[12:]
       arrPcm = audioop.ulaw2lin( arrPayload, 2 )
-      clsStream.write( arrPcm )
-  
-  clsStream.close()
-  clsAudio.terminate()
+      clsRtpThread.clsStream.write( arrPcm )
+
+  clsRtpThread.bRecvThreadRun = False
