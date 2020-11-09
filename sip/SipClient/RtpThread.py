@@ -37,6 +37,7 @@ class RtpThread():
     self.clsStream = None
     self.bSendThreadRun = False
     self.bRecvThreadRun = False
+    self.bUseTwoAudio = False
   
   def Start( self ):
     self.hUdpSocket = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
@@ -53,8 +54,12 @@ class RtpThread():
     self.strDestIp = strDestIp
     self.iDestPort = iDestPort
 
-    self.clsAudio = pyaudio.PyAudio()
-    self.clsStream = self.clsAudio.open( format = 8, channels = 1, rate = 8000, input = True, output = True, frames_per_buffer = 160 )
+    if( self.bSendThreadRun or self.bRecvThreadRun ):
+      return
+
+    if( self.bUseTwoAudio == False ):
+      self.clsAudio = pyaudio.PyAudio()
+      self.clsStream = self.clsAudio.open( format = 8, channels = 1, rate = 8000, input = True, output = True, frames_per_buffer = 160 )
 
     p = threading.Thread( target=RtpSendThread, args=(self,))
     p.daemon = True
@@ -70,12 +75,17 @@ class RtpThread():
     while( self.bSendThreadRun or self.bRecvThreadRun ):
       time.sleep(0.1)
 
-    self.clsStream.close()
-    self.clsAudio.terminate()
+    if( self.bUseTwoAudio == False ):
+      self.clsStream.close()
+      self.clsAudio.terminate()
 
   
 def RtpSendThread( clsRtpThread ):
   clsRtpThread.bSendThreadRun = True
+
+  if( clsRtpThread.bUseTwoAudio ):
+    clsAudio = pyaudio.PyAudio()
+    clsStream = clsAudio.open( format = 8, channels = 1, rate = 8000, input = True, frames_per_buffer = 160 )
 
   iFlags = 0x80
   iPayload = 0
@@ -87,15 +97,27 @@ def RtpSendThread( clsRtpThread ):
     iSeq += 1
     iTimeStamp += 160
 
-    arrPcm = clsRtpThread.clsStream.read( 160 )
+    if( clsRtpThread.bUseTwoAudio ):
+      arrPcm = clsStream.read( 160 )
+    else:
+      arrPcm = clsRtpThread.clsStream.read( 160 )
+
     arrPayload = audioop.lin2ulaw( arrPcm, 2 )
     szPacket = struct.pack( '!BBHII', iFlags, iPayload, iSeq, iTimeStamp, iSsrc ) + arrPayload
     clsRtpThread.hUdpSocket.sendto( szPacket, (clsRtpThread.strDestIp, clsRtpThread.iDestPort) )
+
+  if( clsRtpThread.bUseTwoAudio ):
+    clsStream.close()
+    clsAudio.terminate()
 
   clsRtpThread.bSendThreadRun = False
 
 def RtpRecvThread( clsRtpThread ):
   clsRtpThread.bRecvThreadRun = True
+
+  if( clsRtpThread.bUseTwoAudio ):
+    clsAudio = pyaudio.PyAudio()
+    clsStream = clsAudio.open( format = 8, channels = 1, rate = 8000, output = True, frames_per_buffer = 160 )
 
   read_list = [ clsRtpThread.hUdpSocket ]
   
@@ -113,6 +135,14 @@ def RtpRecvThread( clsRtpThread ):
     if( iRecvLen > 0 ):
       arrPayload = szPacket[12:]
       arrPcm = audioop.ulaw2lin( arrPayload, 2 )
-      clsRtpThread.clsStream.write( arrPcm )
+
+      if( clsRtpThread.bUseTwoAudio ):
+        clsStream.write( arrPcm )
+      else:
+        clsRtpThread.clsStream.write( arrPcm )
+
+  if( clsRtpThread.bUseTwoAudio ):
+    clsStream.close()
+    clsAudio.terminate()
 
   clsRtpThread.bRecvThreadRun = False

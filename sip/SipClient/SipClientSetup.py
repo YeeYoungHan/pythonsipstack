@@ -30,6 +30,7 @@ class SipClientSetup():
     self.strSipDomain = ''
     self.strSipUserId = ''
     self.strSipPassWord = ''
+    self.bUseTwoAudio = False
   
   def Read( self, strFileName ):
     try:
@@ -60,6 +61,11 @@ class SipClientSetup():
 
       if( len(self.strSipDomain) == 0 ):
         self.strSipDomain = self.strSipServerIp
+
+      # RTP 설정
+      clsRtp = clsRoot.find("Rtp")
+      if( clsRtp != None ):
+        self.bUseTwoAudio = XmlGetDataBool( clsRtp, "UseTwoAudio", False )
 
       # 로그 설정
       clsLog = clsRoot.find("Log")

@@ -47,3 +47,9 @@ def EventCallEnd( self, strCallId, iSipStatus ):
   if( self.strCallId == strCallId ):
     self.strCallId = ''
     self.StopCall()
+
+def EventReInvite( self, strCallId, clsRemoteRtp, clsLocalRtp ):
+  print( "EventReInvite(" + strCallId + ")" )
+
+  self.clsDestRtp = clsRemoteRtp
+  self.clsRtpThread.SetDestIpPort( clsRemoteRtp.strIp, clsRemoteRtp.iPort )

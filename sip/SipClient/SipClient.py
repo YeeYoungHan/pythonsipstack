@@ -29,7 +29,7 @@ from .RtpThread import RtpThread
 
 class SipClient(SipUserAgentCallBack):
 
-  from .SipClientUserAgent import EventRegister, EventIncomingCall, EventCallRing, EventCallStart, EventCallEnd
+  from .SipClientUserAgent import EventRegister, EventIncomingCall, EventCallRing, EventCallStart, EventCallEnd, EventReInvite
 
   def __init__( self ):
     self.clsUserAgent = SipUserAgent()
