@@ -94,7 +94,7 @@ class SipClientSetup():
       Log.iMaxLogSize = XmlGetDataInt( clsLog, "MaxSize", 20000000 )
 
     except Exception as other:
-      Log.Print( LogLevel.ERROR, "SipServerSetup.Read(" + strFileName + ") error(" + str(other) + ")" )
+      Log.Print( LogLevel.ERROR, "SipClientSetup.Read(" + strFileName + ") error(" + str(other) + ")" )
       return False
 
     return True
