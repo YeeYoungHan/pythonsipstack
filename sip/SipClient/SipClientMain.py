@@ -40,6 +40,9 @@ while True:
   strLine = sys.stdin.readline()
   strLine = strLine[:-1]
   
+  if( len(strLine) == 0 ):
+    continue
+
   if( strLine[0] == 'c' ):
     strNumber = strLine[2:]
     clsClient.StartCall( strNumber )
