@@ -72,6 +72,7 @@ class SipClient(SipUserAgentCallBack):
     
     self.clsRtpThread = RtpThread()
     self.clsRtpThread.Start()
+    self.clsRtpThread.bUseTwoAudio = self.clsSetupFile.bUseTwoAudio
 
     clsRtp = SipCallRtp()
     clsRtp.strIp = self.clsSetup.strLocalIp
@@ -109,6 +110,7 @@ class SipClient(SipUserAgentCallBack):
     
     self.clsRtpThread = RtpThread()
     self.clsRtpThread.Start()
+    self.clsRtpThread.bUseTwoAudio = self.clsSetupFile.bUseTwoAudio
     self.clsRtpThread.SetDestIpPort( self.clsDestRtp.strIp, self.clsDestRtp.iPort )
 
     clsRtp = SipCallRtp()
